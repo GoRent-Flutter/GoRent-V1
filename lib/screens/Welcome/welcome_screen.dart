@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
+import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
+
 import '../../constraints.dart';
 
 
@@ -30,8 +32,10 @@ class WelcomeScreen extends StatelessWidget {
           right: 60,
           child: TextButton(
             onPressed: () {
-              // button onPressed code here
-            },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  const SignupScreen()),
+              );            },
             style: TextButton.styleFrom(
               backgroundColor: primaryWhite,
               shape: RoundedRectangleBorder(
