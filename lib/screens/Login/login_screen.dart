@@ -11,9 +11,9 @@ class LoginScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
         color: primaryGrey,
-        child: SizedBox(
-            width: 100,
-            height: 100,
+        // child: SizedBox(
+        //     width: 100,
+        //     height: 100,
             child: Stack(children: <Widget>[
               Positioned(
                   // top: -10,
@@ -23,23 +23,22 @@ class LoginScreen extends StatelessWidget {
                     scale: 1.08,
                     child: Image.asset('assets/icons/GoRent_Logo_Inside.png'),
                   )),
-             Positioned(
-  top: -40,
-  left: -50,
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) =>  WelcomeScreen()),
-      );
-    },
-    child: Transform.scale(
-      scale: 0.2,
-      child: Image.asset('assets/icons/White_back.png'),
-    ),
-  ),
-),
-
+              Positioned(
+                top: -40,
+                left: -50,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                    );
+                  },
+                  child: Transform.scale(
+                    scale: 0.2,
+                    child: Image.asset('assets/icons/White_back.png'),
+                  ),
+                ),
+              ),
               Positioned(
                 top: 130,
                 left: 25,
@@ -181,17 +180,17 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const Positioned(
-                 top: 385,
-                  left: 60,
-                  // right: 60,
+                top: 385,
+                left: 60,
+                // right: 60,
                 child: Text(
-                      'نسيت كلمة المرور؟',
-                      style: TextStyle(
-                        color: primaryLine,
-                        fontSize: 14.0,
-                        decoration: TextDecoration.none
-                      ),
-                    ),),
+                  'نسيت كلمة المرور؟',
+                  style: TextStyle(
+                      color: primaryLine,
+                      fontSize: 14.0,
+                      decoration: TextDecoration.none),
+                ),
+              ),
               Positioned(
                   top: 480,
                   left: 60,
@@ -219,6 +218,6 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   )),
-            ])));
+            ]));
   }
 }
