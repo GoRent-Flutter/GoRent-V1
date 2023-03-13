@@ -14,6 +14,7 @@ class MainScreen extends StatelessWidget {
             // height: 100,
             child: Stack(children: <Widget>[
           Positioned(
+              // top: -10,
               left: 0,
               right: 0,
               child: Transform.scale(
@@ -38,7 +39,7 @@ class MainScreen extends StatelessWidget {
                 ],
               ),
               
-              child: Stack(
+            child: Stack(
       children: [
         Positioned(
           top: 5,
@@ -53,7 +54,8 @@ class MainScreen extends StatelessWidget {
           ),
         ),
           Center(
-                     child:  Column(
+          // heightFactor: 1.0,
+                        child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: const [
                     Padding(
@@ -106,7 +108,8 @@ class MainScreen extends StatelessWidget {
           ),
         ),
           Center(
-                    child: Column(
+          // heightFactor: 1.0,
+                        child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: const [
                     Padding(
