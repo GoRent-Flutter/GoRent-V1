@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen.dart';
 import '../../constraints.dart';
 import '../Main/main_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class LoginScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
                     );
                   },
                   child: Transform.scale(
@@ -83,6 +85,14 @@ class LoginScreen extends StatelessWidget {
                               width: 1,
                             ),
                           ),
+                                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                      );
+                    },
                           child: const Center(
                             child: Text(
                               "تسجيل الدخول",
@@ -93,6 +103,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        ),
                         Container(
                           height: 28,
                           width: 155,
@@ -101,6 +112,14 @@ class LoginScreen extends StatelessWidget {
                             color: primaryRed,
                             borderRadius: BorderRadius.circular(13.0),
                           ),
+                     child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignupScreen()),
+                      );
+                    },
                           child: const Center(
                             child: Text(
                               "إنشاء حساب",
@@ -110,7 +129,8 @@ class LoginScreen extends StatelessWidget {
                                   decoration: TextDecoration.none),
                             ),
                           ),
-                        )
+                        ),
+                        ),
                       ],
                     ),
                   ),
@@ -132,6 +152,7 @@ class LoginScreen extends StatelessWidget {
                             width: 1,
                           ),
                         ),
+                        
                         child: const TextField(
                           decoration: InputDecoration(
                             hintText: 'البريد الإلكتروني',

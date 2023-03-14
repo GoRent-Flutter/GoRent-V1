@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+  const MainScreen({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Container(
         color: primaryGrey,
         child: SizedBox(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen.dart';
 import '../../constraints.dart';
 import '../Main/main_screen.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+  const SignupScreen({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class SignupScreen extends StatelessWidget {
             height: 100,
             child: Stack(children: <Widget>[
               Positioned(
-                // top: -10,
+                  // top: -10,
                   left: 0,
                   right: 0,
                   child: Transform.scale(
@@ -30,7 +32,7 @@ class SignupScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>  WelcomeScreen()),
+                      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
                     );
                   },
                   child: Transform.scale(
@@ -39,7 +41,6 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               Positioned(
                 top: 130,
                 left: 25,
@@ -64,59 +65,81 @@ class SignupScreen extends StatelessWidget {
                 left: 50,
                 right: 50,
                 child: FittedBox(
-                  child: Container(
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: primaryRed,
-                      borderRadius: BorderRadius.circular(13.0),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 28,
-                          width: 155,
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          decoration: BoxDecoration(
-                            color: primaryRed,
-                            borderRadius: BorderRadius.circular(13.0),
-                            border: Border.all(
+                  
+                    child: Container(
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: primaryRed,
+                        borderRadius: BorderRadius.circular(13.0),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 28,
+                            width: 155,
+                            padding: const EdgeInsets.symmetric(vertical: 3),
+                            decoration: BoxDecoration(
                               color: primaryRed,
-                              width: 1,
+                              borderRadius: BorderRadius.circular(13.0),
+                              border: Border.all(
+                                color: primaryRed,
+                                width: 1,
+                              ),
+                            ),
+                            child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                      );
+                    },
+                            child: const Center(
+                              child: Text(
+                                "تسجيل الدخول",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: primaryWhite,
+                                    decoration: TextDecoration.none),
+                              ),
+                            ),
                             ),
                           ),
-                          child: const Center(
-                            child: Text(
-                              "تسجيل الدخول",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: primaryWhite,
-                                  decoration: TextDecoration.none),
+                          Container(
+                            height: 28,
+                            width: 155,
+                            padding: const EdgeInsets.symmetric(vertical: 3),
+                            decoration: BoxDecoration(
+                              color: primaryWhite,
+                              borderRadius: BorderRadius.circular(13.0),
+                              border: Border.all(
+                                color: primaryRed,
+                                width: 1,
+                              ),
                             ),
-                          ),
-                        ),
-                        Container(
-                          height: 28,
-                          width: 155,
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          decoration: BoxDecoration(
-                            color: primaryWhite,
-                            borderRadius: BorderRadius.circular(13.0),
-                          ),
-                          child: const Center(
-                            
-                            child: Text(
-                              
-                              "إنشاء حساب",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: primaryRed,
-                                  decoration: TextDecoration.none),
+                             child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>  const SignupScreen()),
+                      );
+                    },
+                            child: const Center(
+                              child: Text(
+                                "إنشاء حساب",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: primaryRed,
+                                    decoration: TextDecoration.none),
+                              ),
                             ),
-                          ),
-                        )
-                      ],
+                             ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
+              
                 ),
               ),
               Positioned(
@@ -230,7 +253,7 @@ class SignupScreen extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'تسجيل الدخول',
+                      'إنشاء حساب',
                       style: TextStyle(
                         color: primaryWhite,
                         fontSize: 21.0,

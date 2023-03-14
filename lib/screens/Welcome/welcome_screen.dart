@@ -6,7 +6,8 @@ import '../../constraints.dart';
 
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  const WelcomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -34,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  const SignupScreen()),
+                MaterialPageRoute(builder: (context) => const SignupScreen()),
               );            },
             style: TextButton.styleFrom(
               backgroundColor: primaryWhite,
