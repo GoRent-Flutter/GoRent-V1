@@ -26,7 +26,7 @@ class UserScreen extends StatelessWidget {
                   );
                 },
                 child: const Text(
-                  'اضغط هنا لعرض تفاصيل الشقة وتسجيل العرض الخاص بك',
+                  'اضغط هنا للاستخدام كمشتري',
                   style: TextStyle(
                     color: primaryWhite,
                     fontSize: 21.0,
@@ -54,7 +54,7 @@ class UserScreen extends StatelessWidget {
                   );
                 },
                 child: const Text(
-                  'اضغط هنا للاطلاع على تفاصيل الشقة والحجز',
+                  'اضغط هنا للاستخدام كبائع',
                   style: TextStyle(
                     color: primaryWhite,
                     fontSize: 21.0,
