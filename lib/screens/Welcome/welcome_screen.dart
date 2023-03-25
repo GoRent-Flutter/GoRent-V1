@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
+import 'package:gorent_application1/screens/guest_view/guest_view_screen.dart';
 
 import '../../constraints.dart';
-
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -36,7 +36,8 @@ class WelcomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SignupScreen()),
-              );            },
+              );
+            },
             style: TextButton.styleFrom(
               backgroundColor: primaryWhite,
               shape: RoundedRectangleBorder(
@@ -59,7 +60,7 @@ class WelcomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  const LoginScreen()),
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
               );
             },
             style: TextButton.styleFrom(
@@ -85,7 +86,7 @@ class WelcomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                MaterialPageRoute(builder: (context) => const GuestScreen()),
               );
             },
             style: TextButton.styleFrom(
@@ -95,7 +96,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             child: const Text(
-              'الإستخدام من جهة مالك العقار',
+              'تصفح التطبيق كزائر',
               style: TextStyle(
                 color: primaryWhite,
                 fontSize: 21.0,
