@@ -221,7 +221,7 @@ class LoginScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MainScreen()),
+                            builder: (context) => MainScreen()),
                       );
                     },
                     style: TextButton.styleFrom(

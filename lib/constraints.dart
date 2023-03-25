@@ -5,4 +5,4 @@ const primaryPale=Color(0xFFBC7373);
 const primaryGrey=Color(0xF5F5F5F5);
 const primaryLine= Color(0xFF707070);
 const primaryHint=Color(0xFF544446);
-
+const primaryNav=Color(0xFFCC5E6F);
