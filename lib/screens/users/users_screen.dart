@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gorent_application1/screens/Welcome/welcome_screen.dart';
+import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
+import 'package:gorent_application1/screens/Welcome/welcome_screen_owner.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import '../../constraints.dart';
 
@@ -9,20 +10,26 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryRed, // set background color to red
+      backgroundColor: primaryRed,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Hero(
+              tag: 'logo',
+              child: Image.asset('assets/images/GoRent.png', height: 150),
+            ),
+            const SizedBox(height: 20),
             SizedBox(
-              width: 300, // <-- match_parent
-              height: 100, //
+              width: 300,
+              height: 100,
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const OwnerScreen()),
+                      builder: (context) => const WelcomeScreenCustomer(),
+                    ),
                   );
                 },
                 child: const Text(
@@ -41,16 +48,17 @@ class UserScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             SizedBox(
-              width: 300, // <-- match_parent
-              height: 100, //
+              width: 300,
+              height: 100,
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const WelcomeScreen()),
+                      builder: (context) => const WelcomeScreenOwner(),
+                    ),
                   );
                 },
                 child: const Text(

@@ -4,6 +4,8 @@ import 'package:gorent_application1/screens/Favourite/favourite_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/Map/map_screen.dart';
 
+import 'screens/Account/user_account_screen.dart';
+
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
 
@@ -66,14 +68,14 @@ class BottomNavBarState extends State<BottomNavBar> {
                     MaterialPageRoute(builder: (context) => const MapScreen()),
                   );
                   break;
-              }
-              //  case 3:
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => const UserAccountScreen()),
-              //     );
-              //     break;
-              // }
+              
+               case 3:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UserAccountScreen()),
+                  );
+                  break;
+               }
             },
             child: Stack(
               children: [

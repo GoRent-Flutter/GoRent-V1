@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/Welcome/welcome_screen.dart';
+import 'package:gorent_application1/splash_screen.dart';
+import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 
 void main() {
@@ -17,7 +18,16 @@ class MyApp extends StatelessWidget {
       title: 'GoRent',
       theme: ThemeData(
           primaryColor: primaryRed, scaffoldBackgroundColor: primaryRed),
-      home: const UserScreen(),
+      home: FutureBuilder(
+        future: Future.delayed(Duration(seconds: 1)),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const UserScreen();
+          } else {
+            return const SplashScreen();
+          }
+        },
+      ),
     );
   }
 }
