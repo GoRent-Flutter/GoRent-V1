@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
-import 'package:gorent_application1/screens/Welcome/welcome_screen.dart';
+import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import '../../constraints.dart';
 import '../Main/main_screen.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,8 @@ class SignupScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const WelcomeScreenCustomer()),
                     );
                   },
                   child: Transform.scale(
@@ -65,35 +65,34 @@ class SignupScreen extends StatelessWidget {
                 left: 50,
                 right: 50,
                 child: FittedBox(
-                  
-                    child: Container(
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: primaryRed,
-                        borderRadius: BorderRadius.circular(13.0),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 28,
-                            width: 155,
-                            padding: const EdgeInsets.symmetric(vertical: 3),
-                            decoration: BoxDecoration(
+                  child: Container(
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: primaryRed,
+                      borderRadius: BorderRadius.circular(13.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 28,
+                          width: 155,
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          decoration: BoxDecoration(
+                            color: primaryRed,
+                            borderRadius: BorderRadius.circular(13.0),
+                            border: Border.all(
                               color: primaryRed,
-                              borderRadius: BorderRadius.circular(13.0),
-                              border: Border.all(
-                                color: primaryRed,
-                                width: 1,
-                              ),
+                              width: 1,
                             ),
-                            child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                      );
-                    },
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()),
+                              );
+                            },
                             child: const Center(
                               child: Text(
                                 "تسجيل الدخول",
@@ -103,28 +102,28 @@ class SignupScreen extends StatelessWidget {
                                     decoration: TextDecoration.none),
                               ),
                             ),
+                          ),
+                        ),
+                        Container(
+                          height: 28,
+                          width: 155,
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          decoration: BoxDecoration(
+                            color: primaryWhite,
+                            borderRadius: BorderRadius.circular(13.0),
+                            border: Border.all(
+                              color: primaryRed,
+                              width: 1,
                             ),
                           ),
-                          Container(
-                            height: 28,
-                            width: 155,
-                            padding: const EdgeInsets.symmetric(vertical: 3),
-                            decoration: BoxDecoration(
-                              color: primaryWhite,
-                              borderRadius: BorderRadius.circular(13.0),
-                              border: Border.all(
-                                color: primaryRed,
-                                width: 1,
-                              ),
-                            ),
-                             child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>  const SignupScreen()),
-                      );
-                    },
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignupScreen()),
+                              );
+                            },
                             child: const Center(
                               child: Text(
                                 "إنشاء حساب",
@@ -134,12 +133,11 @@ class SignupScreen extends StatelessWidget {
                                     decoration: TextDecoration.none),
                               ),
                             ),
-                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
-              
+                  ),
                 ),
               ),
               Positioned(
@@ -241,8 +239,7 @@ class SignupScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => MainScreen()),
+                        MaterialPageRoute(builder: (context) => MainScreen()),
                       );
                     },
                     style: TextButton.styleFrom(

@@ -5,8 +5,8 @@ import 'package:gorent_application1/screens/guest_view/guest_view_screen.dart';
 
 import '../../constraints.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+class WelcomeScreenOwner extends StatelessWidget {
+  const WelcomeScreenOwner({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,31 +78,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
           )),
-      Positioned(
-          top: 610,
-          left: 60,
-          right: 60,
-          child: TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const GuestScreen()),
-              );
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: primaryPale,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(37.0),
-              ),
-            ),
-            child: const Text(
-              'تصفح التطبيق كزائر',
-              style: TextStyle(
-                color: primaryWhite,
-                fontSize: 21.0,
-              ),
-            ),
-          ))
+
     ]));
   }
 }
