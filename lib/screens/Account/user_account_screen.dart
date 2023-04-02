@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Account/report_problem/report_problem_screen.dart';
+import 'package:gorent_application1/screens/Account/userdetails/user_details_screen.dart';
 
 import 'location/location_screen.dart';
 import 'notification/notification_screen.dart';
@@ -13,7 +14,8 @@ class UserAccountScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        
+       crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 80, left: 230, bottom: 50),
@@ -28,35 +30,44 @@ class UserAccountScreen extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Container(
-              height: 110,
-              width: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.black),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 10),
-                  const Text(
-                    "اسم المستخدم",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: primaryRed,
-                      fontWeight: FontWeight.bold,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfilePageState()),
+                );
+              },
+              child: Container(
+                height: 110,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 10),
+                    const Text(
+                      "اسم المستخدم",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: primaryRed,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Image.asset(
-                    'assets/images/user.png',
-                    width: 150,
-                    height: 100,
-                  ),
-                  const Icon(Icons.arrow_forward_ios,
-                      size: 22, color: primaryRed),
-                ],
+                    Image.asset(
+                      'assets/images/user.png',
+                      width: 150,
+                      height: 100,
+                    ),
+                    const Icon(Icons.arrow_forward_ios,
+                        size: 22, color: primaryRed),
+                  ],
+                ),
               ),
             ),
           ),
