@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 
 import '../../user_bottom_nav_bar.dart';
+import '../BuyList/buylist_screen.dart';
+import '../RentList/rentlist_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -50,13 +52,16 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+            child: GestureDetector(
             child: Stack(
               children: [
                 Positioned(
+                  
                   top: 5,
                   left: 5,
                   right: 5,
                   bottom: 30,
+                  
                   child: Transform.scale(
                     scale: 1.0,
                     child: Image.asset('assets/icons/buy.png'),
@@ -82,6 +87,12 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+            onTap: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) => BuyListScreen(),
+                        ));
+                      },
+),
           ),
         ),
         Positioned(
@@ -101,13 +112,16 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+           child: GestureDetector(
             child: Stack(
               children: [
                 Positioned(
+                  
                   top: 5,
                   left: 5,
                   right: 5,
                   bottom: 30,
+                  
                   child: Transform.scale(
                     scale: 1.0,
                     child: Image.asset('assets/icons/rent.png'),
@@ -120,7 +134,7 @@ class _MainScreenState extends State<MainScreen> {
                       Padding(
                         padding: EdgeInsets.only(bottom: 2),
                         child: Text(
-                          "إستئجار عقار",
+                          "استئجار عقار",
                           style: TextStyle(
                             fontSize: 17,
                             color: primaryRed,
@@ -133,6 +147,12 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+            onTap: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) => RentListScreen(),
+                        ));
+                      },
+),
           ),
         ),
         Positioned(
