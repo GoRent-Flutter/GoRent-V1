@@ -135,17 +135,10 @@ class BuyListScreen extends StatelessWidget {
             top: 180,
             left: 20,
             right: 20,
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: Colors.black.withOpacity(0.3),
-            //     spreadRadius: 2,
-            //     blurRadius: 5,
-            //   ),
-            // ],
             child: Stack(
               children: [
                 Container(
-                  height: size.height*0.68,
+                  height: size.height * 0.68,
                   decoration: BoxDecoration(
                     color: primaryWhite,
                     borderRadius: BorderRadius.circular(24.0),
@@ -201,12 +194,17 @@ class BuyListScreen extends StatelessWidget {
                                       width: 310,
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10),
-                                          bottomRight: Radius.circular(10),
-                                        ),
+                                        color: primaryWhite,
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                          ),
+                                        ],
                                         image: DecorationImage(
                                           image: AssetImage(estate.image),
                                           fit: BoxFit.cover,
@@ -258,10 +256,11 @@ class BuyListScreen extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(left: 14.0),
-                                        child: Icon(
-                                          Icons.bed_rounded,
-                                          color: primaryRed,
-                                          size: 16,
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bedroom.png'),
+                                          width: 20,
+                                          height: 18,
                                         ),
                                       ),
                                       SizedBox(
@@ -285,10 +284,11 @@ class BuyListScreen extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(left: 5.0),
-                                        child: Icon(
-                                          Icons.bathtub_outlined,
-                                          color: primaryRed,
-                                          size: 16,
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bathroom.png'),
+                                          width: 20,
+                                          height: 18,
                                         ),
                                       ),
                                       SizedBox(
@@ -312,10 +312,11 @@ class BuyListScreen extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(left: 0.0),
-                                        child: Icon(
-                                          Icons.square_foot_outlined,
-                                          color: primaryRed,
-                                          size: 16,
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_size.png'),
+                                          width: 20,
+                                          height: 18,
                                         ),
                                       ),
                                       SizedBox(

@@ -18,7 +18,7 @@ class UserAccountScreen extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.only(top: 80, left: 230, bottom: 50),
             child: Text(
-              "حسابي شخصي",
+              "حسابي الشخصي",
               style: TextStyle(
                 fontSize: 22,
                 color: primaryRed,

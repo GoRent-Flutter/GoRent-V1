@@ -26,24 +26,25 @@ class MyCard extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 1),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 1),
         child: Container(
-          height: 230,
+          height: 220,
           // color: Colors.deepPurple[200],
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
-            // boxShadow: [
-            //   BoxShadow(
-            //     // color: Colors.grey.withOpacity(0.2),
-            //     // spreadRadius: 2,
-            //     // blurRadius: 5,
-            //     // offset: Offset(0, 3),
-            //   ),
-            // ],
+            boxShadow: [
+              BoxShadow(
+               color:Colors.black.withOpacity(0.3),
+               spreadRadius: 2,
+                blurRadius: 5,
+                // offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: Column(
             children: [
+              // SizedBox(height: 10),
               // Image.asset(
               //   '',
               //   height: 120,
