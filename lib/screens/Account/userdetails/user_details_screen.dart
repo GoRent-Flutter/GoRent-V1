@@ -31,7 +31,7 @@ class EditProfilePageState extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const UserScreen()),
+                  MaterialPageRoute(builder: (context) => const UsersScreen()),
                 );
               },
               child: const Text(

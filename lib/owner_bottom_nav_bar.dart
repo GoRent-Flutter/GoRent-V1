@@ -3,19 +3,20 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Favourite/favourite_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/Map/map_screen.dart';
+import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 
 import 'screens/Account/user_account_screen.dart';
 
-class BottomNavBar extends StatefulWidget {
+class OwnerBottomNavBar extends StatefulWidget {
   final int currentIndex;
 
-  const BottomNavBar({Key? key, required this.currentIndex}) : super(key: key);
+  const OwnerBottomNavBar({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   BottomNavBarState createState() => BottomNavBarState();
 }
 
-class BottomNavBarState extends State<BottomNavBar> {
+class BottomNavBarState extends State<OwnerBottomNavBar> {
   late int currentIndex;
 
   @override
@@ -58,16 +59,17 @@ class BottomNavBarState extends State<BottomNavBar> {
                 if (currentIndex == 0) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
+                  MaterialPageRoute(builder: (context) => const OwnerScreen()),
                 );
                 }
-                else if (currentIndex == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const FavouriteScreen()),
-                );
-              }
+                //problem here, will go to normal users screen when these are pressed
+                // else if (currentIndex == 1) {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => const MainScreen()),
+                // );
+              // }
               else if (currentIndex == 2) {
                  Navigator.push(
                     context,
@@ -166,14 +168,14 @@ class BottomNavBarState extends State<BottomNavBar> {
 
   List<IconData> listOfIcons = [
     Icons.home_outlined,
-    Icons.favorite_outline_outlined,
+    Icons.search_outlined,
     Icons.map_outlined,
     Icons.person_outline,
   ];
 
   List<String> listOfChoices = [
     'الرئيسية',
-    'المفضلة',
+    'تصفح',
     'الخريطة',
     'الحساب',
   ];

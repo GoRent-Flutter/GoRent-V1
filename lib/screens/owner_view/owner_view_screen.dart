@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 
+import '../../owner_bottom_nav_bar.dart';
 import '../users/users_screen.dart';
 
 class OwnerScreen extends StatelessWidget {
@@ -8,10 +9,12 @@ class OwnerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
+    return Container(
+      color: Colors.white,
+     
+      child: Stack(
         children: [
+          Positioned(child: Scaffold( bottomNavigationBar: const OwnerBottomNavBar(currentIndex: 0,),)),
           Positioned(
             top: -40,
             left: -50,
@@ -19,7 +22,7 @@ class OwnerScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const UserScreen()),
+                  MaterialPageRoute(builder: (context) => const UsersScreen()),
                 );
               },
               child: Transform.scale(

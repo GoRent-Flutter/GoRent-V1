@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:gorent_application1/screens/ContactOwner/ContactOwner.dart';
 import 'package:gorent_application1/splash_screen.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         future: Future.delayed(Duration(seconds: 1)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return const UserScreen();
+            return UsersScreen();
           } else {
             return const SplashScreen();
           }

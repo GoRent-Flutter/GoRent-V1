@@ -1,9 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gorent_application1">
+    <!-- Provide required visibility configuration for API level 30 and above -->
+<queries>
+  <!-- If your app checks for call support -->
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="tel" />
+  </intent>
+</queries>
    <application
         android:label="gorent_application1"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+    <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBgD3gCvDDNiyz4iS0Cazp708oUe-xtmsE"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

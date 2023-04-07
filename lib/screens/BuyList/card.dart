@@ -28,7 +28,7 @@ class MyCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 1),
         child: Container(
-          height: 220,
+          height: size.width*0.58,
           // color: Colors.deepPurple[200],
           decoration: BoxDecoration(
             color: Colors.white,

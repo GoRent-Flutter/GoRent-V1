@@ -72,10 +72,7 @@ class BuyListScreen extends StatelessWidget {
             // height: 100,
             child: SizedBox(
                 child: Stack(children: <Widget>[
-          const Positioned(
-              child: Scaffold(
-            bottomNavigationBar: BottomNavBar(),
-          )),
+       
           Positioned(
               // top: -10,
               left: 0,
@@ -100,6 +97,7 @@ class BuyListScreen extends StatelessWidget {
               ),
             ),
           ),
+          //search
           Positioned(
             top: 100,
             left: -22,
@@ -138,7 +136,7 @@ class BuyListScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  height: size.height * 0.68,
+                  height: size.height * 0.75,
                   decoration: BoxDecoration(
                     color: primaryWhite,
                     borderRadius: BorderRadius.circular(24.0),
@@ -170,13 +168,12 @@ class BuyListScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 30, // or any other suitable value
+                  top: 35, // or any other suitable value
                   left: 10,
                   right: 10, // or any other suitable value
                   child: SizedBox(
-                    height: 500,
-                    width: size.width -
-                        40, // subtract the left and right padding from the total width
+                    height: size.height-250,
+                    width: size.width-40, // subtract the left and right padding from the total width
                     child: ListView.builder(
                       itemCount: _estates.length,
                       itemBuilder: (context, index) {
@@ -255,7 +252,7 @@ class BuyListScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 14.0),
+                                        padding: EdgeInsets.only(left: 6.0),
                                         child: Image(
                                           image: AssetImage(
                                               'assets/icons/Red_bedroom.png'),
@@ -268,7 +265,7 @@ class BuyListScreen extends StatelessWidget {
                                               5), // add some spacing between the icon and text
 
                                       Padding(
-                                        padding: EdgeInsets.only(right: 13.0),
+                                        padding: EdgeInsets.only(right: 6.0),
                                         child: Text(
                                           estate.bedrooms,
                                           style: TextStyle(
@@ -283,7 +280,7 @@ class BuyListScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
+                                        padding: EdgeInsets.only(left: 6.0),
                                         child: Image(
                                           image: AssetImage(
                                               'assets/icons/Red_bathroom.png'),

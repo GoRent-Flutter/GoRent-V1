@@ -92,7 +92,7 @@ class UserAccountScreen extends StatelessWidget {
                     context, // pass context as a parameter
                     "assets/images/problem.png",
                     "الابلاغ عن مشكلة",
-                    const ReportProblemPage(),
+                    const ReportProblemScreen(),
                   ),
                 ],
               ),

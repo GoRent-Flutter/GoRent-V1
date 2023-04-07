@@ -4,8 +4,8 @@ import 'package:gorent_application1/screens/Welcome/welcome_screen_owner.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import '../../constraints.dart';
 
-class UserScreen extends StatelessWidget {
-  const UserScreen({Key? key}) : super(key: key);
+class UsersScreen extends StatelessWidget {
+  const UsersScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

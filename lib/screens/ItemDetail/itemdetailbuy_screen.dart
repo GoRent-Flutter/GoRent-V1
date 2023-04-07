@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../BuyList/buylist_screen.dart';
+import '../ContactOwner/contact_owner.dart';
 import '../RentList/rentlist_screen.dart';
 import '../SignUp/signup_screen.dart';
 import '../../constraints.dart';
@@ -250,7 +251,9 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                         SizedBox(height: 5),
                         GestureDetector(
                           onTap: () {
-                            // Do something when "تواصل" text is clicked
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext context) => const ContactOwnerScreen(),
+                ));
                           },
                           child: Text(
                             "تواصل",
