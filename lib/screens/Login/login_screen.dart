@@ -6,7 +6,8 @@ import '../Main/main_screen.dart';
 import '../owner_view/owner_view_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  const LoginScreen({Key? key, required this.currentIndex}) : super(key: key);
 
 
   @override
@@ -91,7 +92,7 @@ class LoginScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
+                            builder: (context) => LoginScreen(currentIndex: currentIndex,)),
                       );
                     },
                           child: const Center(
@@ -118,7 +119,7 @@ class LoginScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignupScreen()),
+                            builder: (context) => SignupScreen(currentIndex: currentIndex,)),
                       );
                     },
                           child: const Center(
@@ -219,34 +220,11 @@ class LoginScreen extends StatelessWidget {
                   right: 60,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(
+                     currentIndex==1? Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const MainScreen()),
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      side: const BorderSide(width: 1, color: primaryWhite),
-                      backgroundColor: primaryRed,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(37.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'تسجيل الدخول - مستخدم',
-                      style: TextStyle(
-                        color: primaryWhite,
-                        fontSize: 21.0,
-                      ),
-                    ),
-                  )),
-                   Positioned(
-                  top: 550,
-                  left: 60,
-                  right: 60,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
+                      ): Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const OwnerScreen()),
@@ -260,13 +238,40 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'تسجيل الدخول - مالك',
+                      'تسجيل الدخول',
                       style: TextStyle(
                         color: primaryWhite,
                         fontSize: 21.0,
                       ),
                     ),
                   )),
+                  //  Positioned(
+                  // top: 550,
+                  // left: 60,
+                  // right: 60,
+                  // child: TextButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => const OwnerScreen()),
+                  //     );
+                  //   },
+                  //   style: TextButton.styleFrom(
+                  //     side: const BorderSide(width: 1, color: primaryWhite),
+                  //     backgroundColor: primaryRed,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(37.0),
+                  //     ),
+                  //   ),
+                  //   child: const Text(
+                  //     'تسجيل الدخول - مالك',
+                  //     style: TextStyle(
+                  //       color: primaryWhite,
+                  //       fontSize: 21.0,
+                  //     ),
+                  //   ),
+                  // )),
             ]));
   }
 }

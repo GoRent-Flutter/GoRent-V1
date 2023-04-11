@@ -166,11 +166,11 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignupScreen()),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => const SignupScreen()),
+                            // );
                           },
                           child: Container(
                             width: 40,

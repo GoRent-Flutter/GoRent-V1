@@ -1,11 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
-import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
+import 'package:gorent_application1/screens/Models_Folder/UserModel.dart';
+import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
+import 'package:gorent_application1/screens/users/users_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../constraints.dart';
-import '../Main/main_screen.dart';
+import 'about_you_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  SignupScreen({Key? key, required this.currentIndex}) : super(key: key);
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  void SignUp(String email, String password) async{
+    UserCredential? credential;
+    try{
+      credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch(ex){
+      print(ex.code.toString());
+    }
+    if(credential!=null){
+      String userId=credential.user!.uid;
+      UserModel newUser =UserModel(
+        userId:userId,
+        email: email,
+        username: "",
+      );
+      // await FirebaseFirestore.instance.collection("users").doc(userId).set(newUser.toMap().then(value)){
+      //   print("new user created");
+      // });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +60,7 @@ class SignupScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const WelcomeScreenCustomer()),
+                          builder: (context) => const UsersScreen()),
                     );
                   },
                   child: Transform.scale(
@@ -90,7 +118,7 @@ class SignupScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()),
+                                    builder: (context) => LoginScreen(currentIndex: currentIndex,)),
                               );
                             },
                             child: const Center(
@@ -121,7 +149,7 @@ class SignupScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const SignupScreen()),
+                                    builder: (context) => SignupScreen(currentIndex:currentIndex)),
                               );
                             },
                             child: const Center(
@@ -156,7 +184,8 @@ class SignupScreen extends StatelessWidget {
                             width: 1,
                           ),
                         ),
-                        child: const TextField(
+                        child: TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: ' ادخل البريد الإلكتروني',
                             hintStyle: TextStyle(
@@ -183,7 +212,8 @@ class SignupScreen extends StatelessWidget {
                             width: 1,
                           ),
                         ),
-                        child: const TextField(
+                        child: TextField(
+                          controller: passwordController,
                           decoration: InputDecoration(
                             hintText: 'ادخل كلمة المرور',
                             hintStyle: TextStyle(
@@ -211,7 +241,8 @@ class SignupScreen extends StatelessWidget {
                             width: 1,
                           ),
                         ),
-                        child: const TextField(
+                        child: TextField(
+                          controller: confirmPasswordController,
                           decoration: InputDecoration(
                             hintText: 'تأكيد كلمة المرور',
                             hintStyle: TextStyle(
@@ -237,10 +268,13 @@ class SignupScreen extends StatelessWidget {
                   right: 60,
                   child: TextButton(
                     onPressed: () {
+                      currentIndex==1?
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MainScreen()),
-                      );
+                        MaterialPageRoute(builder: (context) => AboutYouScreen()),
+                      ): Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OwnerScreen()),);
                     },
                     style: TextButton.styleFrom(
                       side: const BorderSide(width: 1, color: primaryWhite),

@@ -35,7 +35,7 @@ class WelcomeScreenCustomer extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SignupScreen()),
+                MaterialPageRoute(builder: (context) => SignupScreen(currentIndex: 1,)),
               );
             },
             style: TextButton.styleFrom(
@@ -60,7 +60,7 @@ class WelcomeScreenCustomer extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                MaterialPageRoute(builder: (context) => LoginScreen(currentIndex: 1)),
               );
             },
             style: TextButton.styleFrom(

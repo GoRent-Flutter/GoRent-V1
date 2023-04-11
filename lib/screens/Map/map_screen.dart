@@ -13,6 +13,32 @@ class MapScreen extends StatefulWidget {
 
 class MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
+//  Future<void> _showSearchDialog() async {
+//     var p = await PlacesAutocomplete.show(
+//         context: context,
+//         apiKey: Constants.apiKey,
+//         mode: Mode.fullscreen,
+//         language: "ar",
+//         region: "ar",
+//         offset: 0,
+//         hint: "Type here...",
+//         radius: 1000,
+//         types: [],
+//         strictbounds: false,
+//         components: [Component(Component.country, "ar")]);
+//     _getLocationFromPlaceId(p!.placeId!);
+//   }
+
+//   Future<void> _getLocationFromPlaceId(String placeId) async {
+//     GoogleMapsPlaces _places = GoogleMapsPlaces(
+//       apiKey: Constants.apiKey,
+//       apiHeaders: await GoogleApiHeaders().getHeaders(),
+//     );
+
+//     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(placeId);
+
+//     _animateCamera(LatLng(detail.result.geometry!.location.lat,
+//         detail.result.geometry!.location.lng));
 
   final List<Marker> markers = [
     const Marker(
@@ -72,6 +98,9 @@ class MapScreenState extends State<MapScreen> {
           ],
         ),
       ),
+     
+  
     );
+    
   }
 }

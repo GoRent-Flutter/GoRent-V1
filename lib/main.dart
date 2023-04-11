@@ -1,11 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/ContactOwner/contact_owner.dart';
 import 'package:gorent_application1/splash_screen.dart';
-import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseApp app = await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Initialized default app $app');
   runApp(const MyApp());
 }
 
