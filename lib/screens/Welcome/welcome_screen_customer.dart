@@ -11,6 +11,10 @@ class WelcomeScreenCustomer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    double imageHeight = size.height * 0.8;
+    double firstButtonTop = imageHeight - 170.0; // set to height of image plus margin
+
     return Scaffold(
         body: Stack(children: [
       Positioned(
@@ -25,10 +29,10 @@ class WelcomeScreenCustomer extends StatelessWidget {
         left: 50,
         right: 50,
         child: Image.asset('assets/images/welcomeImg.jpg',
-            width: size.width * 0.8, height: size.height * 0.8),
+            width: size.width * 0.8, height: imageHeight),
       ),
       Positioned(
-          top: 450,
+          top: firstButtonTop,
           left: 60,
           right: 60,
           child: TextButton(
@@ -53,7 +57,7 @@ class WelcomeScreenCustomer extends StatelessWidget {
             ),
           )),
       Positioned(
-          top: 530,
+          top: firstButtonTop + 80.0, // add vertical spacing between buttons
           left: 60,
           right: 60,
           child: TextButton(
@@ -79,7 +83,7 @@ class WelcomeScreenCustomer extends StatelessWidget {
             ),
           )),
       Positioned(
-          top: 610,
+          top: firstButtonTop + 160.0, // add vertical spacing between buttons
           left: 60,
           right: 60,
           child: TextButton(
