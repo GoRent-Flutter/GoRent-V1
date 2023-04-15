@@ -8,9 +8,13 @@ import '../../constraints.dart';
 class WelcomeScreenOwner extends StatelessWidget {
   const WelcomeScreenOwner({Key? key}) : super(key: key);
 
-  @override
+   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    double imageHeight = size.height * 0.8;
+    double firstButtonTop = imageHeight - 170.0; // set to height of image plus margin
+
     return Scaffold(
         body: Stack(children: [
       Positioned(
@@ -25,17 +29,17 @@ class WelcomeScreenOwner extends StatelessWidget {
         left: 50,
         right: 50,
         child: Image.asset('assets/images/welcomeImg.jpg',
-            width: size.width * 0.8, height: size.height * 0.8),
+            width: size.width * 0.8, height: imageHeight),
       ),
       Positioned(
-          top: 450,
+          top: firstButtonTop,
           left: 60,
           right: 60,
           child: TextButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SignupScreen(currentIndex: 0,)),
+                MaterialPageRoute(builder: (context) => SignupScreen(currentIndex: 1,)),
               );
             },
             style: TextButton.styleFrom(
@@ -53,14 +57,14 @@ class WelcomeScreenOwner extends StatelessWidget {
             ),
           )),
       Positioned(
-          top: 530,
+          top: firstButtonTop + 80.0, // add vertical spacing between buttons
           left: 60,
           right: 60,
           child: TextButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginScreen(currentIndex: 0)),
+                MaterialPageRoute(builder: (context) => LoginScreen(currentIndex: 1)),
               );
             },
             style: TextButton.styleFrom(
@@ -78,7 +82,6 @@ class WelcomeScreenOwner extends StatelessWidget {
               ),
             ),
           )),
-
     ]));
   }
 }
