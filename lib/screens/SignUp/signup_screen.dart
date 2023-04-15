@@ -10,15 +10,40 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   final int currentIndex;
+  static bool success=false;
   SignupScreen({Key? key, required this.currentIndex}) : super(key: key);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  void SignUp(String email, String password) async{
+  void checkValues(){
+    String email=emailController.text.trim();
+    String password=passwordController.text.trim();
+    String confirmPassword=confirmPasswordController.text.trim();
+    if(email =="" || password=="" || confirmPassword==""){
+      //a text should appear to the user/owner (will do this later)
+      print("fill the empty fields!");
+    }
+    else if (password !=confirmPassword){
+            //a text should appear to the user/owner (will do this later)
+
+      print("password doesn't match!");
+    }
+    else{
+      if (currentIndex==1){
+        signUp(email,password,currentIndex);
+      }
+      else{
+        signUp(email,password,currentIndex);
+      }
+    }
+    
+  }
+  void signUp(String email, String password, int currentIndex)async{
     UserCredential? credential;
     try{
       credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+      success=true;
     } on FirebaseAuthException catch(ex){
       print(ex.code.toString());
     }
@@ -29,9 +54,8 @@ class SignupScreen extends StatelessWidget {
         email: email,
         username: "",
       );
-      // await FirebaseFirestore.instance.collection("users").doc(userId).set(newUser.toMap().then(value)){
-      //   print("new user created");
-      // });
+      //if sign up as user is pressed, the new user will be added to the collection (users) otherwise to (owners)....
+      currentIndex==1?await FirebaseFirestore.instance.collection("users").doc(userId).set(newUser.toMap()).then((value) => print("new user added")): await FirebaseFirestore.instance.collection("owners").doc(userId).set(newUser.toMap()).then((value) => print("new owner added"));
     }
   }
 
@@ -268,13 +292,17 @@ class SignupScreen extends StatelessWidget {
                   right: 60,
                   child: TextButton(
                     onPressed: () {
-                      currentIndex==1?
+                      
+                      checkValues();
+                      success? currentIndex==1?
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AboutYouScreen()),
-                      ): Navigator.push(
+                        MaterialPageRoute(builder: (context) => AboutYouScreen())):
+                        Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => OwnerScreen()),);
+                        MaterialPageRoute(builder: (context) => OwnerScreen()),):
+                        print("an error occurred while trying to sign up");
+                       
                     },
                     style: TextButton.styleFrom(
                       side: const BorderSide(width: 1, color: primaryWhite),

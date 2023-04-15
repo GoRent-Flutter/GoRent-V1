@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: primaryRed, scaffoldBackgroundColor: primaryRed),
       home: FutureBuilder(
-        future: Future.delayed(Duration(seconds: 1)),
+        future: Future.delayed(Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return UsersScreen();
