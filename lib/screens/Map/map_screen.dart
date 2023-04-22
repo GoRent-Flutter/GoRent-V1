@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gorent_application1/screens/Map/places_search.dart';
 
-import '../../constraints.dart';
 import '../../constraints.dart';
 import '../../user_bottom_nav_bar.dart';
 
@@ -14,7 +13,9 @@ class MapScreen extends StatefulWidget {
 }
 
 class MapScreenState extends State<MapScreen> {
+  List<PlaceSearch> places = [];
   late GoogleMapController mapController;
+  late PlaceSearch placeSuggestion;
   final List<Marker> markers = [
     const Marker(
       markerId: MarkerId('place1'),
@@ -33,11 +34,17 @@ class MapScreenState extends State<MapScreen> {
     ),
   ];
 
+
+
+ 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+
     return Container(
       color: primaryGrey,
+     
       child: SizedBox(
         child: Stack(
           children: <Widget>[
@@ -87,7 +94,7 @@ class MapScreenState extends State<MapScreen> {
                       ),
                     ],
                   ),
-                  child: TextField(
+                  child: const TextField(
                     decoration: InputDecoration(
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -102,30 +109,7 @@ class MapScreenState extends State<MapScreen> {
                 ),
               ),
             ),
-            Positioned(
-              top: 100,
-              left: 10,
-              right: 10,
-              child: Stack(
-                children: [
-                  Container(
-                    height: 300,
-                    width: 300,
-                    decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        backgroundBlendMode: BlendMode.darken),
-                  ),
-                  Container(
-                    height: 300,
-                    width: 300,
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )
+            
           ],
         ),
       ),
