@@ -72,12 +72,12 @@ class MainScreenState extends State<MainScreen> {
               scale: 1.08,
               child: Image.asset('assets/icons/GoRent_Logo_Inside.png'),
             )),
-             Positioned(
-          top: size.height-680,
-          left: size.width-78,
+        Positioned(
+         top: size.width - size.width + 124,
+          left: size.width - 78,
           right: 20,
           child: Container(
-            height: size.width-343,
+            height: size.width - 343,
             width: 20,
             decoration: BoxDecoration(
               color: primaryWhite,
@@ -90,7 +90,7 @@ class MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-          child: GestureDetector(
+            child: GestureDetector(
               child: Stack(
                 children: [
                   Positioned(
@@ -99,11 +99,10 @@ class MainScreenState extends State<MainScreen> {
                     right: 3,
                     bottom: 3,
                     child: Transform.scale(
-                      scale:0.8,
+                      scale: 0.8,
                       child: Image.asset('assets/icons/Grey_filters.png'),
                     ),
                   ),
-                  
                 ],
               ),
               onTap: () {
@@ -529,6 +528,38 @@ class MainScreenState extends State<MainScreen> {
                       decoration: TextDecoration.none,
                     )),
               ),
+ Positioned(
+  top: size.width - size.width + 120,
+  left: 10,
+  child: Container(
+    height: 50,
+    width: size.width - 100,
+    decoration: BoxDecoration(
+      color: primaryWhite,
+      borderRadius: BorderRadius.circular(35.0),
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: TextFormField(
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: 10),
+          border: InputBorder.none,
+          hintText: 'ابحث',
+          hintTextDirection: TextDirection.rtl,
+          suffixIcon: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
+        ),
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.right,
+      ),
+    ),
+  ),
+)
+
+
+
       ])),
     );
   }

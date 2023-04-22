@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/splash_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         future: Future.delayed(Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return UsersScreen();
+            return MainScreen();
           } else {
             return const SplashScreen();
           }

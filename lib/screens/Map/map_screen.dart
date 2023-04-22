@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../constraints.dart';
 import '../../constraints.dart';
 import '../../user_bottom_nav_bar.dart';
 
@@ -13,33 +15,6 @@ class MapScreen extends StatefulWidget {
 
 class MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
-//  Future<void> _showSearchDialog() async {
-//     var p = await PlacesAutocomplete.show(
-//         context: context,
-//         apiKey: Constants.apiKey,
-//         mode: Mode.fullscreen,
-//         language: "ar",
-//         region: "ar",
-//         offset: 0,
-//         hint: "Type here...",
-//         radius: 1000,
-//         types: [],
-//         strictbounds: false,
-//         components: [Component(Component.country, "ar")]);
-//     _getLocationFromPlaceId(p!.placeId!);
-//   }
-
-//   Future<void> _getLocationFromPlaceId(String placeId) async {
-//     GoogleMapsPlaces _places = GoogleMapsPlaces(
-//       apiKey: Constants.apiKey,
-//       apiHeaders: await GoogleApiHeaders().getHeaders(),
-//     );
-
-//     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(placeId);
-
-//     _animateCamera(LatLng(detail.result.geometry!.location.lat,
-//         detail.result.geometry!.location.lng));
-
   final List<Marker> markers = [
     const Marker(
       markerId: MarkerId('place1'),
@@ -58,8 +33,6 @@ class MapScreenState extends State<MapScreen> {
     ),
   ];
 
-  // final searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -68,7 +41,7 @@ class MapScreenState extends State<MapScreen> {
       child: SizedBox(
         child: Stack(
           children: <Widget>[
-                const Positioned(
+            const Positioned(
               child: Scaffold(
                 bottomNavigationBar: BottomNavBar(
                   currentIndex: 2,
@@ -95,12 +68,67 @@ class MapScreenState extends State<MapScreen> {
                 ),
               ),
             ),
+            Positioned(
+              top: 40,
+              left: 10,
+              right: 10,
+              child: Material(
+                child: Container(
+                  height: 50,
+                  width: size.width - 50,
+                  decoration: BoxDecoration(
+                    color: primaryWhite,
+                    borderRadius: BorderRadius.circular(24.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 3,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      border: InputBorder.none,
+                      hintText: 'البحث عن مدينة',
+                      hintTextDirection: TextDirection.rtl,
+                      prefixIcon: Icon(Icons.close),
+                    ),
+                    textDirection: TextDirection.rtl,
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 100,
+              left: 10,
+              right: 10,
+              child: Stack(
+                children: [
+                  Container(
+                    height: 300,
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        backgroundBlendMode: BlendMode.darken),
+                  ),
+                  Container(
+                    height: 300,
+                    width: 300,
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
-     
-  
     );
-    
   }
 }
