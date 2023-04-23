@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "506321009428",
-    "project_id": "gorent-c3868",
-    "storage_bucket": "gorent-c3868.appspot.com"
+    "project_number": "701596629368",
+    "project_id": "gorent-v1",
+    "storage_bucket": "gorent-v1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:506321009428:android:1f437ba14816df79616001",
+        "mobilesdk_app_id": "1:701596629368:android:bdd8531fb551ee6fc8f08d",
         "android_client_info": {
           "package_name": "com.example.gorent_application1"
         }
       },
       "oauth_client": [
         {
-          "client_id": "506321009428-pvjfrpv4ebmj06d6g4oreupmug2c44dv.apps.googleusercontent.com",
+          "client_id": "701596629368-gc2lm87se261itkbka9bhkkrn8g0nj3v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDSGGrNpW4PVrBNxwAe1LF8ajc8weWf8Lw"
+          "current_key": "AIzaSyCoYs_pEdwbxtRnnV2J9YJKnXIAjtXrVeU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "506321009428-pvjfrpv4ebmj06d6g4oreupmug2c44dv.apps.googleusercontent.com",
+              "client_id": "701596629368-gc2lm87se261itkbka9bhkkrn8g0nj3v.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

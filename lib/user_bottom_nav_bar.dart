@@ -3,7 +3,9 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Favourite/favourite_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/Map/map_screen.dart';
+import 'package:provider/provider.dart';
 
+import 'bloc/application_bloc.dart';
 import 'screens/Account/user_account_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -56,30 +58,38 @@ class BottomNavBarState extends State<BottomNavBar> {
                 currentIndex = index;
                 print(currentIndex);
                 if (currentIndex == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
-                );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MainScreen()),
+                  );
+                } else if (currentIndex == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const FavouriteScreen()),
+                  );
                 }
-                else if (currentIndex == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const FavouriteScreen()),
-                );
-              }
-              else if (currentIndex == 2) {
-                 Navigator.push(
+                //  Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => const MapScreen()),
+                //   );
+                else if (currentIndex == 2) {
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MapScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                        create: (context) => ApplicationBloc(),
+                        child: const MapScreen(),
+                      ),
+                    ),
                   );
-              }     
-              else if(currentIndex== 3){
-                    Navigator.push(
+                } else if (currentIndex == 3) {
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const UserAccountScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const UserAccountScreen()),
                   );
-              }
+                }
               });
             },
             child: Stack(

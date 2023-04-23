@@ -47,30 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDSGGrNpW4PVrBNxwAe1LF8ajc8weWf8Lw',
-    appId: '1:506321009428:android:1f437ba14816df79616001',
-    messagingSenderId: '506321009428',
-    projectId: 'gorent-c3868',
-    storageBucket: 'gorent-c3868.appspot.com',
+    apiKey: 'AIzaSyCoYs_pEdwbxtRnnV2J9YJKnXIAjtXrVeU',
+    appId: '1:701596629368:android:bdd8531fb551ee6fc8f08d',
+    messagingSenderId: '701596629368',
+    projectId: 'gorent-v1',
+    storageBucket: 'gorent-v1.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBjkJ2m9f4DrDpLwcecr2o5WsWLXJ_FFwo',
-    appId: '1:506321009428:ios:94e574457530df77616001',
-    messagingSenderId: '506321009428',
-    projectId: 'gorent-c3868',
-    storageBucket: 'gorent-c3868.appspot.com',
-    iosClientId: '506321009428-4g4fv3plrde8vg5mjkg81f0agud6k4s1.apps.googleusercontent.com',
+    apiKey: 'AIzaSyC-g3rlRTIl7mfder1EjAxm5xZvBYan9SU',
+    appId: '1:701596629368:ios:15ba2a7b94ec4d41c8f08d',
+    messagingSenderId: '701596629368',
+    projectId: 'gorent-v1',
+    storageBucket: 'gorent-v1.appspot.com',
+    iosClientId: '701596629368-ppaqb5ph42mhvrgn8d9qgfcuocub226e.apps.googleusercontent.com',
     iosBundleId: 'com.example.gorentApplication1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBjkJ2m9f4DrDpLwcecr2o5WsWLXJ_FFwo',
-    appId: '1:506321009428:ios:94e574457530df77616001',
-    messagingSenderId: '506321009428',
-    projectId: 'gorent-c3868',
-    storageBucket: 'gorent-c3868.appspot.com',
-    iosClientId: '506321009428-4g4fv3plrde8vg5mjkg81f0agud6k4s1.apps.googleusercontent.com',
+    apiKey: 'AIzaSyC-g3rlRTIl7mfder1EjAxm5xZvBYan9SU',
+    appId: '1:701596629368:ios:15ba2a7b94ec4d41c8f08d',
+    messagingSenderId: '701596629368',
+    projectId: 'gorent-v1',
+    storageBucket: 'gorent-v1.appspot.com',
+    iosClientId: '701596629368-ppaqb5ph42mhvrgn8d9qgfcuocub226e.apps.googleusercontent.com',
     iosBundleId: 'com.example.gorentApplication1',
   );
 }

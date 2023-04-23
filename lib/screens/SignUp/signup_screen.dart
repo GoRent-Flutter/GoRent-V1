@@ -16,48 +16,48 @@ class SignupScreen extends StatelessWidget {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  void checkValues(){
-    String email=emailController.text.trim();
-    String password=passwordController.text.trim();
-    String confirmPassword=confirmPasswordController.text.trim();
-    if(email =="" || password=="" || confirmPassword==""){
-      //a text should appear to the user/owner (will do this later)
-      print("fill the empty fields!");
-    }
-    else if (password !=confirmPassword){
-            //a text should appear to the user/owner (will do this later)
+  // void checkValues(){
+  //   String email=emailController.text.trim();
+  //   String password=passwordController.text.trim();
+  //   String confirmPassword=confirmPasswordController.text.trim();
+  //   if(email =="" || password=="" || confirmPassword==""){
+  //     //a text should appear to the user/owner (will do this later)
+  //     print("fill the empty fields!");
+  //   }
+  //   else if (password !=confirmPassword){
+  //           //a text should appear to the user/owner (will do this later)
 
-      print("password doesn't match!");
-    }
-    else{
-      if (currentIndex==1){
-        signUp(email,password,currentIndex);
-      }
-      else{
-        signUp(email,password,currentIndex);
-      }
-    }
+  //     print("password doesn't match!");
+  //   }
+  //   else{
+  //     if (currentIndex==1){
+  //       signUp(email,password,currentIndex);
+  //     }
+  //     else{
+  //       signUp(email,password,currentIndex);
+  //     }
+  //   }
     
-  }
-  void signUp(String email, String password, int currentIndex)async{
-    UserCredential? credential;
-    try{
-      credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-      success=true;
-    } on FirebaseAuthException catch(ex){
-      print(ex.code.toString());
-    }
-    if(credential!=null){
-      String userId=credential.user!.uid;
-      UserModel newUser =UserModel(
-        userId:userId,
-        email: email,
-        username: "",
-      );
-      //if sign up as user is pressed, the new user will be added to the collection (users) otherwise to (owners)....
-      currentIndex==1?await FirebaseFirestore.instance.collection("users").doc(userId).set(newUser.toMap()).then((value) => print("new user added")): await FirebaseFirestore.instance.collection("owners").doc(userId).set(newUser.toMap()).then((value) => print("new owner added"));
-    }
-  }
+  // }
+  // void signUp(String email, String password, int currentIndex)async{
+  //   UserCredential? credential;
+  //   try{
+  //     credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+  //     success=true;
+  //   } on FirebaseAuthException catch(ex){
+  //     print(ex.code.toString());
+  //   }
+  //   if(credential!=null){
+  //     String userId=credential.user!.uid;
+  //     UserModel newUser =UserModel(
+  //       userId:userId,
+  //       email: email,
+  //       username: "",
+  //     );
+  //     //if sign up as user is pressed, the new user will be added to the collection (users) otherwise to (owners)....
+  //     currentIndex==1?await FirebaseFirestore.instance.collection("users").doc(userId).set(newUser.toMap()).then((value) => print("new user added")): await FirebaseFirestore.instance.collection("owners").doc(userId).set(newUser.toMap()).then((value) => print("new owner added"));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -293,7 +293,7 @@ class SignupScreen extends StatelessWidget {
                   child: TextButton(
                     onPressed: () {
                       
-                      checkValues();
+                      // checkValues();
                       success? currentIndex==1?
                       Navigator.push(
                         context,
