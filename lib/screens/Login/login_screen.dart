@@ -278,19 +278,19 @@ class LoginScreen extends StatelessWidget {
               right: 60,
               child: TextButton(
                 onPressed: () {
-                  // checkValues();
-                    if (currentIndex == 1 && isUser) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MainScreen()));
-                    }
-                    else if (currentIndex == 0 && isOwner){
+                  //checkValues();
+                 //   if (currentIndex == 1 && isUser) {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => MainScreen()));
+                  //  }
+                //    else if (currentIndex == 0 && isOwner){
                        Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => OwnerScreen()),
                     );
-                    }
+                    //}
                 },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),

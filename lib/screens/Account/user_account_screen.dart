@@ -36,6 +36,7 @@ class UserAccountScreen extends StatelessWidget {
                       fontSize: 22,
                       color: primaryRed,
                       fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),
@@ -68,6 +69,7 @@ class UserAccountScreen extends StatelessWidget {
                               fontSize: 20,
                               color: primaryRed,
                               fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none,
                             ),
                           ),
                           Image.asset(
@@ -84,7 +86,8 @@ class UserAccountScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 30),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 1, vertical: 30),
                     child: Column(
                       children: [
                         _buildButtonWithDivider(
@@ -117,7 +120,7 @@ class UserAccountScreen extends StatelessWidget {
     );
   }
 
-Widget _buildButtonWithDivider(
+  Widget _buildButtonWithDivider(
     BuildContext context, // add BuildContext as a parameter
     String imagePath,
     String text,
@@ -148,6 +151,7 @@ Widget _buildButtonWithDivider(
                   style: const TextStyle(
                     fontSize: 22,
                     color: primaryRed,
+                    decoration: TextDecoration.none,
                   ),
                 ),
                 const Spacer(),
