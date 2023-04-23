@@ -19,53 +19,53 @@ class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  void checkValues() {
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    print(currentIndex);
-    if (email == "" || password == "") {
-      //a text should appear to the user/owner (will do this later)
-      print("fill the empty fields!");
-    } else {
-      signIn(email, password, currentIndex);
-    }
-  }
+  // void checkValues() {
+  //   String email = emailController.text.trim();
+  //   String password = passwordController.text.trim();
+  //   print(currentIndex);
+  //   if (email == "" || password == "") {
+  //     //a text should appear to the user/owner (will do this later)
+  //     print("fill the empty fields!");
+  //   } else {
+  //     signIn(email, password, currentIndex);
+  //   }
+  // }
 
-  void signIn(String email, String password, int currentIndex) async {
-    UserCredential? credential;
-    try {
-      //check if there's an email and pass in DB as entered
-      credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-          // print(credential);
-    } on FirebaseAuthException catch (ex) {
-      print(ex.code.toString());
-    }
+  // void signIn(String email, String password, int currentIndex) async {
+  //   UserCredential? credential;
+  //   try {
+  //     //check if there's an email and pass in DB as entered
+  //     credential = await FirebaseAuth.instance
+  //         .signInWithEmailAndPassword(email: email, password: password);
+  //         // print(credential);
+  //   } on FirebaseAuthException catch (ex) {
+  //     print(ex.code.toString());
+  //   }
 
-    if (credential != null) {
+  //   if (credential != null) {
       
-      String id = credential.user!.uid;
-      if (currentIndex == 1) {
-        //search in users collection if (use as user was pressed)
-        DocumentSnapshot userData =
-            await FirebaseFirestore.instance.collection("users").doc(id).get();
-        UserModel userModel =
-            UserModel.fromMap(userData.data() as Map<String, dynamic>);
-            isOwner=false;
-            isUser=true;
-        print("Logged in successfully - user");
-      } else {
-         //search in owners collection if (use as owner was pressed)
-        DocumentSnapshot ownerData =
-            await FirebaseFirestore.instance.collection("owners").doc(id).get();
-        OwnerModel ownerModel =
-            OwnerModel.fromMap(ownerData.data() as Map<String, dynamic>);
-            isOwner=true;
-            isUser=false;
-        print("Logged in successfully - owner");
-      }
-    }
-  }
+  //     String id = credential.user!.uid;
+  //     if (currentIndex == 1) {
+  //       //search in users collection if (use as user was pressed)
+  //       DocumentSnapshot userData =
+  //           await FirebaseFirestore.instance.collection("users").doc(id).get();
+  //       UserModel userModel =
+  //           UserModel.fromMap(userData.data() as Map<String, dynamic>);
+  //           isOwner=false;
+  //           isUser=true;
+  //       print("Logged in successfully - user");
+  //     } else {
+  //        //search in owners collection if (use as owner was pressed)
+  //       DocumentSnapshot ownerData =
+  //           await FirebaseFirestore.instance.collection("owners").doc(id).get();
+  //       OwnerModel ownerModel =
+  //           OwnerModel.fromMap(ownerData.data() as Map<String, dynamic>);
+  //           isOwner=true;
+  //           isUser=false;
+  //       print("Logged in successfully - owner");
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -278,19 +278,19 @@ class LoginScreen extends StatelessWidget {
               right: 60,
               child: TextButton(
                 onPressed: () {
-                  checkValues();
-                    if (currentIndex == 1 && isUser) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MainScreen()));
-                    }
-                    else if (currentIndex == 0 && isOwner){
+                  //checkValues();
+                 //   if (currentIndex == 1 && isUser) {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => MainScreen()));
+                  //  }
+                //    else if (currentIndex == 0 && isOwner){
                        Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => OwnerScreen()),
                     );
-                    }
+                    //}
                 },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),

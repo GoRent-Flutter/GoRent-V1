@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:gorent_application1/screens/owner_view/add_appartment.dart';
 
 import '../../owner_bottom_nav_bar.dart';
 import '../users/users_screen.dart';
@@ -39,7 +40,13 @@ class OwnerScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                        context,
+                       MaterialPageRoute(
+                    builder: (context) => const AddApartmentScreen()),
+              );
+                      },
                       child: Column(
                         children: const [
                           Icon(Icons.add),
