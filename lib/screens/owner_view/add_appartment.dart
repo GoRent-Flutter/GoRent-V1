@@ -16,21 +16,21 @@ class AddApartmentScreen extends StatefulWidget {
 class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _type = 'استئجار';
-  late String _city = '';
-  late String _address1 = '';
-  late String _address2 = '';
-  late int _numRooms = 0;
-  late int _numBathrooms = 0;
-  late int _numVerandas = 0;
-  late int _numSalons = 0;
-  late int _numKitchens = 0;
-  late int _OwnerID = 0;
-  late double _size = 0.0;
-  late double _price = 0.0;
-  late double _latitude = 0.0;
-  late double _longitude = 0.0;
-  late String _description = '';
+  late String _type = 'بيع';
+  late String _city='رام الله'; 
+  late String _address1='';
+  late String _address2='';
+  late int _numRooms=0;
+  late int _numBathrooms=0;
+  late int _numVerandas=0;
+  late int _numSalons=0;
+  late int _numKitchens=0;
+   late int _OwnerID=0;
+  late double _size=0.0;
+  late double _price=0.0;
+  late double _latitude=0.0;
+  late double _longitude=0.0;
+  late String _description='';
   List<File> _images = [];
 
   final picker = ImagePicker();
@@ -74,7 +74,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       };
 
       // Upload the apartment data to the appropriate Firebase Realtime Database location
-      if (_type == 'استئجار') {
+      if (_type == 'اجار') {
         FirebaseDatabase.instance
             .reference()
             .child('rent')
@@ -107,25 +107,26 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
 
         // Add the download URL of the uploaded image to the apartment data
         // Add the download URL of the uploaded image to the apartment data
-        if (_type =='بيع') {
-          FirebaseDatabase.instance
-              .reference()
-              .child('sale')
-              .child(id)
-              .child('images')
-              .push()
-              .set(downloadUrl);
-        }
-        else{
-           FirebaseDatabase.instance
-              .reference()
-              .child('rent')
-              .child(id)
-              .child('images')
-              .push()
-              .set(downloadUrl);
-        }
+
+        if (_type == 'اجار') {
+        FirebaseDatabase.instance
+            .reference()
+            .child('rent')
+            .child(id)
+            .child('images')
+            .push()
+            .set(downloadUrl);
+      } else if (_type == 'بيع') {
+        FirebaseDatabase.instance
+            .reference()
+            .child('sale')
+            .child(id)
+            .child('images')
+            .push()
+            .set(downloadUrl);
       }
+      }
+        
 
       // Display a success message and pop the screen
       ScaffoldMessenger.of(context).showSnackBar(
@@ -142,13 +143,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryWhite,
-        title: const Text(
-          'اضافة عقار',
-          style: TextStyle(
-            color: primaryRed,
-            fontSize: 21.0,
-          ),
-        ),
+        title:  const Text(
+                            'اضافة عقار',
+                            style: TextStyle(
+                              color: primaryRed,
+                              fontSize: 21.0,
+                            ),
+                          ),
       ),
       backgroundColor: primaryWhite,
       body: SingleChildScrollView(
@@ -162,7 +163,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 DropdownButtonFormField<String>(
                   value: _type,
                   decoration: InputDecoration(labelText: 'Type'),
-                  items: ['بيع', 'استئجار']
+                  items: ['بيع', 'اجار']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
                             child: Text(type),
@@ -180,16 +181,25 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                 ),
-                TextFormField(
+DropdownButtonFormField<String>(
+                  value: _city,
                   decoration: InputDecoration(labelText: 'City'),
+                  items: ['رام الله', 'نابلس', 'بيت لحم','طولكرم']
+                      .map((type) => DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _type = value!;
+                    });
+                  },
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the city';
+                    if (value == null) {
+                      return 'Please choose the type';
                     }
                     return null;
-                  },
-                  onSaved: (value) {
-                    _city = value!;
                   },
                 ),
                 TextFormField(
@@ -349,10 +359,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    _OwnerID = int.parse(value!.toString());
+_OwnerID = int.parse(value!.toString());
                   },
                 ),
-                SizedBox(height: 16),
+                                SizedBox(height: 16),
+
                 Text('Images'),
                 SizedBox(height: 8),
                 Row(
@@ -360,13 +371,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: getImage,
-                        style: TextButton.styleFrom(
-                          side: const BorderSide(width: 1, color: primaryWhite),
-                          backgroundColor: primaryRed,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(37.0),
-                          ),
-                        ),
+                         style: TextButton.styleFrom(
+                  side: const BorderSide(width: 1, color: primaryWhite),
+                  backgroundColor: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(37.0),
+                  ),
+                ),
                         child: Text('Add Image'),
                       ),
                     ),
@@ -392,13 +403,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _submitForm,
-                        style: TextButton.styleFrom(
-                          side: const BorderSide(width: 1, color: primaryWhite),
-                          backgroundColor: primaryRed,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(37.0),
-                          ),
-                        ),
+                         style: TextButton.styleFrom(
+                  side: const BorderSide(width: 1, color: primaryWhite),
+                  backgroundColor: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(37.0),
+                  ),
+                ),
                         child: Text('Submit'),
                       ),
                     ),

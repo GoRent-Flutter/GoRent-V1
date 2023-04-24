@@ -139,7 +139,7 @@ class MainScreenState extends State<MainScreen> {
                     right: 5,
                     bottom: 30,
                     child: Transform.scale(
-                      scale: 1.0,
+                      scale: 0.9,
                       child: Image.asset('assets/icons/buy.png'),
                     ),
                   ),
@@ -197,7 +197,7 @@ class MainScreenState extends State<MainScreen> {
                     right: 5,
                     bottom: 30,
                     child: Transform.scale(
-                      scale: 1.0,
+                      scale: 0.9,
                       child: Image.asset('assets/icons/rent.png'),
                     ),
                   ),

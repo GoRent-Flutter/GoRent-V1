@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
+import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -316,7 +317,7 @@ class SignupScreen extends StatelessWidget {
                             ? Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AboutYouScreen()))
+                                    builder: (context) => MainScreen()))
                             : Navigator.push(
                                 context,
                                 MaterialPageRoute(

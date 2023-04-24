@@ -26,7 +26,6 @@ class AboutYouScreen extends StatelessWidget {
         //     width: 100,
         //     height: 100,
         child: Stack(children: <Widget>[
-         
           Positioned(
               // top: -10,
               left: 0,
@@ -82,134 +81,143 @@ class AboutYouScreen extends StatelessWidget {
               ),
             ),
           ),
-           Positioned(
-                top: 240,
-                left: 50,
-                right: 50,
-                child: Column(
-                  children: [
-                    Material(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: primaryWhite,
-                          borderRadius: BorderRadius.circular(13.0),
-                          border: Border.all(
-                            color: primaryGrey,
-                            width: 1,
-                          ),
-                        ),
-                        child: const TextField(
-                          decoration: InputDecoration(
-                            hintText: ' اسم المستخدم',
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              color: primaryHint,
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
+          Positioned(
+            top: 240,
+            left: 50,
+            right: 50,
+            child: Column(
+              children: [
+                Material(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: primaryWhite,
+                      borderRadius: BorderRadius.circular(13.0),
+                      border: Border.all(
+                        color: primaryGrey,
+                        width: 1,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Material(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: primaryWhite,
-                          borderRadius: BorderRadius.circular(13.0),
-                          border: Border.all(
-                            color: primaryGrey,
-                            width: 1,
-                          ),
-                        ),
-                        child: const TextField(
-                          decoration: InputDecoration(
-                            hintText: 'رقم الهاتف',
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              color: primaryHint,
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                          ),
-                          textAlign: TextAlign.right,
-                          obscureText: true,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Material(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: primaryWhite,
-                          borderRadius: BorderRadius.circular(13.0),
-                          border: Border.all(
-                            color: primaryGrey,
-                            width: 1,
-                          ),
-                        ),
-                        child: DropdownButton<String>(
-                  value: selectedOption,
-                  items: cities.map((String option) {
-                    return DropdownMenuItem<String>(
-                      value: option,
-                      child: Text(
-                        option,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        hintText: ' اسم المستخدم',
+                        hintStyle: TextStyle(
+                          fontSize: 14,
                           color: primaryHint,
                         ),
-                        textDirection: TextDirection.rtl,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {
-                    // setState(() {
-                    //   selectedOption = value;
-                    // });
-                  },
-                  hint: const Text('المدينة',
-                      textDirection: TextDirection.rtl),
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down, color: primaryRed),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 20),
+                Material(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: primaryWhite,
+                      borderRadius: BorderRadius.circular(13.0),
+                      border: Border.all(
+                        color: primaryGrey,
+                        width: 1,
                       ),
                     ),
-                  ],
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        hintText: 'رقم الهاتف',
+                        hintStyle: TextStyle(
+                          fontSize: 14,
+                          color: primaryHint,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
+                      ),
+                      textAlign: TextAlign.right,
+                      obscureText: true,
+                    ),
+                  ),
                 ),
-              ),
-              Positioned(
-                  top: 480,
-                  left: 60,
-                  right: 60,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainScreen()),
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      side: const BorderSide(width: 1, color: primaryWhite),
-                      backgroundColor: primaryRed,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(37.0),
+                const SizedBox(height: 20),
+                Material(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: primaryWhite,
+                      borderRadius: BorderRadius.circular(13.0),
+                      border: Border.all(
+                        color: primaryGrey,
+                        width: 1,
                       ),
                     ),
-                    child: const Text(
-                      'هيا نبدأ!',
-                      style: TextStyle(
-                        color: primaryWhite,
-                        fontSize: 21.0,
-                      ),textDirection: TextDirection.rtl
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButton<String>(
+                            value: selectedOption,
+                            items: cities.map((String option) {
+                              return DropdownMenuItem<String>(
+                                value: option,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    option,
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500,
+                                      color: primaryHint,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                            },
+                            hint: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                'المدينة',
+                              ),
+                            ),
+                            isExpanded: true,
+                            underline: const SizedBox.shrink(),
+                          ),
+                        ),
+                      ],
                     ),
-                  )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+              top: 480,
+              left: 60,
+              right: 60,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainScreen()),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  side: const BorderSide(width: 1, color: primaryWhite),
+                  backgroundColor: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(37.0),
+                  ),
+                ),
+                child: const Text('هيا نبدأ!',
+                    style: TextStyle(
+                      color: primaryWhite,
+                      fontSize: 21.0,
+                    ),
+                    textDirection: TextDirection.rtl),
+              )),
         ]));
   }
 }
