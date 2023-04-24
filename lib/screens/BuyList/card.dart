@@ -29,7 +29,6 @@ class MyCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 1),
         child: Container(
           height: size.width*0.58,
-          // color: Colors.deepPurple[200],
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
@@ -44,13 +43,6 @@ class MyCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // SizedBox(height: 10),
-              // Image.asset(
-              //   '',
-              //   height: 120,
-              //   width: 120,
-              // ),
-              // SizedBox(height: 0),
               child,
             ],
           ),

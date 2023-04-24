@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/BuyList/card.dart';
-
-import '../../user_bottom_nav_bar.dart';
+import '../Filters/filters.dart';
 import '../Main/main_screen.dart';
 
 class Estate {
@@ -72,7 +71,6 @@ class BuyListScreen extends StatelessWidget {
             // height: 100,
             child: SizedBox(
                 child: Stack(children: <Widget>[
-       
           Positioned(
               // top: -10,
               left: 0,
@@ -94,38 +92,6 @@ class BuyListScreen extends StatelessWidget {
               child: Transform.scale(
                 scale: 0.2,
                 child: Image.asset('assets/icons/White_back.png'),
-              ),
-            ),
-          ),
-          //search
-          Positioned(
-            top: 100,
-            left: -22,
-            right: 10,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(0, 10),
-                    blurRadius: 50,
-                    color: Colors.white.withOpacity(0.33),
-                  ),
-                ],
-              ),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: const Text(
-                  "ابحث",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                      decoration: TextDecoration.none),
-                ),
               ),
             ),
           ),
@@ -172,8 +138,9 @@ class BuyListScreen extends StatelessWidget {
                   left: 10,
                   right: 10, // or any other suitable value
                   child: SizedBox(
-                    height: size.height-250,
-                    width: size.width-40, // subtract the left and right padding from the total width
+                    height: size.height - 250,
+                    width: size.width -
+                        40, // subtract the left and right padding from the total width
                     child: ListView.builder(
                       itemCount: _estates.length,
                       itemBuilder: (context, index) {
@@ -354,6 +321,76 @@ class BuyListScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: size.width - size.width + 120,
+            left: 10,
+            child: Container(
+              height: 50,
+              width: size.width - 100,
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(35.0),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                    border: InputBorder.none,
+                    hintText: 'ابحث',
+                    hintTextDirection: TextDirection.rtl,
+                    suffixIcon: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.search),
+                    ),
+                  ),
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.width - size.width + 124,
+            left: size.width - 78,
+            right: 20,
+            child: Container(
+              height: size.width - 343,
+              width: 20,
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 3,
+                      left: 3,
+                      right: 3,
+                      bottom: 3,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Image.asset('assets/icons/Grey_filters.png'),
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) => const FiltersScreen(),
+                  ));
+                },
+              ),
             ),
           ),
         ]))));

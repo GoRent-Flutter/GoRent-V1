@@ -3,6 +3,7 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/ItemDetail/itemdetailrent_screen.dart';
 import 'package:gorent_application1/screens/RentList/square.dart';
 
+import '../Filters/filters.dart';
 import '../Main/main_screen.dart';
 
 class Post {
@@ -64,13 +65,15 @@ class RentListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+        Size size = MediaQuery.of(context).size;
     return Container(
         color: primaryGrey,
         child: SizedBox(
             // width: 100,
             // height: 100,
-            child: Stack(children: <Widget>[
+            child: SizedBox(
+                child: Stack(children: <Widget>[
+       
           Positioned(
               // top: -10,
               left: 0,
@@ -96,44 +99,13 @@ class RentListScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 100,
-            left: -22,
-            right: 10,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(0, 10),
-                    blurRadius: 50,
-                    color: Colors.white.withOpacity(0.33),
-                  ),
-                ],
-              ),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: const Text(
-                  "ابحث",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                      decoration: TextDecoration.none),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
             top: 180,
             left: 20,
             right: 20,
             child: Stack(
               children: [
                 Container(
-                  height: size.height*0.68,
+                  height: size.height * 0.75,
                   decoration: BoxDecoration(
                     color: primaryWhite,
                     borderRadius: BorderRadius.circular(24.0),
@@ -155,7 +127,7 @@ class RentListScreen extends StatelessWidget {
                       vertical: 10,
                     ),
                     child: const Text(
-                      "العقارات المتاحة للايجار",
+                      "العقارات المتاحة للإيجار",
                       style: TextStyle(
                         fontSize: 16,
                         color: primaryRed,
@@ -165,17 +137,17 @@ class RentListScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 30, // or any other suitable value
+                  top: 35, // or any other suitable value
                   left: 10,
                   right: 10, // or any other suitable value
                   child: SizedBox(
-                    height: 500,
-                    width: size.width -
-                        40, // subtract the left and right padding from the total width
+                    height: size.height-250,
+                    width: size.width-40, // subtract the left and right padding from the total width
                     child: ListView.builder(
                       itemCount: _posts.length,
                       itemBuilder: (context, index) {
                         final post = _posts[index];
+
                         return MySquare(
                           post: post,
                           child: Column(
@@ -187,30 +159,21 @@ class RentListScreen extends StatelessWidget {
                                     Container(
                                       width: 310,
                                       height: 150,
-                                      child: Expanded(
-                                        child: AspectRatio(
-                                          aspectRatio: 4 / 3,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: Material(
-                                              child: Ink.image(
-                                                image: AssetImage(post.image),
-                                                fit: BoxFit.cover,
-                                                child: InkWell(
-                                                  onTap: () => Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ItemDetail(
-                                                        post: post,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                      decoration: BoxDecoration(
+                                        color: primaryWhite,
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
                                           ),
+                                        ],
+                                        image: DecorationImage(
+                                          image: AssetImage(post.image),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
@@ -258,11 +221,12 @@ class RentListScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 14.0),
-                                        child: Icon(
-                                          Icons.bed_rounded,
-                                          color: primaryRed,
-                                          size: 16,
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bedroom.png'),
+                                          width: 20,
+                                          height: 18,
                                         ),
                                       ),
                                       SizedBox(
@@ -270,7 +234,7 @@ class RentListScreen extends StatelessWidget {
                                               5), // add some spacing between the icon and text
 
                                       Padding(
-                                        padding: EdgeInsets.only(right: 13.0),
+                                        padding: EdgeInsets.only(right: 6.0),
                                         child: Text(
                                           post.bedrooms,
                                           style: TextStyle(
@@ -285,11 +249,12 @@ class RentListScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 5.0),
-                                        child: Icon(
-                                          Icons.bathtub_outlined,
-                                          color: primaryRed,
-                                          size: 16,
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bathroom.png'),
+                                          width: 20,
+                                          height: 18,
                                         ),
                                       ),
                                       SizedBox(
@@ -313,10 +278,11 @@ class RentListScreen extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(left: 0.0),
-                                        child: Icon(
-                                          Icons.square_foot_outlined,
-                                          color: primaryRed,
-                                          size: 16,
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_size.png'),
+                                          width: 20,
+                                          height: 18,
                                         ),
                                       ),
                                       SizedBox(
@@ -359,6 +325,76 @@ class RentListScreen extends StatelessWidget {
               ],
             ),
           ),
-        ])));
+            Positioned(
+            top: size.width - size.width + 120,
+            left: 10,
+            child: Container(
+              height: 50,
+              width: size.width - 100,
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(35.0),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                    border: InputBorder.none,
+                    hintText: 'ابحث',
+                    hintTextDirection: TextDirection.rtl,
+                    suffixIcon: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.search),
+                    ),
+                  ),
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.width - size.width + 124,
+            left: size.width - 78,
+            right: 20,
+            child: Container(
+              height: size.width - 343,
+              width: 20,
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(14.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
+              child: GestureDetector(
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 3,
+                      left: 3,
+                      right: 3,
+                      bottom: 3,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Image.asset('assets/icons/Grey_filters.png'),
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) => const FiltersScreen(),
+                  ));
+                },
+              ),
+            ),
+          ),
+        ]))));
   }
 }

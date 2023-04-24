@@ -12,7 +12,6 @@ Future<void> main() async {
   FirebaseApp app = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Initialized default app $app');
   runApp(const MyApp());
 }
 

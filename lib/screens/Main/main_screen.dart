@@ -73,7 +73,7 @@ class MainScreenState extends State<MainScreen> {
               child: Image.asset('assets/icons/GoRent_Logo_Inside.png'),
             )),
         Positioned(
-         top: size.width - size.width + 124,
+          top: size.width - size.width + 124,
           left: size.width - 78,
           right: 20,
           child: Container(
@@ -528,38 +528,35 @@ class MainScreenState extends State<MainScreen> {
                       decoration: TextDecoration.none,
                     )),
               ),
- Positioned(
-  top: size.width - size.width + 120,
-  left: 10,
-  child: Container(
-    height: 50,
-    width: size.width - 100,
-    decoration: BoxDecoration(
-      color: primaryWhite,
-      borderRadius: BorderRadius.circular(35.0),
-    ),
-    child: Material(
-      color: Colors.transparent,
-      child: TextFormField(
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 10),
-          border: InputBorder.none,
-          hintText: 'ابحث',
-          hintTextDirection: TextDirection.rtl,
-          suffixIcon: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
+        Positioned(
+          top: size.width - size.width + 120,
+          left: 10,
+          child: Container(
+            height: 50,
+            width: size.width - 100,
+            decoration: BoxDecoration(
+              color: primaryWhite,
+              borderRadius: BorderRadius.circular(35.0),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: TextFormField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 10),
+                  border: InputBorder.none,
+                  hintText: 'ابحث',
+                  hintTextDirection: TextDirection.rtl,
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search),
+                  ),
+                ),
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.right,
+              ),
+            ),
           ),
-        ),
-        textDirection: TextDirection.rtl,
-        textAlign: TextAlign.right,
-      ),
-    ),
-  ),
-)
-
-
-
+        )
       ])),
     );
   }
