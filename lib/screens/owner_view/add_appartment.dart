@@ -17,7 +17,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late String _type = 'rent';
-  late String _city='';
+  late String _city='ramallah'; 
   late String _address1='';
   late String _address2='';
   late int _numRooms=0;
@@ -169,16 +169,25 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                 ),
-                TextFormField(
+                DropdownButtonFormField<String>(
+                  value: _city,
                   decoration: InputDecoration(labelText: 'City'),
+                  items: ['ramallah', 'nablus', 'bethlehem','tulkarem']
+                      .map((type) => DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _type = value!;
+                    });
+                  },
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the city';
+                    if (value == null) {
+                      return 'Please choose the city';
                     }
                     return null;
-                  },
-                  onSaved: (value) {
-                    _city = value!;
                   },
                 ),
                 TextFormField(
