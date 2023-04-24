@@ -16,8 +16,8 @@ class AddApartmentScreen extends StatefulWidget {
 class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _type = 'rent';
-  late String _city='ramallah'; 
+  late String _type = 'بيع';
+  late String _city='رام الله'; 
   late String _address1='';
   late String _address2='';
   late int _numRooms=0;
@@ -74,13 +74,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       };
 
       // Upload the apartment data to the appropriate Firebase Realtime Database location
-      if (_type == 'rent') {
+      if (_type == 'اجار') {
         FirebaseDatabase.instance
             .reference()
             .child('rent')
             .child(id!)
             .set(apartment);
-      } else if (_type == 'sale') {
+      } else if (_type == 'بيع') {
         FirebaseDatabase.instance
             .reference()
             .child('sale')
@@ -107,14 +107,26 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
 
         // Add the download URL of the uploaded image to the apartment data
         // Add the download URL of the uploaded image to the apartment data
+
+        if (_type == 'اجار') {
         FirebaseDatabase.instance
             .reference()
-            .child(_type)
+            .child('rent')
+            .child(id)
+            .child('images')
+            .push()
+            .set(downloadUrl);
+      } else if (_type == 'بيع') {
+        FirebaseDatabase.instance
+            .reference()
+            .child('sale')
             .child(id)
             .child('images')
             .push()
             .set(downloadUrl);
       }
+      }
+        
 
       // Display a success message and pop the screen
       ScaffoldMessenger.of(context).showSnackBar(
@@ -151,7 +163,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 DropdownButtonFormField<String>(
                   value: _type,
                   decoration: InputDecoration(labelText: 'Type'),
-                  items: ['rent', 'sale']
+                  items: ['بيع', 'اجار']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
                             child: Text(type),
@@ -169,10 +181,10 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                 ),
-                DropdownButtonFormField<String>(
+DropdownButtonFormField<String>(
                   value: _city,
                   decoration: InputDecoration(labelText: 'City'),
-                  items: ['ramallah', 'nablus', 'bethlehem','tulkarem']
+                  items: ['رام الله', 'نابلس', 'بيت لحم','طولكرم']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
                             child: Text(type),
@@ -185,7 +197,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                   validator: (value) {
                     if (value == null) {
-                      return 'Please choose the city';
+                      return 'Please choose the type';
                     }
                     return null;
                   },
