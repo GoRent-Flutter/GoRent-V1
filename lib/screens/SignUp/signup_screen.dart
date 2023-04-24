@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
-import 'package:gorent_application1/screens/Models_Folder/UserModel.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,54 +9,70 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   final int currentIndex;
-  static bool success=false;
+  static bool success = false;
   SignupScreen({Key? key, required this.currentIndex}) : super(key: key);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  // void checkValues(){
-  //   String email=emailController.text.trim();
-  //   String password=passwordController.text.trim();
-  //   String confirmPassword=confirmPasswordController.text.trim();
-  //   if(email =="" || password=="" || confirmPassword==""){
-  //     //a text should appear to the user/owner (will do this later)
-  //     print("fill the empty fields!");
-  //   }
-  //   else if (password !=confirmPassword){
-  //           //a text should appear to the user/owner (will do this later)
+  Future<bool> checkValues() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+    if (email == "" || password == "" || confirmPassword == "") {
+      //a text should appear to the user/owner (will do this later)
+      print("fill the empty fields!");
+      return false;
+    } else if (password != confirmPassword) {
+      //a text should appear to the user/owner (will do this later)
+      print("password doesn't match!");
+      return false;
+    } else {
+      // signUp(email, password, currentIndex);
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      try {
+        String userId = email; // Use email as user ID
 
-  //     print("password doesn't match!");
-  //   }
-  //   else{
-  //     if (currentIndex==1){
-  //       signUp(email,password,currentIndex);
-  //     }
-  //     else{
-  //       signUp(email,password,currentIndex);
-  //     }
-  //   }
-    
-  // }
-  // void signUp(String email, String password, int currentIndex)async{
-  //   UserCredential? credential;
-  //   try{
-  //     credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-  //     success=true;
-  //   } on FirebaseAuthException catch(ex){
-  //     print(ex.code.toString());
-  //   }
-  //   if(credential!=null){
-  //     String userId=credential.user!.uid;
-  //     UserModel newUser =UserModel(
-  //       userId:userId,
-  //       email: email,
-  //       username: "",
-  //     );
-  //     //if sign up as user is pressed, the new user will be added to the collection (users) otherwise to (owners)....
-  //     currentIndex==1?await FirebaseFirestore.instance.collection("users").doc(userId).set(newUser.toMap()).then((value) => print("new user added")): await FirebaseFirestore.instance.collection("owners").doc(userId).set(newUser.toMap()).then((value) => print("new owner added"));
-  //   }
-  // }
+        if (currentIndex == 1) {
+          // Check if customer already exists in collection
+          final userDoc =
+              await firestore.collection('customers').doc(userId).get();
+          if (userDoc.exists) {
+            print('User already exists in collection');
+            return false;
+          }
+          // if the customer does not exist, add new user to collection
+          else {
+            await firestore.collection('customers').doc(userId).set({
+              'email': email,
+              'password': password,
+            });
+            return true;
+          }
+        } else if (currentIndex == 0) {
+          // Check if owner already exists in collection
+          final userDoc =
+              await firestore.collection('owners').doc(userId).get();
+          if (userDoc.exists) {
+            print('User already exists in collection');
+            return false;
+          }
+          // if the owner does not exist, add new user to collection
+          else {
+            await firestore.collection('owners').doc(userId).set({
+              'email': email,
+              'password': password,
+            });
+            return true;
+          }
+        }
+      } catch (ex) {
+        print(ex.toString());
+        return false;
+      }
+    }
+    return false; // def return value
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +157,9 @@ class SignupScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen(currentIndex: currentIndex,)),
+                                    builder: (context) => LoginScreen(
+                                          currentIndex: currentIndex,
+                                        )),
                               );
                             },
                             child: const Center(
@@ -173,7 +190,8 @@ class SignupScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignupScreen(currentIndex:currentIndex)),
+                                    builder: (context) => SignupScreen(
+                                        currentIndex: currentIndex)),
                               );
                             },
                             child: const Center(
@@ -291,18 +309,22 @@ class SignupScreen extends StatelessWidget {
                   left: 60,
                   right: 60,
                   child: TextButton(
-                    onPressed: () {
-                      
-                      // checkValues();
-                      success? currentIndex==1?
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AboutYouScreen())):
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => OwnerScreen()),):
+                    onPressed: () async {
+                      bool success = await checkValues();
+                      if (success == true) {
+                        currentIndex == 1
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AboutYouScreen()))
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OwnerScreen()),
+                              );
+                      } else if (success == false) {
                         print("an error occurred while trying to sign up");
-                       
+                      }
                     },
                     style: TextButton.styleFrom(
                       side: const BorderSide(width: 1, color: primaryWhite),

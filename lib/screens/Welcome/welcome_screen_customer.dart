@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
 import 'package:gorent_application1/screens/guest_view/guest_view_screen.dart';
-
 import '../../constraints.dart';
 
 class WelcomeScreenCustomer extends StatelessWidget {

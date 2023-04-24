@@ -16,21 +16,21 @@ class AddApartmentScreen extends StatefulWidget {
 class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _type = 'rent';
-  late String _city='';
-  late String _address1='';
-  late String _address2='';
-  late int _numRooms=0;
-  late int _numBathrooms=0;
-  late int _numVerandas=0;
-  late int _numSalons=0;
-  late int _numKitchens=0;
-   late int _OwnerID=0;
-  late double _size=0.0;
-  late double _price=0.0;
-  late double _latitude=0.0;
-  late double _longitude=0.0;
-  late String _description='';
+  late String _type = 'استئجار';
+  late String _city = '';
+  late String _address1 = '';
+  late String _address2 = '';
+  late int _numRooms = 0;
+  late int _numBathrooms = 0;
+  late int _numVerandas = 0;
+  late int _numSalons = 0;
+  late int _numKitchens = 0;
+  late int _OwnerID = 0;
+  late double _size = 0.0;
+  late double _price = 0.0;
+  late double _latitude = 0.0;
+  late double _longitude = 0.0;
+  late String _description = '';
   List<File> _images = [];
 
   final picker = ImagePicker();
@@ -74,13 +74,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       };
 
       // Upload the apartment data to the appropriate Firebase Realtime Database location
-      if (_type == 'rent') {
+      if (_type == 'استئجار') {
         FirebaseDatabase.instance
             .reference()
             .child('rent')
             .child(id!)
             .set(apartment);
-      } else if (_type == 'sale') {
+      } else if (_type == 'بيع') {
         FirebaseDatabase.instance
             .reference()
             .child('sale')
@@ -107,13 +107,24 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
 
         // Add the download URL of the uploaded image to the apartment data
         // Add the download URL of the uploaded image to the apartment data
-        FirebaseDatabase.instance
-            .reference()
-            .child(_type)
-            .child(id)
-            .child('images')
-            .push()
-            .set(downloadUrl);
+        if (_type =='بيع') {
+          FirebaseDatabase.instance
+              .reference()
+              .child('sale')
+              .child(id)
+              .child('images')
+              .push()
+              .set(downloadUrl);
+        }
+        else{
+           FirebaseDatabase.instance
+              .reference()
+              .child('rent')
+              .child(id)
+              .child('images')
+              .push()
+              .set(downloadUrl);
+        }
       }
 
       // Display a success message and pop the screen
@@ -131,13 +142,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryWhite,
-        title:  const Text(
-                            'اضافة عقار',
-                            style: TextStyle(
-                              color: primaryRed,
-                              fontSize: 21.0,
-                            ),
-                          ),
+        title: const Text(
+          'اضافة عقار',
+          style: TextStyle(
+            color: primaryRed,
+            fontSize: 21.0,
+          ),
+        ),
       ),
       backgroundColor: primaryWhite,
       body: SingleChildScrollView(
@@ -151,7 +162,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 DropdownButtonFormField<String>(
                   value: _type,
                   decoration: InputDecoration(labelText: 'Type'),
-                  items: ['rent', 'sale']
+                  items: ['بيع', 'استئجار']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
                             child: Text(type),
@@ -338,11 +349,10 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                   onSaved: (value) {
-_OwnerID = int.parse(value!.toString());
+                    _OwnerID = int.parse(value!.toString());
                   },
                 ),
-                                SizedBox(height: 16),
-
+                SizedBox(height: 16),
                 Text('Images'),
                 SizedBox(height: 8),
                 Row(
@@ -350,13 +360,13 @@ _OwnerID = int.parse(value!.toString());
                     Expanded(
                       child: ElevatedButton(
                         onPressed: getImage,
-                         style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
-                  ),
-                ),
+                        style: TextButton.styleFrom(
+                          side: const BorderSide(width: 1, color: primaryWhite),
+                          backgroundColor: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(37.0),
+                          ),
+                        ),
                         child: Text('Add Image'),
                       ),
                     ),
@@ -382,13 +392,13 @@ _OwnerID = int.parse(value!.toString());
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _submitForm,
-                         style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
-                  ),
-                ),
+                        style: TextButton.styleFrom(
+                          side: const BorderSide(width: 1, color: primaryWhite),
+                          backgroundColor: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(37.0),
+                          ),
+                        ),
                         child: Text('Submit'),
                       ),
                     ),

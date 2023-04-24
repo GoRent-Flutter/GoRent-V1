@@ -11,61 +11,68 @@ import '../owner_view/owner_view_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final int currentIndex;
-  static bool isOwner=false;
-  static bool isUser=false;
+  static bool isOwner = false;
+  static bool isUser = false;
 
   LoginScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // void checkValues() {
-  //   String email = emailController.text.trim();
-  //   String password = passwordController.text.trim();
-  //   print(currentIndex);
-  //   if (email == "" || password == "") {
-  //     //a text should appear to the user/owner (will do this later)
-  //     print("fill the empty fields!");
-  //   } else {
-  //     signIn(email, password, currentIndex);
-  //   }
-  // }
+  Future<bool> checkValues() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    if (email == "" || password == "") {
+      //a text should appear to the user/owner (will do this later)
+      print("fill the empty fields!");
+      return false;
+    } else {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      try {
+        String userId = email; // Use email as user ID
 
-  // void signIn(String email, String password, int currentIndex) async {
-  //   UserCredential? credential;
-  //   try {
-  //     //check if there's an email and pass in DB as entered
-  //     credential = await FirebaseAuth.instance
-  //         .signInWithEmailAndPassword(email: email, password: password);
-  //         // print(credential);
-  //   } on FirebaseAuthException catch (ex) {
-  //     print(ex.code.toString());
-  //   }
-
-  //   if (credential != null) {
-      
-  //     String id = credential.user!.uid;
-  //     if (currentIndex == 1) {
-  //       //search in users collection if (use as user was pressed)
-  //       DocumentSnapshot userData =
-  //           await FirebaseFirestore.instance.collection("users").doc(id).get();
-  //       UserModel userModel =
-  //           UserModel.fromMap(userData.data() as Map<String, dynamic>);
-  //           isOwner=false;
-  //           isUser=true;
-  //       print("Logged in successfully - user");
-  //     } else {
-  //        //search in owners collection if (use as owner was pressed)
-  //       DocumentSnapshot ownerData =
-  //           await FirebaseFirestore.instance.collection("owners").doc(id).get();
-  //       OwnerModel ownerModel =
-  //           OwnerModel.fromMap(ownerData.data() as Map<String, dynamic>);
-  //           isOwner=true;
-  //           isUser=false;
-  //       print("Logged in successfully - owner");
-  //     }
-  //   }
-  // }
+        if (currentIndex == 1) {
+          // Check if customer already exists in collection
+          final userDoc =
+              await firestore.collection('customers').doc(userId).get();
+          if (userDoc.exists) {
+            print('User already exists in collection');
+            // Check if password matches
+            if (userDoc.data()!['password'] == password) {
+              return true;
+            } else {
+              print('Incorrect password');
+              return false;
+            }
+          } else {
+            print('User does not exist in collection');
+            return false;
+          }
+        } else if (currentIndex == 0) {
+          // Check if owner already exists in collection
+          final userDoc =
+              await firestore.collection('owners').doc(userId).get();
+          if (userDoc.exists) {
+            print('User already exists in collection');
+            // Check if password matches
+            if (userDoc.data()!['password'] == password) {
+              return true;
+            } else {
+              print('Incorrect password');
+              return false;
+            }
+          } else {
+            print('User does not exist in collection');
+            return false;
+          }
+        }
+      } catch (ex) {
+        print(ex.toString());
+        return false;
+      }
+    }
+    return false; // def return value
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,21 +284,23 @@ class LoginScreen extends StatelessWidget {
               left: 60,
               right: 60,
               child: TextButton(
-                onPressed: () {
-                  //checkValues();
-                 //   if (currentIndex == 1 && isUser) {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => MainScreen()));
-                  //  }
-                //    else if (currentIndex == 0 && isOwner){
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => OwnerScreen()),
-                    );
-                    //}
-                },
+                  onPressed: () async {
+                      bool success = await checkValues();
+                      if (success == true) {
+                        currentIndex == 1
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MainScreen()))
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OwnerScreen()),
+                              );
+                      } else if (success == false) {
+                        print("an error occurred while trying to sign up");
+                      }
+                    },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),
                   backgroundColor: primaryRed,

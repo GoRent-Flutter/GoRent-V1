@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
-
 import '../../constraints.dart';
 
 class WelcomeScreenOwner extends StatelessWidget {
@@ -38,7 +37,7 @@ class WelcomeScreenOwner extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SignupScreen(currentIndex: 1,)),
+                MaterialPageRoute(builder: (context) => SignupScreen(currentIndex: 0,)),
               );
             },
             style: TextButton.styleFrom(
@@ -63,7 +62,7 @@ class WelcomeScreenOwner extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginScreen(currentIndex: 1)),
+                MaterialPageRoute(builder: (context) => LoginScreen(currentIndex: 0)),
               );
             },
             style: TextButton.styleFrom(
