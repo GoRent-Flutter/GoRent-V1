@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:gorent_application1/screens/owner_view/succes_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddApartmentScreen extends StatefulWidget {
@@ -17,21 +18,24 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late String _type = 'بيع';
-  late String _city='رام الله'; 
-  late String _address1='';
-  late String _address2='';
-  late int _numRooms=0;
-  late int _numBathrooms=0;
-  late int _numVerandas=0;
-  late int _numSalons=0;
-  late int _numKitchens=0;
-   late int _OwnerID=0;
-  late double _size=0.0;
-  late double _price=0.0;
-  late double _latitude=0.0;
-  late double _longitude=0.0;
-  late String _description='';
+  late String _city = 'رام الله';
+  late String _address1 = '';
+  late String _address2 = '';
+  late int _numRooms = 0;
+  late int _numBathrooms = 0;
+  late int _numVerandas = 0;
+  late int _numSalons = 0;
+  late int _numKitchens = 0;
+  late int _OwnerID = 0;
+  late double _size = 0.0;
+  late double _price = 0.0;
+  late double _latitude = 0.0;
+  late double _longitude = 0.0;
+  late String _description = '';
   List<File> _images = [];
+  bool isApproved = false;
+  bool isLoading = false;
+
 
   final picker = ImagePicker();
 
@@ -49,7 +53,9 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+      setState(() {
+        isLoading = true;
+      });
 
       // Generate a unique ID for the new apartment
       final id = FirebaseDatabase.instance.reference().push().key;
@@ -71,6 +77,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         'longitude': _longitude,
         'description': _description,
         'images': [],
+        'isApproves': isApproved,
       };
 
       // Upload the apartment data to the appropriate Firebase Realtime Database location
@@ -109,32 +116,34 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         // Add the download URL of the uploaded image to the apartment data
 
         if (_type == 'اجار') {
-        FirebaseDatabase.instance
-            .reference()
-            .child('rent')
-            .child(id)
-            .child('images')
-            .push()
-            .set(downloadUrl);
-      } else if (_type == 'بيع') {
-        FirebaseDatabase.instance
-            .reference()
-            .child('sale')
-            .child(id)
-            .child('images')
-            .push()
-            .set(downloadUrl);
+          FirebaseDatabase.instance
+              .reference()
+              .child('rent')
+              .child(id)
+              .child('images')
+              .push()
+              .set(downloadUrl);
+        } else if (_type == 'بيع') {
+          FirebaseDatabase.instance
+              .reference()
+              .child('sale')
+              .child(id)
+              .child('images')
+              .push()
+              .set(downloadUrl);
+        }
       }
-      }
-        
 
-      // Display a success message and pop the screen
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Apartment added successfully'),
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SuccessScreen(),
         ),
       );
-      Navigator.pop(context);
+
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -143,13 +152,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryWhite,
-        title:  const Text(
-                            'اضافة عقار',
-                            style: TextStyle(
-                              color: primaryRed,
-                              fontSize: 21.0,
-                            ),
-                          ),
+        title: const Text(
+          'اضافة عقار',
+          style: TextStyle(
+            color: primaryRed,
+            fontSize: 21.0,
+          ),
+        ),
       ),
       backgroundColor: primaryWhite,
       body: SingleChildScrollView(
@@ -181,10 +190,10 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                 ),
-DropdownButtonFormField<String>(
+                DropdownButtonFormField<String>(
                   value: _city,
                   decoration: InputDecoration(labelText: 'City'),
-                  items: ['رام الله', 'نابلس', 'بيت لحم','طولكرم']
+                  items: ['رام الله', 'نابلس', 'بيت لحم', 'طولكرم']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
                             child: Text(type),
@@ -198,6 +207,31 @@ DropdownButtonFormField<String>(
                   validator: (value) {
                     if (value == null) {
                       return 'Please choose the type';
+                    }
+                    return null;
+                  },
+                ),
+                DropdownButtonFormField<bool>(
+                  value: isApproved,
+                  decoration: InputDecoration(labelText: 'isApproved'),
+                  items: const [
+                    DropdownMenuItem<bool>(
+                      value: true,
+                      child: Text('True'),
+                    ),
+                    DropdownMenuItem<bool>(
+                      value: false,
+                      child: Text('False'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      isApproved = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please choose a value';
                     }
                     return null;
                   },
@@ -359,11 +393,10 @@ DropdownButtonFormField<String>(
                     return null;
                   },
                   onSaved: (value) {
-_OwnerID = int.parse(value!.toString());
+                    _OwnerID = int.parse(value!.toString());
                   },
                 ),
-                                SizedBox(height: 16),
-
+                SizedBox(height: 16),
                 Text('Images'),
                 SizedBox(height: 8),
                 Row(
@@ -371,13 +404,13 @@ _OwnerID = int.parse(value!.toString());
                     Expanded(
                       child: ElevatedButton(
                         onPressed: getImage,
-                         style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
-                  ),
-                ),
+                        style: TextButton.styleFrom(
+                          side: const BorderSide(width: 1, color: primaryWhite),
+                          backgroundColor: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(37.0),
+                          ),
+                        ),
                         child: Text('Add Image'),
                       ),
                     ),
@@ -392,7 +425,57 @@ _OwnerID = int.parse(value!.toString());
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Image.file(_images[index]),
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('Remove Image'),
+                                content: Text(
+                                    'Are you sure you want to remove this image?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _images.removeAt(index);
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Remove'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                _images[index],
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close),
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -403,14 +486,20 @@ _OwnerID = int.parse(value!.toString());
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _submitForm,
-                         style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
-                  ),
-                ),
-                        child: Text('Submit'),
+                        style: TextButton.styleFrom(
+                          side: const BorderSide(width: 1, color: primaryWhite),
+                          backgroundColor: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(37.0),
+                          ),
+                        ),
+                        child: Stack(
+                          children: [
+                            Center(child: Text('Submit')),
+                            if (isLoading)
+                              Center(child: CircularProgressIndicator()),
+                          ],
+                        ),
                       ),
                     ),
                   ],
