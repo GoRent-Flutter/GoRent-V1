@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/splash_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 
@@ -9,6 +9,7 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   FirebaseApp app = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -23,13 +24,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'GoRent',
-      theme: ThemeData(
-          primaryColor: primaryRed, scaffoldBackgroundColor: primaryRed),
+      theme: ThemeData( 
+          primaryColor: primaryRed, scaffoldBackgroundColor: primaryRed, fontFamily: 'Scheherazade_New'),
       home: FutureBuilder(
         future: Future.delayed(Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return MainScreen();
+            return UsersScreen();
           } else {
             return const SplashScreen();
           }

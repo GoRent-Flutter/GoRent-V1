@@ -63,7 +63,8 @@ class ReportProblemState extends State<ReportProblemScreen> {
                 child: const Text(
                   "إذا كنت تواجه مشكلة في GoRent، فقد وصلت إلى المكان الصحيح. يرجى استخدام هذا النموذج لإخبارنا عن المشكلة التي تواجهها.",
                   style: TextStyle(
-                    fontSize: 17,
+                    fontFamily: 'Scheherazade_New',
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: primaryHint,
                   ),
@@ -104,6 +105,8 @@ class ReportProblemState extends State<ReportProblemScreen> {
                     alignment: Alignment.centerRight,
                     child: Text(
                       'اختر مشكلة',
+                      style: TextStyle(
+                          fontFamily: 'Scheherazade_New', fontSize: 16),
                     ),
                   ),
                   isExpanded: true,
@@ -113,9 +116,15 @@ class ReportProblemState extends State<ReportProblemScreen> {
             ),
             Positioned(
               top: size.width / 2 + 15,
-              left: size.width / 2 + 95,
+              left: size.width /2 + 82,
               right: 16,
-              child: Text('وصف المشكلة'),
+              child: Text(
+                'وصف المشكلة',
+                style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
+                  fontSize: 16
+                ),
+              ),
             ),
             Positioned(
               top: size.width / 2 + 50,
@@ -145,6 +154,7 @@ class ReportProblemState extends State<ReportProblemScreen> {
                       ),
                       child: SingleChildScrollView(
                         child: TextField(
+                          style: TextStyle(fontSize: 16),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(16.0),
@@ -158,17 +168,16 @@ class ReportProblemState extends State<ReportProblemScreen> {
                 ],
               ),
             ),
-              Positioned(
+            Positioned(
               top: size.width / 2 + 170,
-              left: size.width/3,
+              left: size.width / 3,
               child: Text('attach a photo/video (later)'),
-              ),
-
-               Positioned(
-              top: size.height/2,
-              left: 50,
-              right: 50,
-              child:TextButton(
+            ),
+            Positioned(
+                top: size.height / 2,
+                left: 50,
+                right: 50,
+                child: TextButton(
                   onPressed: () async {
                     //   bool success = await checkValues();
                     //   if (success == true) {
@@ -185,24 +194,22 @@ class ReportProblemState extends State<ReportProblemScreen> {
                     //   } else if (success == false) {
                     //     print("an error occurred while trying to sign up");
                     //   }
-                    },
-                style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
+                  },
+                  style: TextButton.styleFrom(
+                    side: const BorderSide(width: 1, color: primaryWhite),
+                    backgroundColor: primaryRed,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(37.0),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'إرسال',
-                  style: TextStyle(
-                    color: primaryWhite,
-                    fontSize: 21.0,
+                  child: const Text(
+                    'إرسال',
+                    style: TextStyle(
+                      color: primaryWhite,
+                      fontSize: 21.0,
+                    ),
                   ),
-                ),
-              )
-              )
-
+                ))
           ]),
         ));
   }

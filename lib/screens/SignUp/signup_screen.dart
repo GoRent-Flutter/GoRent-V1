@@ -219,9 +219,10 @@ class SignupScreen extends StatelessWidget {
                   children: [
                     Material(
                       child: Container(
+                        height: 60,
                         decoration: BoxDecoration(
                           color: primaryWhite,
-                          borderRadius: BorderRadius.circular(13.0),
+                          // borderRadius: BorderRadius.circular(13.0),
                           border: Border.all(
                             color: primaryGrey,
                             width: 1,
@@ -232,7 +233,7 @@ class SignupScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             hintText: ' ادخل البريد الإلكتروني',
                             hintStyle: TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: primaryHint,
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -240,6 +241,7 @@ class SignupScreen extends StatelessWidget {
                               vertical: 16,
                             ),
                           ),
+                          style: TextStyle(fontSize: 16),
                           textAlign: TextAlign.right,
                         ),
                       ),
@@ -247,9 +249,10 @@ class SignupScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     Material(
                       child: Container(
+                        height: 60,
                         decoration: BoxDecoration(
                           color: primaryWhite,
-                          borderRadius: BorderRadius.circular(13.0),
+                          // borderRadius: BorderRadius.circular(13.0),
                           border: Border.all(
                             color: primaryGrey,
                             width: 1,
@@ -260,7 +263,7 @@ class SignupScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             hintText: 'ادخل كلمة المرور',
                             hintStyle: TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: primaryHint,
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -268,6 +271,7 @@ class SignupScreen extends StatelessWidget {
                               vertical: 16,
                             ),
                           ),
+                          style: TextStyle(fontSize: 16),
                           textAlign: TextAlign.right,
                           obscureText: true,
                         ),
@@ -276,9 +280,10 @@ class SignupScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     Material(
                       child: Container(
+                        height: 60,
                         decoration: BoxDecoration(
                           color: primaryWhite,
-                          borderRadius: BorderRadius.circular(13.0),
+                          // borderRadius: BorderRadius.circular(13.0),
                           border: Border.all(
                             color: primaryGrey,
                             width: 1,
@@ -289,7 +294,7 @@ class SignupScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             hintText: 'تأكيد كلمة المرور',
                             hintStyle: TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: primaryHint,
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -297,6 +302,7 @@ class SignupScreen extends StatelessWidget {
                               vertical: 16,
                             ),
                           ),
+                          style: TextStyle(fontSize: 16),
                           textAlign: TextAlign.right,
                           obscureText: true,
                         ),

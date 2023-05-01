@@ -109,12 +109,14 @@ class MapScreenState extends State<MapScreen> {
                       hintText: 'البحث عن مدينة',
                       hintTextDirection: TextDirection.rtl,
                       prefixIcon: Icon(Icons.close),
+                      
                     ),
                     onChanged: (value) {
                       applicationBloc.searchPlaces(value);
                     },
                     textDirection: TextDirection.rtl,
                     textAlign: TextAlign.right,
+                    style: TextStyle(fontSize: 18),
                   ),
                 ),
               ),
@@ -144,7 +146,7 @@ class MapScreenState extends State<MapScreen> {
                               title: Text(
                                 applicationBloc
                                     .searchResults[index].description,
-                                style: TextStyle(color: primaryWhite),
+                                style: TextStyle(color: primaryWhite, fontSize: 18),
                               ),
                               onTap: () {
                                 applicationBloc.setSelectedLocation(

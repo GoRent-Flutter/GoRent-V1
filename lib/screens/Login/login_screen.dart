@@ -6,7 +6,6 @@ import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 import '../../constraints.dart';
 import '../Main/main_screen.dart';
-import '../Models_Folder/OwnerModel.dart';
 import '../owner_view/owner_view_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -19,7 +18,7 @@ class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<bool> checkValues() async {
+  Future<bool> checkValues(BuildContext context) async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     if (email == "" || password == "") {
@@ -39,6 +38,7 @@ class LoginScreen extends StatelessWidget {
             print('User already exists in collection');
             // Check if password matches
             if (userDoc.data()!['password'] == password) {
+              Navigator.pop(context);
               return true;
             } else {
               print('Incorrect password');
@@ -56,6 +56,7 @@ class LoginScreen extends StatelessWidget {
             print('User already exists in collection');
             // Check if password matches
             if (userDoc.data()!['password'] == password) {
+              Navigator.pop(context);
               return true;
             } else {
               print('Incorrect password');
@@ -73,6 +74,19 @@ class LoginScreen extends StatelessWidget {
     }
     return false; // def return value
   }
+
+  // Future<void> signIn(BuildContext context) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return Center(
+  //         child: CircularProgressIndicator(),
+  //       );
+  //     },
+  //   );
+  //   await Future.delayed(const Duration(seconds: 1)); // Add delay here
+  //   Navigator.pop(context);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -210,9 +224,10 @@ class LoginScreen extends StatelessWidget {
               children: [
                 Material(
                   child: Container(
+                    height: 60,
                     decoration: BoxDecoration(
                       color: primaryWhite,
-                      borderRadius: BorderRadius.circular(13.0),
+                      // borderRadius: BorderRadius.circular(13.0),
                       border: Border.all(
                         color: primaryGrey,
                         width: 1,
@@ -223,7 +238,7 @@ class LoginScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'البريد الإلكتروني',
                         hintStyle: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           color: primaryHint,
                         ),
                         contentPadding: EdgeInsets.symmetric(
@@ -231,6 +246,7 @@ class LoginScreen extends StatelessWidget {
                           vertical: 16,
                         ),
                       ),
+                      style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.right,
                     ),
                   ),
@@ -238,9 +254,10 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Material(
                   child: Container(
+                    height: 60,
                     decoration: BoxDecoration(
                       color: primaryWhite,
-                      borderRadius: BorderRadius.circular(13.0),
+                      // borderRadius: BorderRadius.circular(13.0),
                       border: Border.all(
                         color: primaryGrey,
                         width: 1,
@@ -248,10 +265,11 @@ class LoginScreen extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: passwordController,
+                       
                       decoration: InputDecoration(
                         hintText: ' كلمة المرور',
                         hintStyle: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           color: primaryHint,
                         ),
                         contentPadding: EdgeInsets.symmetric(
@@ -259,6 +277,7 @@ class LoginScreen extends StatelessWidget {
                           vertical: 16,
                         ),
                       ),
+                      style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.right,
                       obscureText: true,
                     ),
@@ -268,15 +287,17 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const Positioned(
-            top: 385,
+            top: 390,
             left: 60,
             // right: 60,
             child: Text(
               'نسيت كلمة المرور؟',
               style: TextStyle(
-                  color: primaryLine,
-                  fontSize: 14.0,
-                  decoration: TextDecoration.none),
+                fontFamily: 'Scheherazade_New',
+                color: primaryLine,
+                fontSize: 14.0,
+                decoration: TextDecoration.none,
+              ),
             ),
           ),
           Positioned(
@@ -284,23 +305,24 @@ class LoginScreen extends StatelessWidget {
               left: 60,
               right: 60,
               child: TextButton(
-                  onPressed: () async {
-                      bool success = await checkValues();
-                      if (success == true) {
-                        currentIndex == 1
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainScreen()))
-                            : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OwnerScreen()),
-                              );
-                      } else if (success == false) {
-                        print("an error occurred while trying to sign up");
-                      }
-                    },
+                onPressed: () async {
+                  // await signIn(context);
+                  bool success = await checkValues(context);
+                  if (success == true) {
+                    currentIndex == 1
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainScreen()))
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OwnerScreen()),
+                          );
+                  } else if (success == false) {
+                    print("an error occurred while trying to sign up");
+                  }
+                },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),
                   backgroundColor: primaryRed,

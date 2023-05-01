@@ -69,6 +69,7 @@ class FavouriteScreen extends StatelessWidget {
             child: const Text(
               "العقارات المفضلة",
               style: TextStyle(
+                 fontFamily:'Scheherazade_New',
                 fontSize: 20,
                 color: primaryRed,
                 decoration: TextDecoration.none,

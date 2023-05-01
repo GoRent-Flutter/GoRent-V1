@@ -132,6 +132,7 @@ class MainScreenState extends State<MainScreen> {
             ),
             child: GestureDetector(
               child: Stack(
+              
                 children: [
                   Positioned(
                     top: 5,
@@ -139,7 +140,7 @@ class MainScreenState extends State<MainScreen> {
                     right: 5,
                     bottom: 30,
                     child: Transform.scale(
-                      scale: 0.9,
+                      scale: 1.0,
                       child: Image.asset('assets/icons/buy.png'),
                     ),
                   ),
@@ -152,6 +153,7 @@ class MainScreenState extends State<MainScreen> {
                           child: Text(
                             "شراء عقار",
                             style: TextStyle(
+                               fontFamily:'Scheherazade_New',
                               fontSize: 17,
                               color: primaryRed,
                               decoration: TextDecoration.none,
@@ -197,7 +199,7 @@ class MainScreenState extends State<MainScreen> {
                     right: 5,
                     bottom: 30,
                     child: Transform.scale(
-                      scale: 0.9,
+                      scale: 1.0,
                       child: Image.asset('assets/icons/rent.png'),
                     ),
                   ),
@@ -210,6 +212,7 @@ class MainScreenState extends State<MainScreen> {
                           child: Text(
                             "استئجار عقار",
                             style: TextStyle(
+                               fontFamily:'Scheherazade_New',
                               fontSize: 17,
                               color: primaryRed,
                               decoration: TextDecoration.none,
@@ -230,7 +233,7 @@ class MainScreenState extends State<MainScreen> {
           ),
         ),
         Positioned(
-            top: size.height - 380,
+            top: size.height - 390,
             left: 35,
             right: 35,
             child: Row(
@@ -249,6 +252,7 @@ class MainScreenState extends State<MainScreen> {
                       Text(
                         "رائج",
                         style: TextStyle(
+                           fontFamily:'Scheherazade_New',
                             decoration: TextDecoration.none,
                             fontSize: 17,
                             color: isPopular ? primaryLine : primaryRed),
@@ -275,6 +279,7 @@ class MainScreenState extends State<MainScreen> {
                       Text(
                         "موصى به",
                         style: TextStyle(
+                           fontFamily:'Scheherazade_New',
                             decoration: TextDecoration.none,
                             fontSize: 17,
                             color: isRecommended ? primaryLine : primaryRed),
@@ -301,6 +306,7 @@ class MainScreenState extends State<MainScreen> {
                       Text(
                         "مضاف حديثا",
                         style: TextStyle(
+                           fontFamily:'Scheherazade_New',
                             decoration: TextDecoration.none,
                             fontSize: 17,
                             color: isNewlyAdded ? primaryLine : primaryRed),

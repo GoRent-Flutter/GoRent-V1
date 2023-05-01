@@ -33,6 +33,7 @@ class UserAccountScreen extends StatelessWidget {
                   child: Text(
                     "حسابي الشخصي",
                     style: TextStyle(
+                      fontFamily: 'Scheherazade_New',
                       fontSize: 22,
                       color: primaryRed,
                       fontWeight: FontWeight.bold,
@@ -66,6 +67,7 @@ class UserAccountScreen extends StatelessWidget {
                           const Text(
                             "اسم المستخدم",
                             style: TextStyle(
+                              fontFamily: 'Scheherazade_New',
                               fontSize: 20,
                               color: primaryRed,
                               fontWeight: FontWeight.bold,
@@ -92,7 +94,7 @@ class UserAccountScreen extends StatelessWidget {
                       children: [
                         _buildButtonWithDivider(
                           context, // pass context as a parameter
-                          "assets/images/notificcation.png",
+                          "assets/images/notification.png",
                           "الاشعارات",
                           const NotificationsPage(),
                         ),
@@ -104,7 +106,7 @@ class UserAccountScreen extends StatelessWidget {
                         ),
                         _buildButtonWithDivider(
                           context, // pass context as a parameter
-                          "assets/images/problem.png",
+                          "assets/images/reportProblem.png",
                           "الابلاغ عن مشكلة",
                           const ReportProblemScreen(),
                         ),
@@ -142,14 +144,15 @@ class UserAccountScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Image.asset(
                     imagePath,
-                    width: 60,
-                    height: 60,
+                    width: 50,
+                    height: 50,
                   ),
                 ),
                 Text(
                   text,
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontFamily: 'Scheherazade_New',
+                    fontSize: 18,
                     color: primaryRed,
                     decoration: TextDecoration.none,
                   ),
