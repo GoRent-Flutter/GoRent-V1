@@ -3,44 +3,45 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../BuyList/buylist_screen.dart';
 import '../ContactOwner/contact_owner.dart';
 import '../RentList/rentlist_screen.dart';
-import '../SignUp/signup_screen.dart';
+
 import '../../constraints.dart';
+import '../ReserveAppointment/reserveappointment_screen.dart';
 
-class CircleIndicator extends StatelessWidget {
-  final int count;
-  final int current;
+// class CircleIndicator extends StatelessWidget {
+//   final int count;
+//   final int current;
 
-  CircleIndicator({
-    required this.count,
-    required this.current,
-  });
+//   CircleIndicator({
+//     required this.count,
+//     required this.current,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = [];
+//   @override
+//   Widget build(BuildContext context) {
+//     List<Widget> children = [];
 
-    for (int i = 0; i < count; i++) {
-      children.add(
-        Container(
-          width: 8,
-          height: 8,
-          margin: EdgeInsets.symmetric(horizontal: 4),
-          decoration: BoxDecoration(
-            color: current == i
-                ? Colors.white.withOpacity(0.6)
-                : Colors.grey.withOpacity(0.7),
-            shape: BoxShape.circle,
-          ),
-        ),
-      );
-    }
+//     for (int i = 0; i < count; i++) {
+//       children.add(
+//         Container(
+//           width: 8,
+//           height: 8,
+//           margin: EdgeInsets.symmetric(horizontal: 4),
+//           decoration: BoxDecoration(
+//             color: current == i
+//                 ? Colors.white.withOpacity(0.6)
+//                 : Colors.grey.withOpacity(0.7),
+//             shape: BoxShape.circle,
+//           ),
+//         ),
+//       );
+//     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: children,
-    );
-  }
-}
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: children,
+//     );
+//   }
+// }
 
 class ItemDetailBuy extends StatefulWidget {
   final Estate estate;
@@ -53,6 +54,23 @@ class ItemDetailBuy extends StatefulWidget {
 
 class _ItemDetailBuyState extends State<ItemDetailBuy> {
   int _current = 0;
+  Widget _dotIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widget.estate.images.map((imageUrl) {
+        int index = widget.estate.images.indexOf(imageUrl);
+        return Container(
+          width: 8.0,
+          height: 8.0,
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _current == index ? Colors.white : Colors.grey,
+          ),
+        );
+      }).toList(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,36 +91,27 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                 });
               },
             ),
-            items: [
-              Image.asset(
-                widget.estate.image,
+            items: widget.estate.images.map((imageUrl) {
+              return Image.network(
+                imageUrl,
                 fit: BoxFit.cover,
                 height: double.infinity,
                 width: double.infinity,
-              ),
-              Image.asset(
-                'assets/images/apartmentBethlehem.jpg',
-                fit: BoxFit.cover,
-                height: double.infinity,
-                width: double.infinity,
-              ),
-              Image.asset(
-                'assets/images/AB2.jpg',
-                fit: BoxFit.cover,
-                height: double.infinity,
-                width: double.infinity,
-              ),
-            ],
+              );
+            }).toList(),
+          ),
+          Positioned(
+            bottom: 498,
+            left: 0,
+            right: 0,
+            child: _dotIndicator(),
           ),
           Positioned(
             top: -40,
             left: -60,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RentListScreen()),
-                );
+                Navigator.pop(context);
               },
               child: Transform.scale(
                 scale: 0.2,
@@ -115,25 +124,13 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
             right: 20,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RentListScreen()),
-                );
+                Navigator.pop(context);
               },
               child: Icon(
                 Icons.favorite_border_outlined,
                 color: primaryRed,
                 size: 34,
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 505,
-            left: 0,
-            right: 0,
-            child: CircleIndicator(
-              count: 3,
-              current: _current,
             ),
           ),
           Positioned(
@@ -236,7 +233,12 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // Do something when contact icon is clicked
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ContactOwnerScreen()),
+                            );
                           },
                           child: Container(
                             width: 40,
@@ -251,9 +253,11 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                         SizedBox(height: 5),
                         GestureDetector(
                           onTap: () {
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => const ContactOwnerScreen(),
-                ));
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const ContactOwnerScreen(),
+                            ));
                           },
                           child: Text(
                             "تواصل",
@@ -305,7 +309,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0, bottom: 8.0),
                   child: Text(
-                    widget.estate.title,
+                    widget.estate.city,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 30,
@@ -323,7 +327,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
             child: Padding(
               padding: const EdgeInsets.only(right: 12.0, bottom: 0.0),
               child: Text(
-                "\$114,600",
+                "\$" + widget.estate.price.toString(),
                 style: TextStyle(
                   color: primaryRed,
                   fontSize: 22,
@@ -339,7 +343,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
             child: Padding(
               padding: const EdgeInsets.only(right: 12.0, bottom: 0.0),
               child: Text(
-                "\$السعر المخمن : 113,400",
+                ": السعر المخمن",
                 style: TextStyle(
                   color: Color.fromARGB(255, 56, 86, 47),
                   fontSize: 16,
@@ -361,7 +365,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Icon(Icons.bathtub_outlined, color: primaryRed, size: 25),
                       SizedBox(width: 5),
                       Text(
-                        widget.estate.bathrooms,
+                        widget.estate.numBathrooms.toString(),
                         style: TextStyle(
                           color: primaryRed,
                           fontSize: 14,
@@ -379,7 +383,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Icon(Icons.bed_rounded, color: primaryRed, size: 25),
                       SizedBox(width: 5),
                       Text(
-                        widget.estate.bedrooms,
+                        widget.estate.numRooms.toString(),
                         style: TextStyle(
                           color: primaryRed,
                           fontSize: 14,
@@ -398,7 +402,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                           color: primaryRed, size: 25),
                       SizedBox(width: 5),
                       Text(
-                        widget.estate.space,
+                        widget.estate.size.toString(),
                         style: TextStyle(
                           color: primaryRed,
                           fontSize: 14,
@@ -427,19 +431,20 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
               ),
             ),
           ),
-          const Positioned(
-            bottom: 180,
+          Positioned(
+            top: 600, // adjust the top position as per your requirement
             right: 0,
             left: 0,
             child: Padding(
               padding: EdgeInsets.only(right: 8.0, bottom: 0.0),
               child: Text(
-                ".شقة مفروشة بالكامل في بيت لحم سنتر ، تقع في بيت لحم ، مع شرفة ",
+                widget.estate.description,
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
                   decoration: TextDecoration.none,
                 ),
+                textDirection: TextDirection.rtl,
               ),
             ),
           ),
@@ -470,7 +475,12 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                   ),
                 ),
                 onPressed: () {
-                  // Handle button press here
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ReserveAppointment();
+                    },
+                  );
                 },
                 child: Text(
                   'حجز موعد',

@@ -1,71 +1,84 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/ItemDetail/itemdetailrent_screen.dart';
 import 'package:gorent_application1/screens/RentList/square.dart';
+import 'package:flutter/widgets.dart';
 
 import '../Filters/filters.dart';
 import '../Main/main_screen.dart';
 
 class Post {
-  final String image;
-  final String title;
+  final List<String> images;
+  final String city;
   final String type;
-  final String price;
-  final String bedrooms;
-  final String bathrooms;
-  final String space;
+  final String description;
+  final int price;
+  final int numRooms;
+  final int numBathrooms;
+  final int size;
 
-  Post(
-      {required this.image,
-      required this.title,
-      required this.type,
-      required this.price,
-      required this.bedrooms,
-      required this.bathrooms,
-      required this.space});
+  Post({
+    required this.images,
+    required this.city,
+    required this.type,
+    required this.description,
+    required this.price,
+    required this.numRooms,
+    required this.numBathrooms,
+    required this.size,
+  });
 }
 
-class RentListScreen extends StatelessWidget {
-  final List<Post> _posts = [
-    Post(
-        image: 'assets/images/AB1.jpg',
-        title: 'العقار 1',
-        type: 'شقة للايجار',
-        price: '\$400/m',
-        bedrooms: '2',
-        bathrooms: '2',
-        space: '1400 Ft'),
-    Post(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 2',
-        type: 'بيت للايجار',
-        price: '\$300/m',
-        bedrooms: '3',
-        bathrooms: '1',
-        space: '1040 Ft'),
-    Post(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 3',
-        type: 'بيت للايجار',
-        price: '\$500/m',
-        bedrooms: '3',
-        bathrooms: '1',
-        space: '1040 Ft'),
-    Post(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 4',
-        type: 'شقة للايجار',
-        price: '\$600/m',
-        bedrooms: '3',
-        bathrooms: '2',
-        space: '1800 Ft'),
-  ];
-
+class RentListScreen extends StatefulWidget {
   RentListScreen({Key? key}) : super(key: key);
 
   @override
+  _RentListScreenState createState() => _RentListScreenState();
+}
+
+class _RentListScreenState extends State<RentListScreen> {
+  late DatabaseReference _databaseRef;
+  List<Post> _posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseRef = FirebaseDatabase.instance.reference().child('rent');
+    _databaseRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final posts = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          _posts = posts.entries.map((entry) {
+            final post = Map<String, dynamic>.from(entry.value);
+            List<String> imageUrls = [];
+            if (post['images'] != null) {
+              final images = post['images'] as Map<dynamic, dynamic>;
+              if (images.isNotEmpty) {
+                imageUrls =
+                    images.values.map((value) => value.toString()).toList();
+              }
+            }
+            return Post(
+              images: imageUrls,
+              city: post['city'] as String,
+              type: post['type'] as String,
+              description: post['description'] as String,
+              price: post['price'] as int,
+              numRooms: post['numRooms'] as int,
+              numBathrooms: post['numBathrooms'] as int,
+              size: post['size'] as int,
+            );
+          }).toList();
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-        Size size = MediaQuery.of(context).size;
+    Size size1 = MediaQuery.of(context).size;
     return Container(
         color: primaryGrey,
         child: SizedBox(
@@ -73,7 +86,6 @@ class RentListScreen extends StatelessWidget {
             // height: 100,
             child: SizedBox(
                 child: Stack(children: <Widget>[
-       
           Positioned(
               // top: -10,
               left: 0,
@@ -105,7 +117,7 @@ class RentListScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  height: size.height * 0.75,
+                  height: size1.height * 0.75,
                   decoration: BoxDecoration(
                     color: primaryWhite,
                     borderRadius: BorderRadius.circular(24.0),
@@ -141,8 +153,9 @@ class RentListScreen extends StatelessWidget {
                   left: 10,
                   right: 10, // or any other suitable value
                   child: SizedBox(
-                    height: size.height-250,
-                    width: size.width-40, // subtract the left and right padding from the total width
+                    height: size1.height - 250,
+                    width: size1.width -
+                        40, // subtract the left and right padding from the total width
                     child: ListView.builder(
                       itemCount: _posts.length,
                       itemBuilder: (context, index) {
@@ -172,7 +185,8 @@ class RentListScreen extends StatelessWidget {
                                           ),
                                         ],
                                         image: DecorationImage(
-                                          image: AssetImage(post.image),
+                                          image:
+                                              NetworkImage(post.images.first),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -193,7 +207,7 @@ class RentListScreen extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(left: 13.0),
                                     child: Text(
-                                      post.price,
+                                      "\$" + post.price.toString(),
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: primaryRed,
@@ -204,7 +218,7 @@ class RentListScreen extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(right: 13.0),
                                     child: Text(
-                                      post.title,
+                                      post.city,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         color: primaryRed,
@@ -236,7 +250,7 @@ class RentListScreen extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(right: 6.0),
                                         child: Text(
-                                          post.bedrooms,
+                                          post.numRooms.toString(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: primaryRed,
@@ -264,7 +278,7 @@ class RentListScreen extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(right: 13.0),
                                         child: Text(
-                                          post.bathrooms,
+                                          post.numBathrooms.toString(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: primaryRed,
@@ -292,7 +306,7 @@ class RentListScreen extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(right: 75.0),
                                         child: Text(
-                                          post.space,
+                                          post.size.toString(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: primaryRed,
@@ -325,12 +339,12 @@ class RentListScreen extends StatelessWidget {
               ],
             ),
           ),
-            Positioned(
-            top: size.width - size.width + 120,
+          Positioned(
+            top: size1.width - size1.width + 120,
             left: 10,
             child: Container(
               height: 50,
-              width: size.width - 100,
+              width: size1.width - 100,
               decoration: BoxDecoration(
                 color: primaryWhite,
                 borderRadius: BorderRadius.circular(35.0),
@@ -355,11 +369,11 @@ class RentListScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: size.width - size.width + 124,
-            left: size.width - 78,
+            top: size1.width - size1.width + 124,
+            left: size1.width - 78,
             right: 20,
             child: Container(
-              height: size.width - 343,
+              height: size1.width - 343,
               width: 20,
               decoration: BoxDecoration(
                 color: primaryWhite,

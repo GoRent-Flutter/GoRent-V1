@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/BuyList/card.dart';
@@ -5,61 +6,72 @@ import '../Filters/filters.dart';
 import '../Main/main_screen.dart';
 
 class Estate {
-  final String image;
-  final String title;
+  final List<String> images;
+  final String city;
   final String type;
-  final String price;
-  final String bedrooms;
-  final String bathrooms;
-  final String space;
+  final String description;
+  final int price;
+  final int numRooms;
+  final int numBathrooms;
+  final int size;
 
-  Estate(
-      {required this.image,
-      required this.title,
-      required this.type,
-      required this.price,
-      required this.bedrooms,
-      required this.bathrooms,
-      required this.space});
+  Estate({
+    required this.images,
+    required this.city,
+    required this.type,
+    required this.description,
+    required this.price,
+    required this.numRooms,
+    required this.numBathrooms,
+    required this.size,
+  });
 }
 
-class BuyListScreen extends StatelessWidget {
-  final List<Estate> _estates = [
-    Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 1',
-        type: 'شقة للشراء',
-        price: '\$400/m',
-        bedrooms: '2',
-        bathrooms: '2',
-        space: '1400 Ft'),
-    Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 2',
-        type: 'بيت للشراء',
-        price: '\$300/m',
-        bedrooms: '3',
-        bathrooms: '1',
-        space: '1040 Ft'),
-    Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 3',
-        type: 'بيت للشراء',
-        price: '\$500/m',
-        bedrooms: '3',
-        bathrooms: '1',
-        space: '1040 Ft'),
-    Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 4',
-        type: 'شقة للشراء',
-        price: '\$600/m',
-        bedrooms: '3',
-        bathrooms: '2',
-        space: '1800 Ft'),
-  ];
-
+class BuyListScreen extends StatefulWidget {
   BuyListScreen({Key? key}) : super(key: key);
+
+  @override
+  _BuyListScreenState createState() => _BuyListScreenState();
+}
+
+class _BuyListScreenState extends State<BuyListScreen> {
+  late DatabaseReference _databaseRef;
+  List<Estate> _estates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseRef = FirebaseDatabase.instance.reference().child('sale');
+    _databaseRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final estates = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          _estates = estates.entries.map((entry) {
+            final estate = Map<String, dynamic>.from(entry.value);
+            List<String> imageUrls = [];
+            if (estate['images'] != null) {
+              final images = estate['images'] as Map<dynamic, dynamic>;
+              if (images.isNotEmpty) {
+                imageUrls =
+                    images.values.map((value) => value.toString()).toList();
+              }
+            }
+            return Estate(
+              images: imageUrls,
+              city: estate['city'] as String,
+              type: estate['type'] as String,
+              description: estate['description'] as String,
+              price: estate['price'] as int,
+              numRooms: estate['numRooms'] as int,
+              numBathrooms: estate['numBathrooms'] as int,
+              size: estate['size'] as int,
+            );
+          }).toList();
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +182,8 @@ class BuyListScreen extends StatelessWidget {
                                           ),
                                         ],
                                         image: DecorationImage(
-                                          image: AssetImage(estate.image),
+                                          image:
+                                              NetworkImage(estate.images.first),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -191,7 +204,7 @@ class BuyListScreen extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(left: 13.0),
                                     child: Text(
-                                      estate.price,
+                                      "\$" + estate.price.toString(),
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: primaryRed,
@@ -202,7 +215,7 @@ class BuyListScreen extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(right: 13.0),
                                     child: Text(
-                                      estate.title,
+                                      estate.city,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         color: primaryRed,
@@ -234,7 +247,7 @@ class BuyListScreen extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(right: 6.0),
                                         child: Text(
-                                          estate.bedrooms,
+                                          estate.numRooms.toString(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: primaryRed,
@@ -262,7 +275,7 @@ class BuyListScreen extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(right: 13.0),
                                         child: Text(
-                                          estate.bathrooms,
+                                          estate.numBathrooms.toString(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: primaryRed,
@@ -290,7 +303,7 @@ class BuyListScreen extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(right: 75.0),
                                         child: Text(
-                                          estate.space,
+                                          estate.size.toString(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: primaryRed,
