@@ -19,37 +19,41 @@ class MainScreenState extends State<MainScreen> {
   bool isRecommended = false;
   final List<Estate> _estates = [
     Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 1',
+        images: ['assets/images/apartments.jpg'],
+        city: 'العقار 1',
         type: 'شقة للشراء',
-        price: '\$400/m',
-        bedrooms: '2',
-        bathrooms: '2',
-        space: '1400 Ft'),
+        description: 'test',
+        price: 400,
+        numRooms: 2,
+        numBathrooms: 2,
+        size: 1400),
     Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 2',
+        images: ['assets/images/apartments.jpg'],
+        city: 'العقار 2',
         type: 'بيت للشراء',
-        price: '\$300/m',
-        bedrooms: '3',
-        bathrooms: '1',
-        space: '1040 Ft'),
+        description: 'test',
+        price: 300,
+        numRooms: 3,
+        numBathrooms: 1,
+        size: 1040),
     Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 3',
+        images: ['assets/images/apartments.jpg'],
+        city: 'العقار 3',
         type: 'بيت للشراء',
-        price: '\$500/m',
-        bedrooms: '3',
-        bathrooms: '1',
-        space: '1040 Ft'),
+        description: 'test',
+        price: 500,
+        numRooms: 3,
+        numBathrooms: 1,
+        size: 1040),
     Estate(
-        image: 'assets/images/apartments.jpg',
-        title: 'العقار 4',
+        images: ['assets/images/apartments.jpg'],
+        city: 'العقار 4',
         type: 'شقة للشراء',
-        price: '\$600/m',
-        bedrooms: '3',
-        bathrooms: '2',
-        space: '1800 Ft'),
+        description: 'test',
+        price: 600,
+        numRooms: 3,
+        numBathrooms: 2,
+        size: 1800),
   ];
   @override
   Widget build(BuildContext context) {
@@ -363,7 +367,8 @@ class MainScreenState extends State<MainScreen> {
                                         ),
                                       ],
                                       image: DecorationImage(
-                                        image: AssetImage(estate.image),
+                                        image: AssetImage(
+                                            'assets/images/apartments.jpg'),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -387,7 +392,7 @@ class MainScreenState extends State<MainScreen> {
                                       left: 13.0,
                                       right: size.width - 200),
                                   child: Text(
-                                    estate.price,
+                                    estate.price.toString(),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: primaryRed,
@@ -399,7 +404,7 @@ class MainScreenState extends State<MainScreen> {
                                   padding: const EdgeInsets.only(
                                       top: 8, right: 13.0),
                                   child: Text(
-                                    estate.title,
+                                    estate.city,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: primaryRed,
@@ -435,7 +440,7 @@ class MainScreenState extends State<MainScreen> {
                                       padding:
                                           const EdgeInsets.only(right: 6.0),
                                       child: Text(
-                                        estate.bedrooms,
+                                        estate.numRooms.toString(),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: primaryRed,
@@ -464,7 +469,7 @@ class MainScreenState extends State<MainScreen> {
                                       padding:
                                           const EdgeInsets.only(right: 13.0),
                                       child: Text(
-                                        estate.bathrooms,
+                                        estate.numBathrooms.toString(),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: primaryRed,
@@ -493,7 +498,7 @@ class MainScreenState extends State<MainScreen> {
                                       padding:
                                           const EdgeInsets.only(right: 75.0),
                                       child: Text(
-                                        estate.space,
+                                        estate.size.toString(),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: primaryRed,
