@@ -8,61 +8,61 @@ class SuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Apartment added successfully!',
-              style: TextStyle(fontSize: 24),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 48),
-            Expanded(
-              child: Container(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddApartmentScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: primaryRed,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 100), // adjust the top padding as necessary
+          child: Column(
+            children: [
+              const Text(
+                'Apartment added successfully!',
+                style: TextStyle(fontSize: 24),
+                textAlign: TextAlign.center,
+              ),
+              Expanded(
+                child: SizedBox(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddApartmentScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: primaryRed,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
+                    child: const Text('Continue Uploading'),
                   ),
-                  child: const Text('Continue Uploading'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const OwnerScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: primaryRed,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const OwnerScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: primaryRed,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
+                    child: const Text('Stop Uploading'),
                   ),
-                  child: const Text('Stop Uploading'),
-                ),
-              ],
-            ),
-            SizedBox(height: 48),
-          ],
+                ],
+              ),
+              SizedBox(height: 48),
+            ],
+          ),
         ),
       ),
     );

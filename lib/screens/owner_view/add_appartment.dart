@@ -36,7 +36,6 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   bool isApproved = false;
   bool isLoading = false;
 
-
   final picker = ImagePicker();
 
   Future getImage() async {
@@ -183,6 +182,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       _type = value!;
                     });
                   },
+                  onSaved: (value) {
+                    setState(() {
+                      _type = value!;
+                    });
+                  },
                   validator: (value) {
                     if (value == null) {
                       return 'Please choose the type';
@@ -201,12 +205,17 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       .toList(),
                   onChanged: (value) {
                     setState(() {
-                      _type = value!;
+                      _city = value!;
+                    });
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      _city = value!;
                     });
                   },
                   validator: (value) {
                     if (value == null) {
-                      return 'Please choose the type';
+                      return 'Please choose the city';
                     }
                     return null;
                   },
@@ -229,6 +238,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       isApproved = value!;
                     });
                   },
+                  onSaved: (value) {
+                    setState(() {
+                      isApproved = value!;
+                    });
+                  },
                   validator: (value) {
                     if (value == null) {
                       return 'Please choose a value';
@@ -244,12 +258,26 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    _address1 = value;
+                  },
                   onSaved: (value) {
                     _address1 = value!;
                   },
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Address 2'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter Address 2';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _address2 = value;
+                    });
+                  },
                   onSaved: (value) {
                     _address2 = value!;
                   },
@@ -263,8 +291,15 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _numRooms = int.parse(value);
+                    });
+                  },
                   onSaved: (value) {
-                    _numRooms = int.parse(value!);
+                    setState(() {
+                      _numRooms = int.parse(value!);
+                    });
                   },
                 ),
                 TextFormField(
@@ -275,6 +310,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       return 'Please enter the number of bathrooms';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _numBathrooms = int.parse(value);
+                    });
                   },
                   onSaved: (value) {
                     _numBathrooms = int.parse(value!);
@@ -289,6 +329,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _numVerandas = int.parse(value);
+                    });
+                  },
                   onSaved: (value) {
                     _numVerandas = int.parse(value!);
                   },
@@ -301,6 +346,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       return 'Please enter the number of salons';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _numSalons = int.parse(value);
+                    });
                   },
                   onSaved: (value) {
                     _numSalons = int.parse(value!);
@@ -315,6 +365,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _numKitchens = int.parse(value);
+                    });
+                  },
                   onSaved: (value) {
                     _numKitchens = int.parse(value!);
                   },
@@ -327,6 +382,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       return 'Please enter the size';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _size = double.parse(value);
+                    });
                   },
                   onSaved: (value) {
                     _size = double.parse(value!);
@@ -341,6 +401,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _price = double.parse(value);
+                    });
+                  },
                   onSaved: (value) {
                     _price = double.parse(value!);
                   },
@@ -353,6 +418,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       return 'Please enter the latitude';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _latitude = double.parse(value);
+                    });
                   },
                   onSaved: (value) {
                     _latitude = double.parse(value!);
@@ -367,6 +437,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _longitude = double.parse(value);
+                    });
+                  },
                   onSaved: (value) {
                     _longitude = double.parse(value!);
                   },
@@ -378,6 +453,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       return 'Please enter the description';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _description = value;
+                    });
                   },
                   onSaved: (value) {
                     _description = value!;
@@ -391,6 +471,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                       return 'Please enter the Owner ID';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _OwnerID = int.parse(value);
+                    });
                   },
                   onSaved: (value) {
                     _OwnerID = int.parse(value!.toString());
