@@ -50,7 +50,10 @@ class _RentListScreenState extends State<RentListScreen> {
         final posts = (event.snapshot.value as Map<dynamic, dynamic>)
             .cast<String, dynamic>();
         setState(() {
-          _posts = posts.entries.map((entry) {
+          _posts = posts.entries
+              .where((entry) =>
+                  entry.value['isApproves'] == true) // <-- filter posts
+              .map((entry) {
             final post = Map<String, dynamic>.from(entry.value);
             List<String> imageUrls = [];
             if (post['images'] != null) {
@@ -149,9 +152,9 @@ class _RentListScreenState extends State<RentListScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 35, // or any other suitable value
+                  top: 35,
                   left: 10,
-                  right: 10, // or any other suitable value
+                  right: 10,
                   child: SizedBox(
                     height: size1.height - 250,
                     width: size1.width -
@@ -160,7 +163,6 @@ class _RentListScreenState extends State<RentListScreen> {
                       itemCount: _posts.length,
                       itemBuilder: (context, index) {
                         final post = _posts[index];
-
                         return MySquare(
                           post: post,
                           child: Column(
