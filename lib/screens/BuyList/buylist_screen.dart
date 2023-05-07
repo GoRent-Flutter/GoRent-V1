@@ -47,7 +47,9 @@ class _BuyListScreenState extends State<BuyListScreen> {
         final estates = (event.snapshot.value as Map<dynamic, dynamic>)
             .cast<String, dynamic>();
         setState(() {
-          _estates = estates.entries.map((entry) {
+          _estates = estates.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) {
             final estate = Map<String, dynamic>.from(entry.value);
             List<String> imageUrls = [];
             if (estate['images'] != null) {
