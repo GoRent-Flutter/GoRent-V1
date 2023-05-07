@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import '../user_account_screen.dart';
 
 class ReportProblemScreen extends StatefulWidget {
@@ -10,6 +15,78 @@ class ReportProblemScreen extends StatefulWidget {
 }
 
 class ReportProblemState extends State<ReportProblemScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  late String _type = '';
+  late String _description = '';
+  List<File> _images = [];
+
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _images.add(File(pickedFile.path));
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  void _submitForm() {
+    // Generate a unique ID for the new apartment
+    final id = FirebaseDatabase.instance.reference().push().key;
+
+    // Create a new instance of the apartment with the given data
+    final issue = {
+      'type': _type,
+      'description': _description,
+      'images': [],
+    };
+
+    FirebaseDatabase.instance
+        .reference()
+        .child('problems')
+        .child(id!)
+        .set(issue);
+
+    // Upload the apartment images to Firebase Storage
+    for (final imageFile in _images) {
+      // Generate a unique ID for the new image
+      final imageId =
+          FirebaseDatabase.instance.reference().child(id!).push().key;
+
+      // Upload the image file to Firebase Storage
+      final storageReference = FirebaseStorage.instance
+          .ref()
+          .child('images')
+          .child('$id/$imageId.jpg');
+      final uploadTask = storageReference.putFile(imageFile);
+      uploadTask.whenComplete(() => null).then((snapshot) async {
+        // Get the download URL of the uploaded image
+        final downloadUrl = await snapshot.ref.getDownloadURL();
+
+        // Add the download URL of the uploaded image to the apartment data
+        FirebaseDatabase.instance
+            .reference()
+            .child('problems')
+            .child(id)
+            .child('images')
+            .push()
+            .set(downloadUrl);
+      });
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OwnerScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String? selectedOption;
@@ -19,6 +96,7 @@ class ReportProblemState extends State<ReportProblemScreen> {
       'مشكلة في العقارات المعروضة',
       'أخرى',
     ];
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: primaryWhite,
@@ -98,6 +176,7 @@ class ReportProblemState extends State<ReportProblemScreen> {
                   onChanged: (String? value) {
                     setState(() {
                       selectedOption = value;
+                      _type = value ?? '';
                     });
                   },
                   hint: Align(
@@ -112,97 +191,131 @@ class ReportProblemState extends State<ReportProblemScreen> {
               ),
             ),
             Positioned(
-              top: size.width / 2 + 15,
-              left: size.width / 2 + 95,
-              right: 16,
-              child: Text('وصف المشكلة'),
-            ),
-            Positioned(
               top: size.width / 2 + 50,
               left: 16,
               right: 16,
-              child: Column(
-                children: <Widget>[
-                  LimitedBox(
-                    maxHeight:
-                        size.width / 4, // set the maximum height of the box
-                    child: Container(
-                      height: size.width / 4,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(
-                          color: primaryHint.withOpacity(0.2),
-                          width: 1.0,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryWhite,
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: Offset(0, 2), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: SingleChildScrollView(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(16.0),
-                          ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      child: TextFormField(
                           textDirection: TextDirection.rtl,
-                          maxLines: null,
+                          textAlign: TextAlign.right,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'أدخل وصفًا للمشكلة',
+                            hintStyle: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'يجب إدخال وصف المشكلة';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              _description = value;
+                            });
+                          },
+                          onSaved: (value) {
+                            setState(() {
+                              _description = value!;
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.add_a_photo),
+                      label: const Text('إضافة صورة'),
+                    
+                      onPressed: getImage,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 30),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: primaryRed,
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _submitForm();
+                          }
+                        },
+                        child: const Text(
+                          'إرسال',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-              Positioned(
-              top: size.width / 2 + 170,
-              left: size.width/3,
-              child: Text('attach a photo/video (later)'),
-              ),
-
-               Positioned(
-              top: size.height/2,
-              left: 50,
-              right: 50,
-              child:TextButton(
-                  onPressed: () async {
-                    //   bool success = await checkValues();
-                    //   if (success == true) {
-                    //     currentIndex == 1
-                    //         ? Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) => MainScreen()))
-                    //         : Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) => OwnerScreen()),
-                    //           );
-                    //   } else if (success == false) {
-                    //     print("an error occurred while trying to sign up");
-                    //   }
-                    },
-                style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
-                  ),
-                ),
-                child: const Text(
-                  'إرسال',
-                  style: TextStyle(
-                    color: primaryWhite,
-                    fontSize: 21.0,
-                  ),
-                ),
-              )
-              )
-
+            _images.isNotEmpty
+                ? Positioned(
+                    top: size.width / 2 + 110,
+                    right: 16,
+                    child: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _images.length,
+                        itemBuilder: (context, index) {
+                          final file = _images[index];
+                          return Stack(
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                margin: const EdgeInsets.only(right: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  image: DecorationImage(
+                                    image: FileImage(file),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: -5,
+                                right: -5,
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                : Container(),
           ]),
         ));
   }
