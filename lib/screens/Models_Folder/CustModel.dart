@@ -1,30 +1,28 @@
-class OwnerModel {
-  String? ownerId;
+class CustModel {
+  String? custId;
   String? fullname;
   String? password;
   String? email;
   String? city;
   String? phone_number;
-  //phone number is string because when fetching the data (strings will be fetched)
-  OwnerModel({
-    this.fullname,
-    this.email,
-    this.password,
-    this.city,
-    this.ownerId,
-    this.phone_number,
-  });
-  OwnerModel.fromMap(Map<String, dynamic> map) {
-    ownerId = map["ownerId"];
+  CustModel(
+      {this.fullname,
+      this.email,
+      this.password,
+      this.city,
+      this.custId,
+      this.phone_number,});
+  CustModel.fromMap(Map<String, dynamic> map) {
+    custId = map["custId"];
     fullname = map["fullname"];
     email = map["email"];
-    password = map["password"];
+    password=map["password"];
     city = map["city"];
     phone_number = map["phone_number"];
   }
   Map<String, dynamic> toMap() {
     return {
-      "ownerId": ownerId,
+      "custId": custId,
       "fullname": fullname,
       "email": email,
       "password":password,

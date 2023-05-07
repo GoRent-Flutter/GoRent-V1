@@ -1,12 +1,72 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
-import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
-import 'package:gorent_application1/user_bottom_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+
+import '../Models_Folder/CustModel.dart';
+import '../owner_view/owner_view_screen.dart';
 
 class AboutYouScreen extends StatelessWidget {
-  const AboutYouScreen({Key? key}) : super(key: key);
+  final String userId;
+  final int currentIndex;
+  AboutYouScreen({Key? key, required this.userId, required this.currentIndex})
+      : super(key: key);
+
+  TextEditingController fullnameController = TextEditingController();
+  TextEditingController phone_numberController = TextEditingController();
+
+  Future<bool> userValues() async {
+    String fullname = fullnameController.text;
+    String phone_number = phone_numberController.text;
+    if (fullname == "" || phone_number == "") {
+      //a text should appear to the user/owner (will do this later)
+      print("fill the empty fields!");
+      return false;
+    } else {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+       try {
+        if (currentIndex == 1) {
+          await firestore.collection('customers').doc(userId).update({
+            'fullname': fullname,
+            'phone_number': phone_number,
+            'city': "",
+          });
+
+          // Generate and store session ID
+            String sessionId = Uuid().v4();
+
+            //distinguish between customer and owner session ID
+            String userSessionId = sessionId + ".customer";
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('sessionId', userSessionId);
+          return true;
+        } else if (currentIndex == 0) {
+          await firestore.collection('owners').doc(userId).update({
+            'fullname': fullname,
+            'phone_number': phone_number,
+            'city': "",
+          });
+          
+          // Generate and store session ID
+            String sessionId = Uuid().v4();
+
+            //distinguish between customer and owner session ID
+            String userSessionId = sessionId + ".owner";
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('sessionId', userSessionId);
+          return true;
+        }
+      } catch (ex) {
+        print(ex.toString());
+        return false;
+      }
+    }
+    return false;
+       
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +157,8 @@ class AboutYouScreen extends StatelessWidget {
                         width: 1,
                       ),
                     ),
-                    child: const TextField(
+                    child: TextField(
+                      controller: fullnameController,
                       decoration: InputDecoration(
                         hintText: ' اسم المستخدم',
                         hintStyle: TextStyle(
@@ -124,7 +185,9 @@ class AboutYouScreen extends StatelessWidget {
                         width: 1,
                       ),
                     ),
-                    child: const TextField(
+                    child: TextField(
+                      controller: phone_numberController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText: 'رقم الهاتف',
                         hintStyle: TextStyle(
@@ -137,7 +200,6 @@ class AboutYouScreen extends StatelessWidget {
                         ),
                       ),
                       textAlign: TextAlign.right,
-                      obscureText: true,
                     ),
                   ),
                 ),
@@ -174,8 +236,7 @@ class AboutYouScreen extends StatelessWidget {
                                 ),
                               );
                             }).toList(),
-                            onChanged: (String? value) {
-                            },
+                            onChanged: (String? value) {},
                             hint: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
@@ -198,11 +259,22 @@ class AboutYouScreen extends StatelessWidget {
               left: 60,
               right: 60,
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainScreen()),
-                  );
+                onPressed: () async {
+                  bool success = await userValues();
+                  if (success == true) {
+                    currentIndex == 1
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainScreen()))
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OwnerScreen()),
+                          );
+                  } else if (success == false) {
+                    print("an error occurred while trying to sign up");
+                  }
                 },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),

@@ -64,6 +64,7 @@ class MainScreenState extends State<MainScreen> {
           child: Stack(children: <Widget>[
         const Positioned(
             child: Scaffold(
+              
           bottomNavigationBar: BottomNavBar(
             currentIndex: 0,
           ),

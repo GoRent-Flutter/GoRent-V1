@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gorent_application1/screens/Models_Folder/UserModel.dart';
+import 'package:gorent_application1/screens/Models_Folder/CustModel.dart';
+import 'package:gorent_application1/screens/Models_Folder/OwnerModel.dart';
 import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../../constraints.dart';
 import '../Main/main_screen.dart';
 import '../owner_view/owner_view_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final int currentIndex;
-  static bool isOwner = false;
-  static bool isUser = false;
 
   LoginScreen({Key? key, required this.currentIndex}) : super(key: key);
 
@@ -28,16 +29,28 @@ class LoginScreen extends StatelessWidget {
     } else {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       try {
-        String userId = email; // Use email as user ID
+        String userId =
+            email + "-" + currentIndex.toString(); // Use email as user ID
 
         if (currentIndex == 1) {
-          // Check if customer already exists in collection
+          // Check if owner already exists in collection
           final userDoc =
               await firestore.collection('customers').doc(userId).get();
           if (userDoc.exists) {
-            print('User already exists in collection');
             // Check if password matches
             if (userDoc.data()!['password'] == password) {
+              // Generate and store session ID
+              String sessionId = Uuid().v4();
+
+              //distinguish between customer and owner session ID
+              String userSessionId = sessionId + ".customer";
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setString('sessionId', userSessionId);
+              print('SESSION ID: ' + userSessionId);
+
+              CustModel custModel =
+                  CustModel.fromMap(userDoc.data() as Map<String, dynamic>);
+
               Navigator.pop(context);
               return true;
             } else {
@@ -53,9 +66,20 @@ class LoginScreen extends StatelessWidget {
           final userDoc =
               await firestore.collection('owners').doc(userId).get();
           if (userDoc.exists) {
-            print('User already exists in collection');
             // Check if password matches
             if (userDoc.data()!['password'] == password) {
+              // Generate and store session ID
+              String sessionId = Uuid().v4();
+
+              //distinguish between customer and owner session ID
+              String userSessionId = sessionId + ".owner";
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setString('sessionId', userSessionId);
+              print('SESSION ID: ' + userSessionId);
+
+              OwnerModel ownerModel =
+                  OwnerModel.fromMap(userDoc.data() as Map<String, dynamic>);
+
               Navigator.pop(context);
               return true;
             } else {
@@ -68,25 +92,12 @@ class LoginScreen extends StatelessWidget {
           }
         }
       } catch (ex) {
-        print(ex.toString());
+        print(ex.toString() + "here");
         return false;
       }
     }
     return false; // def return value
   }
-
-  // Future<void> signIn(BuildContext context) async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return Center(
-  //         child: CircularProgressIndicator(),
-  //       );
-  //     },
-  //   );
-  //   await Future.delayed(const Duration(seconds: 1)); // Add delay here
-  //   Navigator.pop(context);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +276,6 @@ class LoginScreen extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: passwordController,
-                       
                       decoration: InputDecoration(
                         hintText: ' كلمة المرور',
                         hintStyle: TextStyle(
@@ -306,7 +316,6 @@ class LoginScreen extends StatelessWidget {
               right: 60,
               child: TextButton(
                 onPressed: () async {
-                  // await signIn(context);
                   bool success = await checkValues(context);
                   if (success == true) {
                     currentIndex == 1
@@ -320,7 +329,7 @@ class LoginScreen extends StatelessWidget {
                                 builder: (context) => OwnerScreen()),
                           );
                   } else if (success == false) {
-                    print("an error occurred while trying to sign up");
+                    print("an error occurred while trying to sign in");
                   }
                 },
                 style: TextButton.styleFrom(

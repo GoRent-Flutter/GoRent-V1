@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Account/user_account_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../users/users_screen.dart';
 import 'change_password_screen.dart';
@@ -28,7 +29,9 @@ class EditProfilePageState extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('sessionId');
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const UsersScreen()),

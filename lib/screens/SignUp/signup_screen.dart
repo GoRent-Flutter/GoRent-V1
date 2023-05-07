@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
+import 'package:gorent_application1/screens/Models_Folder/CustModel.dart';
+import 'package:gorent_application1/screens/Models_Folder/OwnerModel.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../../constraints.dart';
 import 'about_you_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   final int currentIndex;
-  static bool success = false;
+  static String passedUserId = 'user';
   SignupScreen({Key? key, required this.currentIndex}) : super(key: key);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -32,7 +35,8 @@ class SignupScreen extends StatelessWidget {
       // signUp(email, password, currentIndex);
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       try {
-        String userId = email; // Use email as user ID
+        String userId =
+            email + "-" + currentIndex.toString(); // Use email as user ID
 
         if (currentIndex == 1) {
           // Check if customer already exists in collection
@@ -44,10 +48,35 @@ class SignupScreen extends StatelessWidget {
           }
           // if the customer does not exist, add new user to collection
           else {
-            await firestore.collection('customers').doc(userId).set({
-              'email': email,
-              'password': password,
-            });
+            CustModel newCustomer = CustModel(
+                custId: userId,
+                phone_number: null,
+                email: email,
+                password: password,
+                city: null,
+                fullname: null);
+            await firestore
+                .collection('customers')
+                .doc(userId)
+                .set(newCustomer.toMap());
+            // await firestore.collection('customers').doc(userId).set({
+            //   'email': email,
+            //   'password': password,
+            //   'fullname': "",
+            //   'custId': userId,
+            //   'phone_number': 0,
+            //   'city': "",
+            // });
+            passedUserId = userId;
+
+            // // Generate and store session ID
+            // String sessionId = Uuid().v4();
+
+            // //distinguish between customer and owner session ID
+            // String userSessionId = sessionId + ".customer";
+            // SharedPreferences prefs = await SharedPreferences.getInstance();
+            // await prefs.setString('sessionId', userSessionId);
+
             return true;
           }
         } else if (currentIndex == 0) {
@@ -60,10 +89,36 @@ class SignupScreen extends StatelessWidget {
           }
           // if the owner does not exist, add new user to collection
           else {
-            await firestore.collection('owners').doc(userId).set({
-              'email': email,
-              'password': password,
-            });
+               OwnerModel newOwner = OwnerModel(
+                ownerId: userId,
+                phone_number: null,
+                email: email,
+                password: password,
+                city: null,
+                fullname: null);
+            await firestore
+                .collection('owners')
+                .doc(userId)
+                .set(newOwner.toMap());
+
+
+            // await firestore.collection('owners').doc(userId).set({
+            //   'email': email,
+            //   'password': password,
+            //   'fullname': "",
+            //   'ownerId': userId,
+            //   'phone_number': 0,
+            //   'city': "",
+            // });
+            passedUserId = userId;
+
+            // // Generate and store session ID
+            // String sessionId = Uuid().v4();
+
+            // //distinguish between customer and owner session ID
+            // String userSessionId = sessionId + ".owner";
+            // SharedPreferences prefs = await SharedPreferences.getInstance();
+            // await prefs.setString('sessionId', userSessionId);
             return true;
           }
         }
@@ -323,11 +378,15 @@ class SignupScreen extends StatelessWidget {
                             ? Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MainScreen()))
+                                    builder: (context) => AboutYouScreen(
+                                        userId: passedUserId,
+                                        currentIndex: currentIndex)))
                             : Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => OwnerScreen()),
+                                    builder: (context) => AboutYouScreen(
+                                        userId: passedUserId,
+                                        currentIndex: currentIndex)),
                               );
                       } else if (success == false) {
                         print("an error occurred while trying to sign up");

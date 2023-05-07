@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/Favourite/favourite_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/Map/map_screen.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
@@ -62,14 +61,14 @@ class BottomNavBarState extends State<OwnerBottomNavBar> {
                   MaterialPageRoute(builder: (context) => const OwnerScreen()),
                 );
                 }
-                //problem here, will go to normal users screen when these are pressed
-                // else if (currentIndex == 1) {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => const MainScreen()),
-                // );
-              // }
+                // problem here, will go to normal users screen when these are pressed
+                else if (currentIndex == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MainScreen()),
+                );
+              }
               else if (currentIndex == 2) {
                  Navigator.push(
                     context,
