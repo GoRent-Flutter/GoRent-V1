@@ -1,23 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-
 import '../Models_Folder/CustModel.dart';
 import '../owner_view/owner_view_screen.dart';
 
-class AboutYouScreen extends StatelessWidget {
+class AboutYouScreen extends StatefulWidget {
   final String userId;
   final int currentIndex;
-  AboutYouScreen({Key? key, required this.userId, required this.currentIndex})
-      : super(key: key);
 
+  const AboutYouScreen({
+    Key? key,
+    required this.userId,
+    required this.currentIndex,
+  }) : super(key: key);
+
+  @override
+  AboutYouScreenState createState() => AboutYouScreenState();
+}
+
+class AboutYouScreenState extends State<AboutYouScreen> {
   TextEditingController fullnameController = TextEditingController();
   TextEditingController phone_numberController = TextEditingController();
-
+  String selectedCity = "المدينة";
   Future<bool> userValues() async {
     String fullname = fullnameController.text;
     String phone_number = phone_numberController.text;
@@ -27,36 +34,36 @@ class AboutYouScreen extends StatelessWidget {
       return false;
     } else {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
-       try {
-        if (currentIndex == 1) {
-          await firestore.collection('customers').doc(userId).update({
+      try {
+        if (widget.currentIndex == 1) {
+          await firestore.collection('customers').doc(widget.userId).update({
             'fullname': fullname,
             'phone_number': phone_number,
-            'city': "",
+            'city': selectedCity,
           });
 
           // Generate and store session ID
-            String sessionId = Uuid().v4();
+          String sessionId = Uuid().v4();
 
-            //distinguish between customer and owner session ID
-            String userSessionId = sessionId + ".customer";
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('sessionId', userSessionId);
+          //distinguish between customer and owner session ID
+          String userSessionId = sessionId + ".customer";
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('sessionId', userSessionId);
           return true;
-        } else if (currentIndex == 0) {
-          await firestore.collection('owners').doc(userId).update({
+        } else if (widget.currentIndex == 0) {
+          await firestore.collection('owners').doc(widget.userId).update({
             'fullname': fullname,
             'phone_number': phone_number,
-            'city': "",
+            'city': selectedCity,
           });
-          
-          // Generate and store session ID
-            String sessionId = Uuid().v4();
 
-            //distinguish between customer and owner session ID
-            String userSessionId = sessionId + ".owner";
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('sessionId', userSessionId);
+          // Generate and store session ID
+          String sessionId = Uuid().v4();
+
+          //distinguish between customer and owner session ID
+          String userSessionId = sessionId + ".owner";
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('sessionId', userSessionId);
           return true;
         }
       } catch (ex) {
@@ -65,8 +72,7 @@ class AboutYouScreen extends StatelessWidget {
       }
     }
     return false;
-       
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +214,6 @@ class AboutYouScreen extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: primaryWhite,
-                      borderRadius: BorderRadius.circular(13.0),
                       border: Border.all(
                         color: primaryGrey,
                         width: 1,
@@ -236,17 +241,27 @@ class AboutYouScreen extends StatelessWidget {
                                 ),
                               );
                             }).toList(),
-                            onChanged: (String? value) {},
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedOption = value;
+                                selectedCity = value ?? 'المدينة';
+                              });
+                            },
                             hint: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                'المدينة',
+                                selectedCity,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  color: primaryHint,
+                                ),
                               ),
                             ),
                             isExpanded: true,
                             underline: const SizedBox.shrink(),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -262,7 +277,7 @@ class AboutYouScreen extends StatelessWidget {
                 onPressed: () async {
                   bool success = await userValues();
                   if (success == true) {
-                    currentIndex == 1
+                    widget.currentIndex == 1
                         ? Navigator.push(
                             context,
                             MaterialPageRoute(
