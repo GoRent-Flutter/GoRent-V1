@@ -94,6 +94,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         'description': _description,
         'images': [],
         'isApproves': isApproved,
+        'OwnerID': _OwnerID,
       };
 
       // Upload the apartment data to the appropriate Firebase Realtime Database location
@@ -473,10 +474,10 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     return null;
                   },
                   onChanged: (value) {
-                    _address1 = value;
+                    _OwnerID = value;
                   },
                   onSaved: (value) {
-                    _address1 = value!;
+                    _OwnerID = value!;
                   },
                 ),
                 const SizedBox(height: 16),
@@ -485,21 +486,34 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: getImage,
-                        style: TextButton.styleFrom(
-                          side: const BorderSide(width: 1, color: primaryWhite),
-                          backgroundColor: primaryRed,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(37.0),
-                          ),
-                        ),
-                        child: const Text('Add Image'),
-                      ),
+                      child:               ElevatedButton(
+                onPressed: getImage,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  primary: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'إرفاق صور',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
                     ),
                   ],
                 ),
                const SizedBox(height: 8),
+               const Text(
+                'الصور المرفقة:',
+                style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
+                  fontSize: 16,
+                ),
+              ),
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
@@ -567,23 +581,28 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: _submitForm,
-                        style: TextButton.styleFrom(
-                          side: const BorderSide(width: 1, color: primaryWhite),
-                          backgroundColor: primaryRed,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(37.0),
-                          ),
-                        ),
-                        child: Stack(
-                          children: [
-                            const Center(child: Text('Submit')),
-                            if (isLoading)
-                             const Center(child: CircularProgressIndicator()),
-                          ],
-                        ),
-                      ),
+                      child:               ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    _submitForm();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  primary: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'ارسال',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
                     ),
                   ],
                 ),
