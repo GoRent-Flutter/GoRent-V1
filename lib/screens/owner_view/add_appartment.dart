@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
@@ -20,13 +22,12 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   late String _type = 'بيع';
   late String _city = 'رام الله';
   late String _address1 = '';
-  late String _address2 = '';
   late int _numRooms = 0;
   late int _numBathrooms = 0;
   late int _numVerandas = 0;
   late int _numSalons = 0;
   late int _numKitchens = 0;
-  late int _OwnerID = 0;
+  late String _OwnerID = '';
   late double _size = 0.0;
   late double _price = 0.0;
   late double _latitude = 0.0;
@@ -37,6 +38,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   bool isLoading = false;
 
   final picker = ImagePicker();
+  
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -45,7 +47,23 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       if (pickedFile != null) {
         _images.add(File(pickedFile.path));
       } else {
-        print('No image selected.');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('قم بآدخال الصور المطلوبة'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
       }
     });
   }
@@ -64,7 +82,6 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         'type': _type,
         'city': _city,
         'address1': _address1,
-        'address2': _address2,
         'numRooms': _numRooms,
         'numBathrooms': _numBathrooms,
         'numVerandas': _numVerandas,
@@ -170,7 +187,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
               children: [
                 DropdownButtonFormField<String>(
                   value: _type,
-                  decoration: InputDecoration(labelText: 'Type'),
+                  decoration:const InputDecoration(labelText: 'Type'),
                   items: ['بيع', 'اجار']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
@@ -196,7 +213,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 ),
                 DropdownButtonFormField<String>(
                   value: _city,
-                  decoration: InputDecoration(labelText: 'City'),
+                  decoration: const InputDecoration(labelText: 'City'),
                   items: ['رام الله', 'نابلس', 'بيت لحم', 'طولكرم']
                       .map((type) => DropdownMenuItem<String>(
                             value: type,
@@ -222,7 +239,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                 ),
                 DropdownButtonFormField<bool>(
                   value: isApproved,
-                  decoration: InputDecoration(labelText: 'isApproved'),
+                  decoration: const InputDecoration(labelText: 'isApproved'),
                   items: const [
                     DropdownMenuItem<bool>(
                       value: true,
@@ -251,7 +268,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Address 1'),
+                  decoration:const InputDecoration(labelText: 'Address 1'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter the address';
@@ -266,24 +283,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Address 2'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter Address 2';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _address2 = value;
-                    });
-                  },
-                  onSaved: (value) {
-                    _address2 = value!;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Number of rooms'),
+                  decoration:const  InputDecoration(labelText: 'Number of rooms'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -303,7 +303,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Number of bathrooms'),
+                  decoration: const InputDecoration(labelText: 'Number of bathrooms'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -321,7 +321,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Number of verandas'),
+                  decoration:const  InputDecoration(labelText: 'Number of verandas'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -339,7 +339,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Number of salons'),
+                  decoration: const InputDecoration(labelText: 'Number of salons'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -357,7 +357,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Number of kitchens'),
+                  decoration: const InputDecoration(labelText: 'Number of kitchens'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -375,7 +375,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Size'),
+                  decoration:const InputDecoration(labelText: 'Size'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -393,7 +393,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Price'),
+                  decoration: const InputDecoration(labelText: 'Price'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -411,7 +411,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Latitude'),
+                  decoration: const InputDecoration(labelText: 'Latitude'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -429,7 +429,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Longitude'),
+                  decoration: const InputDecoration(labelText: 'Longitude'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -447,7 +447,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(labelText: 'Description'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter the description';
@@ -463,27 +463,25 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     _description = value!;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Owner ID'),
+                  decoration: const InputDecoration(labelText: 'Owner_id'),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please enter the Owner ID';
+                      return 'Please enter the address';
                     }
                     return null;
                   },
                   onChanged: (value) {
-                    setState(() {
-                      _OwnerID = int.parse(value);
-                    });
+                    _address1 = value;
                   },
                   onSaved: (value) {
-                    _OwnerID = int.parse(value!.toString());
+                    _address1 = value!;
                   },
                 ),
-                SizedBox(height: 16),
-                Text('Images'),
-                SizedBox(height: 8),
+                const SizedBox(height: 16),
+                const Text('Images'),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Expanded(
@@ -496,13 +494,13 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                             borderRadius: BorderRadius.circular(37.0),
                           ),
                         ),
-                        child: Text('Add Image'),
+                        child: const Text('Add Image'),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
-                Container(
+               const SizedBox(height: 8),
+                SizedBox(
                   height: 100,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -515,15 +513,15 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: Text('Remove Image'),
-                                content: Text(
+                                title: const Text('Remove Image'),
+                                content: const Text(
                                     'Are you sure you want to remove this image?'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text('Cancel'),
+                                    child: const Text('Cancel'),
                                   ),
                                   TextButton(
                                     onPressed: () {
@@ -532,7 +530,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                                       });
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text('Remove'),
+                                    child: const Text('Remove'),
                                   ),
                                 ],
                               ),
@@ -550,7 +548,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                                 top: 0,
                                 right: 0,
                                 child: IconButton(
-                                  icon: Icon(Icons.close),
+                                  icon: const Icon(Icons.close),
                                   onPressed: () {
                                     setState(() {
                                       _images.removeAt(index);
@@ -565,7 +563,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
@@ -580,9 +578,9 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                         ),
                         child: Stack(
                           children: [
-                            Center(child: Text('Submit')),
+                            const Center(child: Text('Submit')),
                             if (isLoading)
-                              Center(child: CircularProgressIndicator()),
+                             const Center(child: CircularProgressIndicator()),
                           ],
                         ),
                       ),

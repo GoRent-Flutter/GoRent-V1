@@ -6,6 +6,7 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../user_account_screen.dart';
+import 'success_screen.dart';
 
 class ReportProblemScreen extends StatefulWidget {
   const ReportProblemScreen({Key? key}) : super(key: key);
@@ -36,6 +37,27 @@ class ReportProblemState extends State<ReportProblemScreen> {
   }
 
   void _submitForm() {
+    // Check if any of the fields are empty
+    if (_type.isEmpty || _description.isEmpty || _images.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('يرجى ملء جميع الحقول المطلوبة.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
     // Generate a unique ID for the new apartment
     final id = FirebaseDatabase.instance.reference().push().key;
 
@@ -55,8 +77,7 @@ class ReportProblemState extends State<ReportProblemScreen> {
     // Upload the apartment images to Firebase Storage
     for (final imageFile in _images) {
       // Generate a unique ID for the new image
-      final imageId =
-          FirebaseDatabase.instance.reference().child(id!).push().key;
+      final imageId = FirebaseDatabase.instance.reference().push().key;
 
       // Upload the image file to Firebase Storage
       final storageReference = FirebaseStorage.instance
@@ -82,14 +103,15 @@ class ReportProblemState extends State<ReportProblemScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const OwnerScreen(),
+        builder: (context) => const SuccessScreen(),
       ),
     );
   }
 
+  String? selectedOption = 'مشكلة في معلومات الحساب'; // Default selected option
+
   @override
   Widget build(BuildContext context) {
-    String? selectedOption;
     final List<String> options = [
       'مشكلة في معلومات الحساب',
       'مشكلة في الرسائل',
@@ -99,63 +121,54 @@ class ReportProblemState extends State<ReportProblemScreen> {
 
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: primaryWhite,
+      appBar: AppBar(
         backgroundColor: primaryWhite,
-        appBar: AppBar(
-          backgroundColor: primaryWhite,
-          elevation: 1,
-          leading: IconButton(
-            icon:
-                Image.asset('assets/icons/Red_back.png', width: 24, height: 24),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const UserAccountScreen()),
-              );
-            },
-          ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 16, top: 16),
-              child: Text(
-                'الإبلاغ عن مشكلة',
-                style: TextStyle(
-                  color: primaryRed,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-          ],
+        elevation: 1,
+        leading: IconButton(
+          icon: Image.asset('assets/icons/Red_back.png', width: 24, height: 24),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const UserAccountScreen()),
+            );
+          },
         ),
-        body: Container(
-          height: size.height,
-          width: size.width,
-          child: Stack(children: <Widget>[
-            Positioned(
-              top: 20,
-              left: 16,
-              right: 16,
-              child: Container(
-                alignment: AlignmentDirectional.centerEnd,
-                child: const Text(
-                  "إذا كنت تواجه مشكلة في GoRent، فقد وصلت إلى المكان الصحيح. يرجى استخدام هذا النموذج لإخبارنا عن المشكلة التي تواجهها.",
-                  style: TextStyle(
-                    fontFamily: 'Scheherazade_New',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: primaryHint,
-                  ),
-                  textDirection: TextDirection.rtl,
-                ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16, top: 16),
+            child: Text(
+              'الإبلاغ عن مشكلة',
+              style: TextStyle(
+                color: primaryRed,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
               ),
             ),
-            Positioned(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    top: size.width / 2 - 60,
-                    left: size.width / 2 - 20,
-                    right: 16),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(height: 20),
+              const Text(
+                "إذا كنت تواجه مشكلة في GoRent، فقد وصلت إلى المكان الصحيح. يرجى استخدام هذا النموذج لإخبارنا عن المشكلة التي تواجهها.",
+                style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: primaryHint,
+                ),
+                textDirection: TextDirection.rtl,
+              ),
+              SizedBox(height: 20),
+Container(
+                color: Colors.white,
                 child: DropdownButton<String>(
                   value: selectedOption,
                   items: options.map((String option) {
@@ -180,158 +193,136 @@ class ReportProblemState extends State<ReportProblemScreen> {
                       _type = value ?? '';
                     });
                   },
-                  hint: Align(
+                  hint: const Align(
                     alignment: Alignment.centerRight,
                     child: Text(
                       'اختر مشكلة',
-                      style: TextStyle(
-                          fontFamily: 'Scheherazade_New', fontSize: 16),
+                      style: TextStyle(fontFamily: 'Scheherazade_New', fontSize: 16),
                     ),
                   ),
                   isExpanded: true,
                   icon: const Icon(Icons.arrow_drop_down, color: primaryRed),
                 ),
               ),
-            ),
-            Positioned(
-              top: size.width / 2 + 15,
-              left: size.width /2 + 82,
-              right: 16,
-              child: Text(
+              SizedBox(height: 20),
+              const Text(
                 'وصف المشكلة',
                 style: TextStyle(
                   fontFamily: 'Scheherazade_New',
-                  fontSize: 16
+                  fontSize: 16,
                 ),
               ),
-            ),
-            Positioned(
-              top: size.width / 2 + 50,
-              left: 16,
-              right: 16,
-              child: Form(
+              const SizedBox(height: 10),
+              Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      child: TextFormField(
-                          textDirection: TextDirection.rtl,
-                          textAlign: TextAlign.right,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'أدخل وصفًا للمشكلة',
-                            hintStyle: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'يجب إدخال وصف المشكلة';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              _description = value;
-                            });
-                          },
-                          onSaved: (value) {
-                            setState(() {
-                              _description = value!;
-                            });
-                          }),
+
+                child: TextFormField(
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'أدخل وصفًا للمشكلة',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.add_a_photo),
-                      label: const Text('إضافة صورة'),
-                    
-                      onPressed: getImage,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 30),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: primaryRed,
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _submitForm();
-                          }
-                        },
-                        child: const Text(
-                          'إرسال',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'يجب إدخال وصف المشكلة';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _description = value;
+                    });
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      _description = value!;
+                    });
+                  },
                 ),
               ),
-            ),
-            _images.isNotEmpty
-                ? Positioned(
-                    top: size.width / 2 + 110,
-                    right: 16,
-                    child: SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _images.length,
-                        itemBuilder: (context, index) {
-                          final file = _images[index];
-                          return Stack(
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                margin: const EdgeInsets.only(right: 8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  image: DecorationImage(
-                                    image: FileImage(file),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: -5,
-                                right: -5,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _images.removeAt(index);
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: getImage,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  primary: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'إرفاق صور',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              const Text(
+                'الصور المرفقة:',
+                style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 80,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _images.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      margin: EdgeInsets.only(right: 8),
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                          image: FileImage(_images[index]),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  )
-                : Container(),
-          ]),
-        ));
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    _submitForm();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  primary: primaryRed,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'ارسال',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
