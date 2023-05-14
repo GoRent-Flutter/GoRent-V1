@@ -27,7 +27,7 @@ class OwnerModel {
       "ownerId": ownerId,
       "fullname": fullname,
       "email": email,
-      "password":password,
+      "password": password,
       "city": city,
       "phone_number": phone_number
     };

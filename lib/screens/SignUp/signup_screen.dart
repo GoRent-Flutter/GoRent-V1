@@ -35,10 +35,10 @@ class SignupScreen extends StatelessWidget {
       // signUp(email, password, currentIndex);
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       try {
-        String userId =
-            email + "-" + currentIndex.toString(); // Use email as user ID
-
         if (currentIndex == 1) {
+           String userId =
+              email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
+
           // Check if customer already exists in collection
           final userDoc =
               await firestore.collection('customers').doc(userId).get();
@@ -80,6 +80,9 @@ class SignupScreen extends StatelessWidget {
             return true;
           }
         } else if (currentIndex == 0) {
+           String userId =
+              email + "-GROW"; // Use email as user ID -- GO RENT OWNER
+
           // Check if owner already exists in collection
           final userDoc =
               await firestore.collection('owners').doc(userId).get();

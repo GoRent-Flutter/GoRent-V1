@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
+import 'package:gorent_application1/screens/Models_Folder/CustModel.dart';
+import 'package:gorent_application1/screens/Models_Folder/FirebaseHelperCustomer.dart';
+import 'package:gorent_application1/screens/Models_Folder/FirebaseHelperOwner.dart';
+import 'package:gorent_application1/screens/Models_Folder/OwnerModel.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import 'package:gorent_application1/splash_screen.dart';
 import 'package:gorent_application1/screens/users/users_screen.dart';
@@ -16,23 +20,35 @@ Future<void> main() async {
   //check if there's a session id stored in shared prefs
   final prefs = await SharedPreferences.getInstance();
   final sessionId = prefs.getString('sessionId');
-  final String substring0 = 'owner';
+  const String substring0 = '-GROW';
 
   //iff there's a session id, show the logged in screen
   if (sessionId != null) {
+    FirebaseHelperOwner firebaseHelperOwner = FirebaseHelperOwner();
+    FirebaseHelperCustomer firebaseHelperCustomer = FirebaseHelperCustomer();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
+    List<String> parts = sessionId.split('.');
     //owner screen
     if (sessionId.contains(substring0)) {
-      runApp(const MyAppLoggedIn(currentIndex: 0));
+      OwnerModel? thisOwnerModel =
+          await firebaseHelperOwner.getModelById(parts[1]);
+      if (thisOwnerModel != null) {
+        runApp(LoggedInOwner(ownerModel: thisOwnerModel));
+      }
       return;
     }
-    
-    //customer screen
-    runApp(const MyAppLoggedIn(currentIndex: 1));
+/********************************************************************************************** */
+    // customer screen
+    else {
+      CustModel? thisCustModel =
+          await firebaseHelperCustomer.getModelById(parts[1]);
+      if (thisCustModel != null) {
+        runApp(LoggedInCustomer(custModel: thisCustModel));
+      }
       return;
+    }
   }
 
   //if there is no session id, show not logged in screen
@@ -69,10 +85,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//Logged in user
-class MyAppLoggedIn extends StatelessWidget {
-  final int currentIndex;
-  const MyAppLoggedIn({Key? key, required this.currentIndex}) : super(key: key);
+//owner login
+class LoggedInOwner extends StatelessWidget {
+  final OwnerModel ownerModel;
+  const LoggedInOwner({Key? key, required this.ownerModel}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -85,14 +101,35 @@ class MyAppLoggedIn extends StatelessWidget {
       home: FutureBuilder(
         future: Future.delayed(Duration(seconds: 2)),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              currentIndex == 1) {
-            //customer login
-            return MainScreen();
-          } else if (snapshot.connectionState == ConnectionState.done &&
-              currentIndex == 0) {
-            //owner login
+          if (snapshot.connectionState == ConnectionState.done) {
             return OwnerScreen();
+          } else {
+            return const SplashScreen();
+          }
+        },
+      ),
+    );
+  }
+}
+
+//customer login
+class LoggedInCustomer extends StatelessWidget {
+  final CustModel custModel;
+  const LoggedInCustomer({Key? key, required this.custModel}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'GoRent',
+      theme: ThemeData(
+          primaryColor: primaryRed,
+          scaffoldBackgroundColor: primaryRed,
+          fontFamily: 'Scheherazade_New'),
+      home: FutureBuilder(
+        future: Future.delayed(Duration(seconds: 2)),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MainScreen();
           } else {
             return const SplashScreen();
           }

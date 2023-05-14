@@ -29,10 +29,9 @@ class LoginScreen extends StatelessWidget {
     } else {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       try {
-        String userId =
-            email + "-" + currentIndex.toString(); // Use email as user ID
-
         if (currentIndex == 1) {
+          String userId =
+              email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
           // Check if owner already exists in collection
           final userDoc =
               await firestore.collection('customers').doc(userId).get();
@@ -43,7 +42,7 @@ class LoginScreen extends StatelessWidget {
               String sessionId = Uuid().v4();
 
               //distinguish between customer and owner session ID
-              String userSessionId = sessionId + ".customer";
+              String userSessionId = sessionId + "." + userId;
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.setString('sessionId', userSessionId);
               print('SESSION ID: ' + userSessionId);
@@ -62,6 +61,8 @@ class LoginScreen extends StatelessWidget {
             return false;
           }
         } else if (currentIndex == 0) {
+          String userId =
+              email + "-GROW"; // Use email as user ID --GO RENT OWNER
           // Check if owner already exists in collection
           final userDoc =
               await firestore.collection('owners').doc(userId).get();
@@ -72,7 +73,7 @@ class LoginScreen extends StatelessWidget {
               String sessionId = Uuid().v4();
 
               //distinguish between customer and owner session ID
-              String userSessionId = sessionId + ".owner";
+              String userSessionId = sessionId + "." + userId;
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.setString('sessionId', userSessionId);
               print('SESSION ID: ' + userSessionId);
