@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/owner_view/add_appartment.dart';
-
 import '../../owner_bottom_nav_bar.dart';
 import '../users/users_screen.dart';
 
@@ -10,12 +9,27 @@ class OwnerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double buttonWidth = MediaQuery.of(context).size.width * 0.4;
+    final double buttonHeight = 100.0;
+
     return Container(
-      color: Colors.white,
-     
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.white70,
+          ],
+        ),
+      ),
       child: Stack(
         children: [
-          Positioned(child: Scaffold( bottomNavigationBar: const OwnerBottomNavBar(currentIndex: 0,),)),
+          Positioned(
+            child: Scaffold(
+              bottomNavigationBar: const OwnerBottomNavBar(currentIndex: 0,),
+            ),
+          ),
           Positioned(
             top: -40,
             left: -50,
@@ -32,6 +46,34 @@ class OwnerScreen extends StatelessWidget {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment(-0.9, -0.8),
+            child: Transform.rotate(
+              angle: -0.5,
+              child: Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: primaryRed.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(60),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment(0.9, 0.8),
+            child: Transform.rotate(
+              angle: -0.5,
+              child: Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: primaryRed.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(60),
+                ),
+              ),
+            ),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -39,88 +81,73 @@ class OwnerScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
+                    buildButton(
+                      buttonWidth: buttonWidth,
+                      buttonHeight: buttonHeight,
                       onPressed: () {
                         Navigator.push(
-                        context,
-                       MaterialPageRoute(
-                    builder: (context) => const AddApartmentScreen()),
-              );
+                          context,
+                          MaterialPageRoute(builder: (context) => const AddApartmentScreen()),
+                        );
                       },
-                      child: Column(
-                        children: const [
-                          Icon(Icons.add),
-                          Text(
-                            'اضافة عقار',
-                            style: TextStyle(
-                              color: primaryRed,
-                              fontSize: 21.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: primaryRed),
-                        ),
-                        primary: primaryWhite,
-                        onPrimary: primaryRed,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 45, vertical: 45),
-                      ),
+                      icon: Icons.add,
+                      text: 'اضافة عقار',
                     ),
-                    ElevatedButton(
+                    buildButton(
+                      buttonWidth: buttonWidth,
+                      buttonHeight: buttonHeight,
                       onPressed: () {},
-                      child: Column(
-                        children: const [
-                          Icon(Icons.home),
-                          Text(
-                            'عرض عقاراتي',
-                            style: TextStyle(
-                              color: primaryRed,
-                              fontSize: 21.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: primaryRed),
-                        ),
-                        primary: primaryWhite,
-                        onPrimary: primaryRed,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 45, vertical: 45),
-                      ),
+                      icon: Icons.home,
+                      text: 'عرض عقاراتي',
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
+                buildButton(
+                  buttonWidth: buttonWidth,
+                  buttonHeight: buttonHeight,
                   onPressed: () {},
-                  child: Column(
-                    children: const [
-                      Icon(Icons.analytics),
-                      Text('Analytics'),
-                    ],
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: primaryRed),
-                    ),
-                    primary: primaryWhite,
-                    onPrimary: primaryRed,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 40),
-                  ),
+                  icon: Icons.analytics,
+                  text: 'Analytics',
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  ElevatedButton buildButton({
+    required double buttonWidth,
+    required double buttonHeight,
+    required VoidCallback onPressed,
+    required IconData icon,
+    required String text,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon),
+          Text(
+            text,
+            style: const TextStyle(
+              color: primaryRed,
+              fontSize: 21.0,
+            ),
+          ),
+        ],
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(color: primaryRed),
+        ),
+        primary: primaryWhite,
+        onPrimary: primaryRed,
+        padding: EdgeInsets.symmetric(horizontal: buttonWidth / 4, vertical: buttonHeight / 4),
       ),
     );
   }
