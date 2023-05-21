@@ -31,7 +31,8 @@ class Post {
 }
 
 class RentListScreen extends StatefulWidget {
-  RentListScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  RentListScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   _RentListScreenState createState() => _RentListScreenState();
@@ -104,7 +105,7 @@ class _RentListScreenState extends State<RentListScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
+                  MaterialPageRoute(builder: (context) =>  MainScreen(currentIndex: widget.currentIndex)),
                 );
               },
               child: Transform.scale(

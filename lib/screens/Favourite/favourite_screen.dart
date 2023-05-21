@@ -35,7 +35,7 @@ class FavouriteScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
+                  MaterialPageRoute(builder: (context) => const MainScreen(currentIndex: 1,)),
                 );
               },
               child: Transform.scale(

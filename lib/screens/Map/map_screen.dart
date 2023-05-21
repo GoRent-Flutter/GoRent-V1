@@ -7,11 +7,13 @@ import 'package:provider/provider.dart';
 
 import '../../bloc/application_bloc.dart';
 import '../../constraints.dart';
+import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import '../Models_Folder/Map_Models/place.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  const MapScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   MapScreenState createState() => MapScreenState();
@@ -44,6 +46,7 @@ class MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    var currentIndex = widget.currentIndex;
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     bool isDisplayed = true;
     return Container(
@@ -51,11 +54,15 @@ class MapScreenState extends State<MapScreen> {
       child: SizedBox(
         child: Stack(
           children: <Widget>[
-            const Positioned(
+            Positioned(
               child: Scaffold(
-                bottomNavigationBar: BottomNavBar(
-                  currentIndex: 2,
-                ),
+                bottomNavigationBar: currentIndex == 1
+                    ? BottomNavBar(
+                        currentIndex: 2,
+                      )
+                    : OwnerBottomNavBar(
+                        currentIndex: 2,
+                      ),
               ),
             ),
             Positioned(
@@ -109,7 +116,6 @@ class MapScreenState extends State<MapScreen> {
                       hintText: 'البحث عن مدينة',
                       hintTextDirection: TextDirection.rtl,
                       prefixIcon: Icon(Icons.close),
-                      
                     ),
                     onChanged: (value) {
                       applicationBloc.searchPlaces(value);
@@ -146,13 +152,14 @@ class MapScreenState extends State<MapScreen> {
                               title: Text(
                                 applicationBloc
                                     .searchResults[index].description,
-                                style: TextStyle(color: primaryWhite, fontSize: 18),
+                                style: TextStyle(
+                                    color: primaryWhite, fontSize: 18),
                               ),
                               onTap: () {
                                 applicationBloc.setSelectedLocation(
                                     applicationBloc
                                         .searchResults[index].placeId);
-                                        applicationBloc.clearSearchResults();
+                                applicationBloc.clearSearchResults();
                                 setState(() {
                                   isDisplayed = false;
                                 });

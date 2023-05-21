@@ -14,21 +14,23 @@ class Estate {
   final int numRooms;
   final int numBathrooms;
   final int size;
+  final int numVerandas;
 
-  Estate({
-    required this.images,
-    required this.city,
-    required this.type,
-    required this.description,
-    required this.price,
-    required this.numRooms,
-    required this.numBathrooms,
-    required this.size,
-  });
+  Estate(
+      {required this.images,
+      required this.city,
+      required this.type,
+      required this.description,
+      required this.price,
+      required this.numRooms,
+      required this.numBathrooms,
+      required this.size,
+      required this.numVerandas});
 }
 
 class BuyListScreen extends StatefulWidget {
-  BuyListScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  BuyListScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   _BuyListScreenState createState() => _BuyListScreenState();
@@ -60,15 +62,15 @@ class _BuyListScreenState extends State<BuyListScreen> {
               }
             }
             return Estate(
-              images: imageUrls,
-              city: estate['city'] as String,
-              type: estate['type'] as String,
-              description: estate['description'] as String,
-              price: estate['price'] as int,
-              numRooms: estate['numRooms'] as int,
-              numBathrooms: estate['numBathrooms'] as int,
-              size: estate['size'] as int,
-            );
+                images: imageUrls,
+                city: estate['city'] as String,
+                type: estate['type'] as String,
+                description: estate['description'] as String,
+                price: estate['price'] as int,
+                numRooms: estate['numRooms'] as int,
+                numBathrooms: estate['numBathrooms'] as int,
+                size: estate['size'] as int,
+                numVerandas: estate['numVerandas'] as int);
           }).toList();
         });
       }
@@ -100,7 +102,9 @@ class _BuyListScreenState extends State<BuyListScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MainScreen(currentIndex: widget.currentIndex)),
                 );
               },
               child: Transform.scale(

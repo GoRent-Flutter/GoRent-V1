@@ -3,7 +3,9 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/Map/map_screen.dart';
 import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
+import 'package:provider/provider.dart';
 
+import 'bloc/application_bloc.dart';
 import 'screens/Account/user_account_screen.dart';
 
 class OwnerBottomNavBar extends StatefulWidget {
@@ -66,14 +68,18 @@ class BottomNavBarState extends State<OwnerBottomNavBar> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MainScreen()),
+                      builder: (context) => const MainScreen(currentIndex:0)),
                 );
               }
               else if (currentIndex == 2) {
                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MapScreen()),
-                  );
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                        create: (context) => ApplicationBloc(),
+                        child: const MapScreen(currentIndex: 0,),
+                      ),
+                    ));
               }     
               else if(currentIndex== 3){
                     Navigator.push(

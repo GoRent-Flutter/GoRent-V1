@@ -105,10 +105,10 @@ class AboutYouScreenState extends State<AboutYouScreen> {
             left: -50,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const MainScreen()),
+                // );
               },
               child: Transform.scale(
                 scale: 0.2,
@@ -281,7 +281,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                         ? Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MainScreen()))
+                                builder: (context) => MainScreen(currentIndex:1)))
                         : Navigator.push(
                             context,
                             MaterialPageRoute(

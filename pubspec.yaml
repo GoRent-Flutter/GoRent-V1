@@ -49,6 +49,7 @@ dependencies:
   provider: ^6.0.5
   uuid: ^3.0.6
   shared_preferences: ^2.1.0
+  tflite_flutter: ^0.9.5
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +78,8 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/map_style.json
+    - assets/machine_learning_models/ForSale_ML_neural_model.tflite
+    - assets/machine_learning_models/ForRent_ML_neural_model.tflite
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

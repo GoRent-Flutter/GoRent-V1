@@ -129,7 +129,7 @@ class LoggedInCustomer extends StatelessWidget {
         future: Future.delayed(Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return MainScreen();
+            return MainScreen(currentIndex: 1,);
           } else {
             return const SplashScreen();
           }

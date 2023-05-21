@@ -33,10 +33,11 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
             left: -50,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
-                );
+                /////////fix here
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const MainScreen()),
+                // );
               },
               child: Transform.scale(
                 scale: 0.2,
@@ -111,10 +112,10 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
         child: TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const MainScreen()),
+                // );
               },
               style: TextButton.styleFrom(
                 backgroundColor: primaryRed,

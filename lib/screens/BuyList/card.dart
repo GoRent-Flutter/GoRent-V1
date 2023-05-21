@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/BuyList/buylist_screen.dart';
-
 import '../ItemDetail/itemdetailbuy_screen.dart';
-import '../ItemDetail/itemdetailrent_screen.dart';
 
 class MyCard extends StatelessWidget {
   final Widget child;

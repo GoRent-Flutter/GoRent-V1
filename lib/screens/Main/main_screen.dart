@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import '../BuyList/buylist_screen.dart';
 import '../BuyList/card.dart';
@@ -7,7 +8,8 @@ import '../Filters/filters.dart';
 import '../RentList/rentlist_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  const MainScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   MainScreenState createState() => MainScreenState();
@@ -26,7 +28,8 @@ class MainScreenState extends State<MainScreen> {
         price: 400,
         numRooms: 2,
         numBathrooms: 2,
-        size: 1400),
+        size: 1400,
+        numVerandas: 0),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 2',
@@ -35,7 +38,8 @@ class MainScreenState extends State<MainScreen> {
         price: 300,
         numRooms: 3,
         numBathrooms: 1,
-        size: 1040),
+        size: 1040,
+        numVerandas: 0),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 3',
@@ -44,7 +48,8 @@ class MainScreenState extends State<MainScreen> {
         price: 500,
         numRooms: 3,
         numBathrooms: 1,
-        size: 1040),
+        size: 1040,
+        numVerandas: 0),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 4',
@@ -53,21 +58,26 @@ class MainScreenState extends State<MainScreen> {
         price: 600,
         numRooms: 3,
         numBathrooms: 2,
-        size: 1800),
+        size: 1800,
+        numVerandas: 0),
   ];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    var currentIndex = widget.currentIndex;
     return Container(
       color: Colors.transparent,
       child: SizedBox(
           child: Stack(children: <Widget>[
-        const Positioned(
+        Positioned(
             child: Scaffold(
-              
-          bottomNavigationBar: BottomNavBar(
-            currentIndex: 0,
-          ),
+          bottomNavigationBar: currentIndex == 1
+              ? BottomNavBar(
+                  currentIndex: 0,
+                )
+              : OwnerBottomNavBar(
+                  currentIndex: 1,
+                ),
         )),
         Positioned(
             // top: -10,
@@ -137,7 +147,6 @@ class MainScreenState extends State<MainScreen> {
             ),
             child: GestureDetector(
               child: Stack(
-              
                 children: [
                   Positioned(
                     top: 5,
@@ -158,7 +167,7 @@ class MainScreenState extends State<MainScreen> {
                           child: Text(
                             "شراء عقار",
                             style: TextStyle(
-                               fontFamily:'Scheherazade_New',
+                              fontFamily: 'Scheherazade_New',
                               fontSize: 17,
                               color: primaryRed,
                               decoration: TextDecoration.none,
@@ -172,7 +181,8 @@ class MainScreenState extends State<MainScreen> {
               ),
               onTap: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => BuyListScreen(),
+                  builder: (BuildContext context) =>
+                      BuyListScreen(currentIndex: widget.currentIndex),
                 ));
               },
             ),
@@ -217,7 +227,7 @@ class MainScreenState extends State<MainScreen> {
                           child: Text(
                             "استئجار عقار",
                             style: TextStyle(
-                               fontFamily:'Scheherazade_New',
+                              fontFamily: 'Scheherazade_New',
                               fontSize: 17,
                               color: primaryRed,
                               decoration: TextDecoration.none,
@@ -231,8 +241,9 @@ class MainScreenState extends State<MainScreen> {
               ),
               onTap: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => RentListScreen(),
-                ));
+                    builder: (BuildContext context) => RentListScreen(
+                          currentIndex: widget.currentIndex,
+                        )));
               },
             ),
           ),
@@ -257,7 +268,7 @@ class MainScreenState extends State<MainScreen> {
                       Text(
                         "رائج",
                         style: TextStyle(
-                           fontFamily:'Scheherazade_New',
+                            fontFamily: 'Scheherazade_New',
                             decoration: TextDecoration.none,
                             fontSize: 17,
                             color: isPopular ? primaryLine : primaryRed),
@@ -284,7 +295,7 @@ class MainScreenState extends State<MainScreen> {
                       Text(
                         "موصى به",
                         style: TextStyle(
-                           fontFamily:'Scheherazade_New',
+                            fontFamily: 'Scheherazade_New',
                             decoration: TextDecoration.none,
                             fontSize: 17,
                             color: isRecommended ? primaryLine : primaryRed),
@@ -311,7 +322,7 @@ class MainScreenState extends State<MainScreen> {
                       Text(
                         "مضاف حديثا",
                         style: TextStyle(
-                           fontFamily:'Scheherazade_New',
+                            fontFamily: 'Scheherazade_New',
                             decoration: TextDecoration.none,
                             fontSize: 17,
                             color: isNewlyAdded ? primaryLine : primaryRed),

@@ -60,7 +60,7 @@ class BottomNavBarState extends State<BottomNavBar> {
                 if (currentIndex == 0) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MainScreen()),
+                    MaterialPageRoute(builder: (context) => const MainScreen(currentIndex: 1,)),
                   );
                 } else if (currentIndex == 1) {
                   Navigator.push(
@@ -69,17 +69,13 @@ class BottomNavBarState extends State<BottomNavBar> {
                         builder: (context) => const FavouriteScreen()),
                   );
                 }
-                //  Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (context) => const MapScreen()),
-                //   );
                 else if (currentIndex == 2) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChangeNotifierProvider(
                         create: (context) => ApplicationBloc(),
-                        child: const MapScreen(),
+                        child: const MapScreen(currentIndex: 1,),
                       ),
                     ),
                   );

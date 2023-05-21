@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../ContactOwner/contact_owner.dart';
+import '../MachineLearning/rentPredModel.dart';
 import '../Map/map_screen.dart';
 import '../RentList/rentlist_screen.dart';
 
@@ -18,6 +19,19 @@ class ItemDetail extends StatefulWidget {
 
 class _ItemDetailState extends State<ItemDetail> {
   int _current = 0;
+  Future<int> estimated() async {
+    RentPredModel model = RentPredModel(
+      size: widget.post.size.toDouble(),
+      numRooms: widget.post.numRooms.toDouble(),
+      numBathrooms: widget.post.numBathrooms.toDouble(),
+    );
+
+    String predValue = await model.predData();
+    double estimatedValue = double.parse(predValue);
+    int estimatedIntValue = estimatedValue.round();
+    return estimatedIntValue;
+  }
+
   Widget _dotIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -306,13 +320,28 @@ class _ItemDetailState extends State<ItemDetail> {
             left: null,
             child: Padding(
               padding: const EdgeInsets.only(right: 12.0, bottom: 0.0),
-              child: Text(
-                ": السعر المخمن ",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 56, 86, 47),
-                  fontSize: 16,
-                  decoration: TextDecoration.none,
-                ),
+              child: FutureBuilder<int>(
+                future: estimated(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Return a loading indicator or placeholder text
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // Handle the error state
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // Display the predValue
+                    final predValue = snapshot.data.toString();
+                    return Text(
+                      "\$السعر المخمن: $predValue",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 56, 86, 47),
+                        fontSize: 16,
+                        decoration: TextDecoration.none,
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           ),
@@ -326,7 +355,11 @@ class _ItemDetailState extends State<ItemDetail> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Row(
                     children: [
-                      Icon(Icons.bathtub_outlined, color: primaryRed, size: 25),
+                      Image(
+                        image: AssetImage('assets/icons/Red_bathroom.png'),
+                        width: 20,
+                        height: 18,
+                      ),
                       SizedBox(width: 5),
                       Text(
                         widget.post.numBathrooms.toString(),
@@ -344,7 +377,11 @@ class _ItemDetailState extends State<ItemDetail> {
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Row(
                     children: [
-                      Icon(Icons.bed_rounded, color: primaryRed, size: 25),
+                      Image(
+                        image: AssetImage('assets/icons/Red_bedroom.png'),
+                        width: 20,
+                        height: 18,
+                      ),
                       SizedBox(width: 5),
                       Text(
                         widget.post.numRooms.toString(),
@@ -362,9 +399,11 @@ class _ItemDetailState extends State<ItemDetail> {
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Row(
                     children: [
-                      Icon(Icons.square_foot_outlined,
-                          color: primaryRed, size: 25),
-                      SizedBox(width: 5),
+                      Image(
+                        image: AssetImage('assets/icons/Red_size.png'),
+                        width: 20,
+                        height: 18,
+                      ),
                       Text(
                         widget.post.size.toString(),
                         style: TextStyle(
