@@ -17,8 +17,8 @@ class WelcomeScreenOwner extends StatelessWidget {
 
     return Scaffold(
         body: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomLeft,
                 colors: [
