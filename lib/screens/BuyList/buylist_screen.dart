@@ -38,7 +38,9 @@ class BuyListScreen extends StatefulWidget {
 
 class _BuyListScreenState extends State<BuyListScreen> {
   late DatabaseReference _databaseRef;
+  late String searchQuery = '';
   List<Estate> _estates = [];
+  List<Map<String, dynamic>> estatesAll = [];
 
   @override
   void initState() {
@@ -49,31 +51,43 @@ class _BuyListScreenState extends State<BuyListScreen> {
         final estates = (event.snapshot.value as Map<dynamic, dynamic>)
             .cast<String, dynamic>();
         setState(() {
-          _estates = estates.entries
+          estatesAll = estates.entries
               .where((entry) => entry.value['isApproves'] == true)
-              .map((entry) {
-            final estate = Map<String, dynamic>.from(entry.value);
-            List<String> imageUrls = [];
-            if (estate['images'] != null) {
-              final images = estate['images'] as Map<dynamic, dynamic>;
-              if (images.isNotEmpty) {
-                imageUrls =
-                    images.values.map((value) => value.toString()).toList();
-              }
-            }
-            return Estate(
-                images: imageUrls,
-                city: estate['city'] as String,
-                type: estate['type'] as String,
-                description: estate['description'] as String,
-                price: estate['price'] as int,
-                numRooms: estate['numRooms'] as int,
-                numBathrooms: estate['numBathrooms'] as int,
-                size: estate['size'] as int,
-                numVerandas: estate['numVerandas'] as int);
-          }).toList();
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList();
+          applySearchFilters();
         });
       }
+    });
+  }
+
+  void applySearchFilters() {
+    setState(() {
+      _estates = estatesAll
+          .where((entry) =>
+              entry['isApproves'] == true &&
+              (searchQuery.isEmpty ||
+                  entry['city'].toString().contains(searchQuery)))
+          .map((entry) {
+        final estate = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (estate['images'] != null) {
+          final images = estate['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Estate(
+            images: imageUrls,
+            city: estate['city'] as String,
+            type: estate['type'] as String,
+            description: estate['description'] as String,
+            price: estate['price'] as int,
+            numRooms: estate['numRooms'] as int,
+            numBathrooms: estate['numBathrooms'] as int,
+            size: estate['size'] as int,
+            numVerandas: estate['numVerandas'] as int);
+      }).toList();
     });
   }
 
@@ -355,13 +369,20 @@ class _BuyListScreenState extends State<BuyListScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(vertical: 10),
                     border: InputBorder.none,
                     hintText: 'ابحث',
                     hintTextDirection: TextDirection.rtl,
                     suffixIcon: IconButton(
-                      onPressed: () {},
+                     onPressed: () {
+                        applySearchFilters();
+                      },
                       icon: const Icon(Icons.search),
                     ),
                   ),

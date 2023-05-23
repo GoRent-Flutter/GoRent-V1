@@ -39,8 +39,10 @@ class RentListScreen extends StatefulWidget {
 }
 
 class _RentListScreenState extends State<RentListScreen> {
+  late String searchQuery = '';
   late DatabaseReference _databaseRef;
   List<Post> _posts = [];
+  List<Map<String, dynamic>> postsAll = [];
 
   @override
   void initState() {
@@ -51,32 +53,43 @@ class _RentListScreenState extends State<RentListScreen> {
         final posts = (event.snapshot.value as Map<dynamic, dynamic>)
             .cast<String, dynamic>();
         setState(() {
-          _posts = posts.entries
-              .where((entry) =>
-                  entry.value['isApproves'] == true) // <-- filter posts
-              .map((entry) {
-            final post = Map<String, dynamic>.from(entry.value);
-            List<String> imageUrls = [];
-            if (post['images'] != null) {
-              final images = post['images'] as Map<dynamic, dynamic>;
-              if (images.isNotEmpty) {
-                imageUrls =
-                    images.values.map((value) => value.toString()).toList();
-              }
-            }
-            return Post(
-              images: imageUrls,
-              city: post['city'] as String,
-              type: post['type'] as String,
-              description: post['description'] as String,
-              price: post['price'] as int,
-              numRooms: post['numRooms'] as int,
-              numBathrooms: post['numBathrooms'] as int,
-              size: post['size'] as int,
-            );
-          }).toList();
+          postsAll = posts.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList();
+          applySearchFilters();
         });
       }
+    });
+  }
+
+  void applySearchFilters() {
+    setState(() {
+      _posts = postsAll
+          .where((entry) =>
+              entry['isApproves'] == true &&
+              (searchQuery.isEmpty ||
+                  entry['city'].toString().contains(searchQuery)))
+          .map((entry) {
+        final post = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (post['images'] != null) {
+          final images = post['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Post(
+          images: imageUrls,
+          city: post['city'] as String,
+          type: post['type'] as String,
+          description: post['description'] as String,
+          price: post['price'] as int,
+          numRooms: post['numRooms'] as int,
+          numBathrooms: post['numBathrooms'] as int,
+          size: post['size'] as int,
+        );
+      }).toList();
     });
   }
 
@@ -105,7 +118,9 @@ class _RentListScreenState extends State<RentListScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  MainScreen(currentIndex: widget.currentIndex)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MainScreen(currentIndex: widget.currentIndex)),
                 );
               },
               child: Transform.scale(
@@ -355,13 +370,20 @@ class _RentListScreenState extends State<RentListScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(vertical: 10),
                     border: InputBorder.none,
                     hintText: 'ابحث',
                     hintTextDirection: TextDirection.rtl,
                     suffixIcon: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        applySearchFilters();
+                      },
                       icon: const Icon(Icons.search),
                     ),
                   ),

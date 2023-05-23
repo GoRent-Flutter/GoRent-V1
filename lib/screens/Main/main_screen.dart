@@ -6,6 +6,7 @@ import '../BuyList/buylist_screen.dart';
 import '../BuyList/card.dart';
 import '../Filters/filters.dart';
 import '../RentList/rentlist_screen.dart';
+import 'Search/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final int currentIndex;
@@ -115,7 +116,7 @@ class MainScreenState extends State<MainScreen> {
                     bottom: 3,
                     child: Transform.scale(
                       scale: 0.8,
-                      child: Image.asset('assets/icons/Grey_filters.png'),
+                      child: Image.asset('assets/icons/message_default.png'),
                     ),
                   ),
                 ],
@@ -551,36 +552,47 @@ class MainScreenState extends State<MainScreen> {
                       decoration: TextDecoration.none,
                     )),
               ),
-        Positioned(
-          top: size.width - size.width + 120,
-          left: 10,
-          child: Container(
-            height: 50,
-            width: size.width - 100,
-            decoration: BoxDecoration(
-              color: primaryWhite,
-              borderRadius: BorderRadius.circular(35.0),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: TextFormField(
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: 10),
-                  border: InputBorder.none,
-                  hintText: 'ابحث',
-                  hintTextDirection: TextDirection.rtl,
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
+       Positioned(
+            top: size.width - size.width + 120,
+            left: 10,
+            child: Container(
+              height: 50,
+              width: size.width - 100,
+              decoration: BoxDecoration(
+                color: primaryWhite,
+                borderRadius: BorderRadius.circular(35.0),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchScreen(currentIndex: widget.currentIndex,)),
+                    );
+                  },
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: InputBorder.none,
+                      hintText: 'ابحث',
+                      hintTextDirection: TextDirection.rtl,
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.search),
+                      ),
+                    ),
+                    textDirection: TextDirection.rtl,
+                    textAlign: TextAlign.right,
+                    enabled: false,
                   ),
                 ),
-                textDirection: TextDirection.rtl,
-                textAlign: TextAlign.right,
               ),
             ),
-          ),
-        )
-      ])),
+          )
+        ]),
+      ),
     );
   }
 }
