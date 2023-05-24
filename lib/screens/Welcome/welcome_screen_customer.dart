@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
+import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
 import 'package:gorent_application1/screens/guest_view/guest_view_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../../constraints.dart';
 import '../users/users_screen.dart';
 
@@ -136,11 +139,18 @@ class WelcomeScreenCustomer extends StatelessWidget {
                   left: 60,
                   right: 60,
                   child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      
+                      String sessionId = Uuid().v4();
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('sessionId', sessionId);
+                      print('SESSION ID for Guest View: ' + sessionId);
+                      String userId = "-GRGU"; 
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const GuestScreen()),
+                            builder: (context) => const MainScreen(currentIndex: 2   ,)),
                       );
                     },
                     style: TextButton.styleFrom(
