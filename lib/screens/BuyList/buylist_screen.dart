@@ -158,6 +158,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                     child: const Text(
                       "العقارات المتاحة للشراء",
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 16,
                         color: primaryRed,
                         decoration: TextDecoration.none,
@@ -237,6 +238,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                     child: Text(
                                       estate.city,
                                       style: const TextStyle(
+                                        fontFamily: 'Scheherazade_New',
                                         fontSize: 16,
                                         color: primaryRed,
                                         decoration: TextDecoration.none,
@@ -338,6 +340,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                     child: Text(
                                       estate.type,
                                       style: const TextStyle(
+                                        fontFamily: 'Scheherazade_New',
                                         fontSize: 12,
                                         color: primaryRed,
                                         decoration: TextDecoration.none,
@@ -380,7 +383,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                     hintText: 'ابحث',
                     hintTextDirection: TextDirection.rtl,
                     suffixIcon: IconButton(
-                     onPressed: () {
+                      onPressed: () {
                         applySearchFilters();
                       },
                       icon: const Icon(Icons.search),

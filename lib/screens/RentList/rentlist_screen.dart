@@ -160,6 +160,7 @@ class _RentListScreenState extends State<RentListScreen> {
                     child: const Text(
                       "العقارات المتاحة للإيجار",
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 16,
                         color: primaryRed,
                         decoration: TextDecoration.none,
@@ -238,6 +239,7 @@ class _RentListScreenState extends State<RentListScreen> {
                                     child: Text(
                                       post.city,
                                       style: const TextStyle(
+                                        fontFamily: 'Scheherazade_New',
                                         fontSize: 16,
                                         color: primaryRed,
                                         decoration: TextDecoration.none,
@@ -339,6 +341,7 @@ class _RentListScreenState extends State<RentListScreen> {
                                     child: Text(
                                       post.type,
                                       style: const TextStyle(
+                                        fontFamily: 'Scheherazade_New',
                                         fontSize: 12,
                                         color: primaryRed,
                                         decoration: TextDecoration.none,

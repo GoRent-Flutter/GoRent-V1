@@ -276,6 +276,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       Text(
                         'للايجار',
                         style: TextStyle(
+                           fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 15,
                           decoration: TextDecoration.none,
@@ -289,6 +290,7 @@ class _ItemDetailState extends State<ItemDetail> {
                   child: Text(
                     widget.post.city,
                     style: TextStyle(
+                       fontFamily: 'Scheherazade_New',
                       color: Colors.black,
                       fontSize: 30,
                       decoration: TextDecoration.none,
@@ -307,6 +309,7 @@ class _ItemDetailState extends State<ItemDetail> {
               child: Text(
                 "\$" + widget.post.price.toString(),
                 style: TextStyle(
+                   fontFamily: 'Scheherazade_New',
                   color: primaryRed,
                   fontSize: 22,
                   decoration: TextDecoration.none,
@@ -335,6 +338,7 @@ class _ItemDetailState extends State<ItemDetail> {
                     return Text(
                       "\$السعر المخمن: $predValue",
                       style: TextStyle(
+                         fontFamily: 'Scheherazade_New',
                         color: Color.fromARGB(255, 56, 86, 47),
                         fontSize: 16,
                         decoration: TextDecoration.none,
@@ -364,6 +368,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       Text(
                         widget.post.numBathrooms.toString(),
                         style: TextStyle(
+                           fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -386,6 +391,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       Text(
                         widget.post.numRooms.toString(),
                         style: TextStyle(
+                           fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -407,6 +413,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       Text(
                         widget.post.size.toString(),
                         style: TextStyle(
+                           fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -427,6 +434,7 @@ class _ItemDetailState extends State<ItemDetail> {
               child: Text(
                 "الوصف",
                 style: TextStyle(
+                   fontFamily: 'Scheherazade_New',
                   color: Colors.black,
                   fontSize: 22,
                   decoration: TextDecoration.none,
@@ -443,6 +451,7 @@ class _ItemDetailState extends State<ItemDetail> {
               child: Text(
                 widget.post.description,
                 style: TextStyle(
+                   fontFamily: 'Scheherazade_New',
                   color: Colors.grey,
                   fontSize: 12,
                   decoration: TextDecoration.none,
@@ -487,7 +496,7 @@ class _ItemDetailState extends State<ItemDetail> {
                 },
                 child: Text(
                   'حجز موعد',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle( fontFamily: 'Scheherazade_New',color: Colors.white, fontSize: 20),
                 ),
               ),
             ),

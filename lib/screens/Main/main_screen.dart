@@ -10,6 +10,7 @@ import 'Search/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final int currentIndex;
+  // final String userSessionId;
   const MainScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override

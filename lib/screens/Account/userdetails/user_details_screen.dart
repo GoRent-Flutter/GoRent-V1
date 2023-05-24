@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Account/user_account_screen.dart';
@@ -5,6 +6,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../users/users_screen.dart';
 import 'change_password_screen.dart';
+
+Future<void> fetchUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+  final sessionId = prefs.getString('sessionId');
+  List<String> parts = sessionId!.split('.');
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final userDoc =
+      await firestore.collection('customers').doc(parts[1].toString()).get();
+  String username = userDoc.data()!['fullname'];
+  String email=userDoc.data()!['email'];
+  String phone_number=userDoc.data()!['phone_number'];
+  print("teeeeeeeeee" + username.toString());
+}
 
 class EditProfilePageState extends StatelessWidget {
   const EditProfilePageState({Key? key}) : super(key: key);

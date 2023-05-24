@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../user_account_screen.dart';
 
@@ -8,6 +10,17 @@ class ChangePasswordScreen extends StatefulWidget {
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
+}
+
+Future<void> fetchUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+  final sessionId = prefs.getString('sessionId');
+  List<String> parts = sessionId!.split('.');
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final userDoc =
+      await firestore.collection('customers').doc(parts[1].toString()).get();
+      //here we can compare written password with the password in DB
+  // String password = userDoc.data()!['password'];
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {

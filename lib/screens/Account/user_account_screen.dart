@@ -1,17 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Account/report_problem/report_problem_screen.dart';
 import 'package:gorent_application1/screens/Account/userdetails/user_details_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../user_bottom_nav_bar.dart';
 import 'location/location_screen.dart';
 import 'notification/notification_screen.dart';
+String username = "";
+void fetchUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+  final sessionId = prefs.getString('sessionId');
+  List<String> parts = sessionId!.split('.');
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final userDoc =
+      await firestore.collection('customers').doc(parts[1].toString()).get();
+  username = userDoc.data()!['fullname'];
+}
 
 class UserAccountScreen extends StatelessWidget {
+  
   const UserAccountScreen({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
+      // fetchUserData();
     Size size = MediaQuery.of(context).size;
     return Container(
       color: Colors.transparent,
@@ -64,8 +78,8 @@ class UserAccountScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(width: 10),
-                          const Text(
-                            "اسم المستخدم",
+                          Text(
+                            username,
                             style: TextStyle(
                               fontFamily: 'Scheherazade_New',
                               fontSize: 20,

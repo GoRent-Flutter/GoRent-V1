@@ -55,19 +55,18 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
   int _current = 0;
 
   Future<int> estimated() async {
-  SalePredModel model = SalePredModel(
-    size: widget.estate.size.toDouble(),
-    numRooms: widget.estate.numRooms.toDouble(),
-    numVerandas: widget.estate.numVerandas.toDouble(),
-    numBathrooms: widget.estate.numBathrooms.toDouble(),
-  );
+    SalePredModel model = SalePredModel(
+      size: widget.estate.size.toDouble(),
+      numRooms: widget.estate.numRooms.toDouble(),
+      numVerandas: widget.estate.numVerandas.toDouble(),
+      numBathrooms: widget.estate.numBathrooms.toDouble(),
+    );
 
-  String predValue = await model.predData();
-  double estimatedValue = double.parse(predValue);
-  int estimatedIntValue = estimatedValue.round();
-  return estimatedIntValue;
-}
-
+    String predValue = await model.predData();
+    double estimatedValue = double.parse(predValue);
+    int estimatedIntValue = estimatedValue.round();
+    return estimatedIntValue;
+  }
 
   Widget _dotIndicator() {
     return Row(
@@ -313,6 +312,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Text(
                         'للايجار',
                         style: TextStyle(
+                          fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 15,
                           decoration: TextDecoration.none,
@@ -326,6 +326,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                   child: Text(
                     widget.estate.city,
                     style: TextStyle(
+                      fontFamily: 'Scheherazade_New',
                       color: Colors.black,
                       fontSize: 30,
                       decoration: TextDecoration.none,
@@ -344,6 +345,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
               child: Text(
                 "\$" + widget.estate.price.toString(),
                 style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
                   color: primaryRed,
                   fontSize: 22,
                   decoration: TextDecoration.none,
@@ -372,6 +374,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                     return Text(
                       " \$السعر المخمن: $predValue",
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         color: Color.fromARGB(255, 56, 86, 47),
                         fontSize: 16,
                         decoration: TextDecoration.none,
@@ -401,6 +404,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Text(
                         widget.estate.numBathrooms.toString(),
                         style: TextStyle(
+                          fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -423,6 +427,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Text(
                         widget.estate.numRooms.toString(),
                         style: TextStyle(
+                          fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -445,6 +450,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Text(
                         widget.estate.numVerandas.toString(),
                         style: TextStyle(
+                          fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -467,6 +473,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       Text(
                         widget.estate.size.toString(),
                         style: TextStyle(
+                          fontFamily: 'Scheherazade_New',
                           color: primaryRed,
                           fontSize: 14,
                           decoration: TextDecoration.none,
@@ -487,6 +494,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
               child: Text(
                 "الوصف",
                 style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
                   color: Colors.black,
                   fontSize: 22,
                   decoration: TextDecoration.none,
@@ -503,6 +511,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
               child: Text(
                 widget.estate.description,
                 style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
                   color: Colors.grey,
                   fontSize: 12,
                   decoration: TextDecoration.none,
@@ -547,7 +556,10 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                 },
                 child: Text(
                   'حجز موعد',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(
+                      fontFamily: 'Scheherazade_New',
+                      color: Colors.white,
+                      fontSize: 20),
                 ),
               ),
             ),
