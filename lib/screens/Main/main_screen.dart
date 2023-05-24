@@ -25,22 +25,22 @@ class MainScreenState extends State<MainScreen> {
   bool isPopular = true;
   bool isNewlyAdded = false;
   bool isRecommended = false;
-  bool isGuest = true; // Add this variable to track if the user is a guest
+  // bool isGuest = true; // Add this variable to track if the user is a guest
 
-  @override
-  void initState() {
-    checkUserType(); // Check if the user is a guest when the screen initializes
-  }
+  // @override
+  // void initState() {
+  //   checkUserType(); // Check if the user is a guest when the screen initializes
+  // }
 
-  void checkUserType() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? sessionId = prefs.getString('sessionId');
-    if (sessionId != null && sessionId.contains("-GRCU")) {
-      setState(() {
-        isGuest = false;
-      });
-    }
-  }
+  // void checkUserType() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? sessionId = prefs.getString('sessionId');
+  //   if (sessionId != null && sessionId.contains("-GRCU")) {
+  //     setState(() {
+  //       isGuest = false;
+  //     });
+  //   }
+  // }
 
   final List<Estate> _estates = [
     Estate(
@@ -94,15 +94,15 @@ class MainScreenState extends State<MainScreen> {
         child: Stack(children: <Widget>[
           Positioned(
               child: Scaffold(
-            bottomNavigationBar: currentIndex == 0
+            bottomNavigationBar: currentIndex == 1
                 ? const BottomNavBar(
                     currentIndex: 0,
                   )
-                : currentIndex == 1
+                : currentIndex == 0
                     ? const OwnerBottomNavBar(
                         currentIndex: 1,
                       )
-                    : const GuestNavBar(
+                    : const GuestBottomNavBar(
                         currentIndex: 0,
                       ),
           )),
@@ -376,7 +376,7 @@ class MainScreenState extends State<MainScreen> {
                     height: size.height - 560,
                     width: size.width - 40,
                     child: ListView.separated(
-                      // space between cards
+                      //space between cards
                       separatorBuilder: (BuildContext context, int index) {
                         return const SizedBox(width: 30.0);
                       },
@@ -426,8 +426,8 @@ class MainScreenState extends State<MainScreen> {
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // set alignment
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
@@ -457,10 +457,12 @@ class MainScreenState extends State<MainScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              const SizedBox(
+                                height: 5,
+                              ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // set alignment
                                 children: [
                                   Row(
                                     children: [
@@ -473,7 +475,10 @@ class MainScreenState extends State<MainScreen> {
                                           height: 18,
                                         ),
                                       ),
-                                      const SizedBox(width: 5),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 6.0),
@@ -499,7 +504,10 @@ class MainScreenState extends State<MainScreen> {
                                           height: 18,
                                         ),
                                       ),
-                                      const SizedBox(width: 5),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 13.0),
@@ -525,7 +533,10 @@ class MainScreenState extends State<MainScreen> {
                                           height: 18,
                                         ),
                                       ),
-                                      const SizedBox(width: 5),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 75.0),
@@ -564,7 +575,7 @@ class MainScreenState extends State<MainScreen> {
                   top: size.height - 330,
                   left: 30,
                   right: 30,
-                  child: isGuest
+                  child: currentIndex == 2
                       ? GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -586,8 +597,8 @@ class MainScreenState extends State<MainScreen> {
                               ),
                               const SizedBox(height: 5),
                               Container(
-                                height: 2,
-                                width: 30,
+                                height: size.width / 5,
+                                width: size.width / 2,
                                 color:
                                     primaryRed, // Change the color to your desired color
                               ),

@@ -84,7 +84,7 @@ class BottomNavBarState extends State<OwnerBottomNavBar> {
               else if(currentIndex== 3){
                     Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const UserAccountScreen()),
+                    MaterialPageRoute(builder: (context) => UserAccountScreen(currentIndex: 0,)),
                   );
               }
               });

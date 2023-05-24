@@ -83,7 +83,7 @@ class BottomNavBarState extends State<BottomNavBar> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const UserAccountScreen()),
+                        builder: (context) => const UserAccountScreen(currentIndex: 1,)),
                   );
                 }
               });

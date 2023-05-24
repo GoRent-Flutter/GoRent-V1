@@ -21,7 +21,8 @@ Future<void> fetchUserData() async {
 }
 
 class EditProfilePageState extends StatelessWidget {
-  const EditProfilePageState({Key? key}) : super(key: key);
+  final int currentIndex;
+  const EditProfilePageState({Key? key, required this.currentIndex}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +36,7 @@ class EditProfilePageState extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const UserAccountScreen()),
+                  builder: (context) => UserAccountScreen(currentIndex: currentIndex,)),
             );
           },
         ),
@@ -95,7 +96,7 @@ class EditProfilePageState extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => const ChangePasswordScreen()),
+                            builder: (_) => ChangePasswordScreen(currentIndex:currentIndex))
                       );
                     },
                     child: Container(

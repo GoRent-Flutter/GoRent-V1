@@ -4,7 +4,8 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Account/report_problem/report_problem_screen.dart';
 import 'package:gorent_application1/screens/Account/userdetails/user_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../guest_bottom_nav.dart';
+import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import 'location/location_screen.dart';
 import 'notification/notification_screen.dart';
@@ -20,8 +21,8 @@ void fetchUserData() async {
 }
 
 class UserAccountScreen extends StatelessWidget {
-  
-  const UserAccountScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  const UserAccountScreen({Key? key,required this.currentIndex}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -32,11 +33,18 @@ class UserAccountScreen extends StatelessWidget {
       child: SizedBox(
         child: Stack(
           children: <Widget>[
-            const Positioned(
+            Positioned(
               child: Scaffold(
-                bottomNavigationBar: BottomNavBar(
-                  currentIndex: 3,
-                ),
+                bottomNavigationBar: currentIndex == 1
+                ? const BottomNavBar(
+                    currentIndex: 3,
+                  )
+                    :currentIndex == 0? const OwnerBottomNavBar(
+                        currentIndex: 3,
+                      )
+                    : const GuestBottomNavBar(
+                        currentIndex: 3,
+                      ),
               ),
             ),
             Column(
@@ -62,7 +70,7 @@ class UserAccountScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const EditProfilePageState()),
+                            builder: (context) => EditProfilePageState(currentIndex:currentIndex),)
                       );
                     },
                     child: Container(
@@ -79,7 +87,7 @@ class UserAccountScreen extends StatelessWidget {
                         children: [
                           const SizedBox(width: 10),
                           Text(
-                            username,
+                            "اسم المستخدم",
                             style: TextStyle(
                               fontFamily: 'Scheherazade_New',
                               fontSize: 20,
@@ -122,8 +130,7 @@ class UserAccountScreen extends StatelessWidget {
                           context, // pass context as a parameter
                           "assets/images/reportProblem.png",
                           "الابلاغ عن مشكلة",
-                          const ReportProblemScreen(),
-                        ),
+                          ReportProblemScreen(currentIndex:currentIndex,),)
                       ],
                     ),
                   ),

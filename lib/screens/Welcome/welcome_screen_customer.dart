@@ -142,10 +142,11 @@ class WelcomeScreenCustomer extends StatelessWidget {
                     onPressed: () async {
                       
                       String sessionId = Uuid().v4();
+                       String userId = sessionId+"-GRGU"; 
                       SharedPreferences prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('sessionId', sessionId);
-                      print('SESSION ID for Guest View: ' + sessionId);
-                      String userId = "-GRGU"; 
+                      await prefs.setString('sessionId', userId);
+                      print('SESSION ID for Guest View: ' + userId);
+                     
 
                       Navigator.push(
                         context,

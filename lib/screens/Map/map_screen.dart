@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../bloc/application_bloc.dart';
 import '../../constraints.dart';
+import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import '../Models_Folder/Map_Models/place.dart';
@@ -56,11 +57,14 @@ class MapScreenState extends State<MapScreen> {
           children: <Widget>[
             Positioned(
               child: Scaffold(
-                bottomNavigationBar: currentIndex == 1
-                    ? BottomNavBar(
+              bottomNavigationBar: currentIndex == 1
+                ? const BottomNavBar(
+                    currentIndex: 2,
+                  )
+                    :currentIndex == 0? const OwnerBottomNavBar(
                         currentIndex: 2,
                       )
-                    : OwnerBottomNavBar(
+                    : const GuestBottomNavBar(
                         currentIndex: 2,
                       ),
               ),

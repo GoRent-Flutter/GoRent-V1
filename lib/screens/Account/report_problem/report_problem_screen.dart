@@ -9,7 +9,8 @@ import '../user_account_screen.dart';
 import 'success_screen.dart';
 
 class ReportProblemScreen extends StatefulWidget {
-  const ReportProblemScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  const ReportProblemScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   ReportProblemState createState() => ReportProblemState();
@@ -131,7 +132,7 @@ class ReportProblemState extends State<ReportProblemScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const UserAccountScreen()),
+                  builder: (context) => UserAccountScreen(currentIndex: widget.currentIndex ,)),
             );
           },
         ),

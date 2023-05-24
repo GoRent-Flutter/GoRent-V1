@@ -21,6 +21,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final sessionId = prefs.getString('sessionId');
   const String substring0 = '-GROW';
+  const String substring1 = '-GRCU';
 
   //iff there's a session id, show the logged in screen
   if (sessionId != null) {
@@ -41,13 +42,16 @@ Future<void> main() async {
     }
 /********************************************************************************************** */
     // customer screen
-    else {
+    else if (sessionId.contains(substring1)) {
       CustModel? thisCustModel =
           await firebaseHelperCustomer.getModelById(parts[1]);
       if (thisCustModel != null) {
         runApp(LoggedInCustomer(custModel: thisCustModel));
       }
       return;
+    }
+    else{
+      runApp(const MyApp());
     }
   }
 

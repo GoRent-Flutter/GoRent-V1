@@ -6,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../user_account_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-  const ChangePasswordScreen({Key? key}) : super(key: key);
+  final int currentIndex;
+  const ChangePasswordScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
@@ -50,7 +51,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const UserAccountScreen(),
+                        builder: (context) =>  UserAccountScreen(currentIndex: widget.currentIndex,),
                       ),
                     );
                   },

@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/Favourite/favourite_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/Map/map_screen.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'bloc/application_bloc.dart';
-import 'screens/Account/user_account_screen.dart';
 
-class GuestNavBar extends StatefulWidget {
+class GuestBottomNavBar extends StatefulWidget {
   final int currentIndex;
 
-  const GuestNavBar({Key? key, required this.currentIndex}) : super(key: key);
+  const GuestBottomNavBar({Key? key, required this.currentIndex})
+      : super(key: key);
 
   @override
-  GuestNavBarState createState() => GuestNavBarState();
+  GuestBottomNavBarState createState() => GuestBottomNavBarState();
 }
 
-class GuestNavBarState extends State<GuestNavBar> {
+class GuestBottomNavBarState extends State<GuestBottomNavBar> {
   late int currentIndex;
-  bool isGuest = true;
+  // bool isGuest = true;
 
   @override
   void initState() {
@@ -59,115 +58,121 @@ class GuestNavBarState extends State<GuestNavBar> {
               setState(() {
                 currentIndex = index;
                 print(currentIndex);
-                if (isGuest) {
-                  if (currentIndex == 0) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MainScreen(
-                                currentIndex: 1,
-                              )),
-                    );
-                  } else if (currentIndex == 1) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('انشاء حساب'),
-                          content: const Text(
-                              'انت تحتاج ان تقوم بآنشاء حساب لتصفح هذه الميزة'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const WelcomeScreenCustomer());
-                              },
-                              child: const Text(
-                                'انشاء حساب',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryRed),
-                              ),
+                // if (isGuest) {
+                if (currentIndex == 0) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MainScreen(
+                              currentIndex: 2,
+                            )),
+                  );
+                } else if (currentIndex == 1) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('انشاء حساب'),
+                        content: const Text(
+                            'انت تحتاج ان تقوم بآنشاء حساب لتصفح هذه الميزة'),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const WelcomeScreenCustomer());
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.remove('sessionId');
+                            },
+                            child: const Text(
+                              'انشاء حساب',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryRed),
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  } else if (currentIndex == 2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                          create: (context) => ApplicationBloc(),
-                          child: const MapScreen(
-                            currentIndex: 1,
                           ),
+                        ],
+                      );
+                    },
+                  );
+                } else if (currentIndex == 2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                        create: (context) => ApplicationBloc(),
+                        child: const MapScreen(
+                          currentIndex: 2,
                         ),
                       ),
-                    );
-                  } else if (currentIndex == 3) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('انشاء حساب'),
-                          content: const Text(
-                              'انت تحتاج ان تقوم بآنشاء حساب لتصفح هذه الميزة'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const WelcomeScreenCustomer());
-                              },
-                              child: const Text(
-                                'انشاء حساب',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryRed),
-                              ),
+                    ),
+                  );
+                } else if (currentIndex == 3) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('انشاء حساب'),
+                        content: const Text(
+                            'انت تحتاج ان تقوم بآنشاء حساب لتصفح هذه الميزة'),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const WelcomeScreenCustomer());
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.remove('sessionId');
+                            },
+                            child: const Text(
+                              'انشاء حساب',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryRed),
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                } else {
-                  if (currentIndex == 0) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MainScreen(
-                                currentIndex: 1,
-                              )),
-                    );
-                  } else if (currentIndex == 1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const FavouriteScreen()),
-                    );
-                  } else if (currentIndex == 2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                          create: (context) => ApplicationBloc(),
-                          child: const MapScreen(
-                            currentIndex: 1,
                           ),
-                        ),
-                      ),
-                    );
-                  } else if (currentIndex == 3) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const UserAccountScreen()),
-                    );
-                  }
+                        ],
+                      );
+                    },
+                  );
                 }
+                // } else {
+                //   if (currentIndex == 0) {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => const MainScreen(
+                //                 currentIndex: 1,
+                //               )),
+                //     );
+                //   } else if (currentIndex == 1) {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => const FavouriteScreen()),
+                //     );
+                //   } else if (currentIndex == 2) {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => ChangeNotifierProvider(
+                //           create: (context) => ApplicationBloc(),
+                //           child: const MapScreen(
+                //             currentIndex: 1,
+                //           ),
+                //         ),
+                //       ),
+                //     );
+                //   } else if (currentIndex == 3) {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => const UserAccountScreen()),
+                //     );
+                //   }
+                // }
               });
             },
             child: Stack(
