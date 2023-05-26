@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
@@ -9,7 +8,6 @@ import '../BuyList/buylist_screen.dart';
 import '../BuyList/card.dart';
 import '../Filters/filters.dart';
 import '../RentList/rentlist_screen.dart';
-import '../users/users_screen.dart';
 import 'Search/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -142,7 +140,7 @@ class MainScreenState extends State<MainScreen> {
                       bottom: 3,
                       child: Transform.scale(
                         scale: 0.8,
-                        child: Image.asset('assets/icons/message_default.png'),
+                        child: Icon(Icons.message, color: primaryRed,),
                       ),
                     ),
                   ],

@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
@@ -48,11 +49,12 @@ class SignupScreen extends StatelessWidget {
           }
           // if the customer does not exist, add new user to collection
           else {
+            String hashedPassword=BCrypt.hashpw(passwordController.text, BCrypt.gensalt());
             CustModel newCustomer = CustModel(
                 custId: userId,
                 phone_number: null,
                 email: email,
-                password: password,
+                password: hashedPassword,
                 city: null,
                 fullname: null);
             await firestore
@@ -92,11 +94,12 @@ class SignupScreen extends StatelessWidget {
           }
           // if the owner does not exist, add new user to collection
           else {
+              String hashedPassword=BCrypt.hashpw(passwordController.text, BCrypt.gensalt());
                OwnerModel newOwner = OwnerModel(
                 ownerId: userId,
                 phone_number: null,
                 email: email,
-                password: password,
+                password: hashedPassword,
                 city: null,
                 fullname: null);
             await firestore
