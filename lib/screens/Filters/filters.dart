@@ -32,8 +32,24 @@ class _FilterPageState extends State<FiltersScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: primaryRed,
+                      size: 30,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'خاصية البحث المميزة',
                   style: TextStyle(
@@ -560,79 +576,80 @@ class _FilterPageState extends State<FiltersScreen> {
   }
 
   Widget buildDropdownField() {
-  return DropdownButtonFormField<String>(
-    items: availablePlaces.map((String place) {
-      return DropdownMenuItem<String>(
-        value: place,
-        child: Text(place),
-      );
-    }).toList(),
-    onChanged: (String? value) {
-      setState(() {
-        if (value != null && !selectedPlaces.contains(value)) {
-          selectedPlaces.add(value);
-        }
-      });
-    },
-    decoration: InputDecoration(
-      filled: true,
-      fillColor: Colors.white,
-      hintText: 'اختر المكان',
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        borderSide: const BorderSide(color: primaryRed, width: 2.0),
+    return DropdownButtonFormField<String>(
+      items: availablePlaces.map((String place) {
+        return DropdownMenuItem<String>(
+          value: place,
+          child: Text(place),
+        );
+      }).toList(),
+      onChanged: (String? value) {
+        setState(() {
+          if (value != null && !selectedPlaces.contains(value)) {
+            selectedPlaces.add(value);
+          }
+        });
+      },
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: 'اختر المكان',
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: const BorderSide(color: primaryRed, width: 2.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: const BorderSide(color: primaryRed, width: 2.0),
+        ),
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        borderSide: const BorderSide(color: primaryRed, width: 2.0),
-      ),
-    ),
-  );
-}
+    );
+  }
 
-Widget buildSelectedPlaces() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(right: 16.0),
-          child: Text(
-            'الاماكن المجاورة المختارة:',
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: primaryRed,
-            ),
-            textDirection: TextDirection.rtl,
-          ),
-        ),
-        const SizedBox(height: 8.0),
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          children: selectedPlaces.map((String place) {
-            return Chip(
-              label: Text(place),
-              deleteIconColor: primaryRed,
-              backgroundColor: primaryWhite,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(color: primaryRed, width: 2.0),
-                borderRadius: BorderRadius.circular(20.0),
+  Widget buildSelectedPlaces() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: Text(
+              'الاماكن المجاورة المختارة:',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: primaryRed,
               ),
-              deleteButtonTooltipMessage: 'حذف',
-              onDeleted: () {
-                setState(() {
-                  selectedPlaces.remove(place);
-                });
-              },
-            );
-          }).toList(),
-        ),
-      ],
-    ),
-  );
-}
+              textDirection: TextDirection.rtl,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: selectedPlaces.map((String place) {
+              return Chip(
+                label: Text(place),
+                deleteIconColor: primaryRed,
+                backgroundColor: primaryWhite,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(color: primaryRed, width: 2.0),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                deleteButtonTooltipMessage: 'حذف',
+                onDeleted: () {
+                  setState(() {
+                    selectedPlaces.remove(place);
+                  });
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
 }

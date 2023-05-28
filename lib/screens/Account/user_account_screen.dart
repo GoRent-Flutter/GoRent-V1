@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
-import 'location/location_screen.dart';
 import 'notification/notification_screen.dart';
 String username = "";
 void fetchUserData() async {
@@ -119,12 +118,6 @@ class UserAccountScreen extends StatelessWidget {
                           "assets/images/notification.png",
                           "الاشعارات",
                           const NotificationsPage(),
-                        ),
-                        _buildButtonWithDivider(
-                          context, // pass context as a parameter
-                          "assets/images/location.png",
-                          "الموقع",
-                          const LocationPage(),
                         ),
                         _buildButtonWithDivider(
                           context, // pass context as a parameter

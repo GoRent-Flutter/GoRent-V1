@@ -12,17 +12,22 @@ class SuccessScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(top: 100), // adjust the top padding as necessary
+          padding: const EdgeInsets.only(top: 100),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Apartment added successfully!',
-                style: TextStyle(fontSize: 24),
+                'تمت إضافة الشقة بنجاح!',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              Expanded(
-                child: SizedBox(),
+              SizedBox(height: 16),
+              Icon(
+                Icons.sentiment_satisfied, // Smiley face icon
+                size: 150,
+                color: primaryRed, // Changed color to red
               ),
+              SizedBox(height: 48),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -39,8 +44,12 @@ class SuccessScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      minimumSize: Size(160, 50), // Increased button size
                     ),
-                    child: const Text('Continue Uploading'),
+                    child: const Text(
+                      'متابعة التحميل',
+                      style: TextStyle(fontSize: 16), // Increased text size
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -55,12 +64,15 @@ class SuccessScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      minimumSize: Size(160, 50), // Increased button size
                     ),
-                    child: const Text('Stop Uploading'),
+                    child: const Text(
+                      'إيقاف التحميل',
+                      style: TextStyle(fontSize: 16), // Increased text size
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: 48),
             ],
           ),
         ),

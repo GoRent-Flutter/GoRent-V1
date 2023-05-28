@@ -35,7 +35,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   late String _description = '';
   List<File> _images = [];
   bool isApproved = false;
-  bool isLoading = false;
+  bool _isLoading = false;
 
   final picker = ImagePicker();
   
@@ -69,10 +69,11 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   }
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
+
+ setState(() {
+      _isLoading = true;
+    });
+
 
       // Generate a unique ID for the new apartment
       final id = FirebaseDatabase.instance.reference().push().key;
@@ -150,7 +151,6 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
               .set(downloadUrl);
         }
       }
-
       await Navigator.push(
         context,
         MaterialPageRoute(
@@ -158,12 +158,8 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         ),
       );
 
-      setState(() {
-        isLoading = false;
-      });
     }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -578,31 +574,33 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
+                            Row(
                   children: [
                     Expanded(
-                      child:               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    _submitForm();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  primary: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'ارسال',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            _submitForm();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50),
+                          primary: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: _isLoading
+                            ? CircularProgressIndicator()
+                            : const Text(
+                                'ارسال',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
                     ),
                   ],
                 ),

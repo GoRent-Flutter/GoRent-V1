@@ -14,7 +14,7 @@ class OwnerScreen extends StatelessWidget {
     final double buttonHeight = 100.0;
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -26,9 +26,9 @@ class OwnerScreen extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Positioned(
+          const Positioned(
             child: Scaffold(
-              bottomNavigationBar: const OwnerBottomNavBar(
+              bottomNavigationBar: OwnerBottomNavBar(
                 currentIndex: 0,
               ),
             ),
@@ -50,7 +50,7 @@ class OwnerScreen extends StatelessWidget {
             ),
           ),
           Align(
-            alignment: Alignment(-0.9, -0.8),
+            alignment: const Alignment(-0.9, -0.8),
             child: Transform.rotate(
               angle: -0.5,
               child: Container(
@@ -64,7 +64,7 @@ class OwnerScreen extends StatelessWidget {
             ),
           ),
           Align(
-            alignment: Alignment(0.9, 0.8),
+            alignment: const Alignment(0.9, 0.8),
             child: Transform.rotate(
               angle: -0.5,
               child: Container(
@@ -87,11 +87,73 @@ class OwnerScreen extends StatelessWidget {
                     buildButton(
                       buttonWidth: buttonWidth,
                       buttonHeight: buttonHeight,
+                      context: context,
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AddApartmentScreen()),
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('اختر طريقة الإضافة'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const AddApartmentScreen()),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: primaryRed,
+                                      minimumSize: const Size(double.infinity,
+                                          60), // Increase the button size
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'إضافة يدوية',
+                                      style: TextStyle(
+                                        color: Colors
+                                            .white, // Set the text color to white
+                                        fontSize:
+                                            18, // Adjust the text size as needed
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (context) => const UploadCsvScreen()),
+                                      // );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: primaryRed,
+                                      minimumSize: const Size(double.infinity,
+                                          60), // Increase the button size
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'تحميل من ملف CSV',
+                                      style: TextStyle(
+                                        color: Colors
+                                            .white, // Set the text color to white
+                                        fontSize:
+                                            18, // Adjust the text size as needed
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         );
                       },
                       icon: Icons.add,
@@ -100,38 +162,47 @@ class OwnerScreen extends StatelessWidget {
                     buildButton(
                       buttonWidth: buttonWidth,
                       buttonHeight: buttonHeight,
+                      context: context,
                       onPressed: () {},
                       icon: Icons.home,
                       text: 'عرض عقاراتي',
                     ),
                   ],
                 ),
-                 const SizedBox(height: 20),
-                Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                buildButton(
-                  buttonWidth: buttonWidth,
-                  buttonHeight: buttonHeight,
-                  onPressed: () {},
-                  icon: Icons.analytics,
-                  text: 'Analytics',
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      buildButton(
+                        buttonWidth: buttonWidth,
+                        buttonHeight: buttonHeight,
+                        context: context,
+                        onPressed: () {},
+                        icon: Icons.analytics,
+                        text: 'Analytics',
+                      ),
+                      const SizedBox(
+                          width:
+                              10.0), // Add the desired padding between the buttons
+                      buildButton(
+                        buttonWidth: buttonWidth,
+                        buttonHeight: buttonHeight,
+                        context: context,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ChatsScreen()),
+                          );
+                        },
+                        icon: Icons.message,
+                        text: 'Messages',
+                      ),
+                    ],
+                  ),
                 ),
-                    buildButton(
-                      buttonWidth: buttonWidth,
-                      buttonHeight: buttonHeight,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ChatsScreen()),
-                        );
-                      },
-                      icon: Icons.message,
-                      text: 'Messages',
-                    ),
-                  ]
-                )
               ],
             ),
           ),
@@ -143,22 +214,29 @@ class OwnerScreen extends StatelessWidget {
   ElevatedButton buildButton({
     required double buttonWidth,
     required double buttonHeight,
-    required VoidCallback onPressed,
+    required BuildContext context,
     required IconData icon,
     required String text,
+    required VoidCallback onPressed,
   }) {
     return ElevatedButton(
       onPressed: onPressed,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon),
+          Icon(
+            icon,
+            size: 32, // Increased icon size
+            color: primaryRed, // Use primaryRed color for the icon
+          ),
+          const SizedBox(height: 8),
           Text(
             text,
             style: const TextStyle(
               color: primaryRed,
-              fontSize: 21.0,
+              fontSize: 18.0, // Increased text size
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -171,6 +249,8 @@ class OwnerScreen extends StatelessWidget {
         onPrimary: primaryRed,
         padding: EdgeInsets.symmetric(
             horizontal: buttonWidth / 4, vertical: buttonHeight / 4),
+        minimumSize: Size(
+            buttonWidth, buttonHeight), // Set the same size for the buttons
       ),
     );
   }
