@@ -6,42 +6,6 @@ import '../../constraints.dart';
 import '../MachineLearning/salePredModel.dart';
 import '../ReserveAppointment/reserveappointment_screen.dart';
 
-// class CircleIndicator extends StatelessWidget {
-//   final int count;
-//   final int current;
-
-//   CircleIndicator({
-//     required this.count,
-//     required this.current,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<Widget> children = [];
-
-//     for (int i = 0; i < count; i++) {
-//       children.add(
-//         Container(
-//           width: 8,
-//           height: 8,
-//           margin: EdgeInsets.symmetric(horizontal: 4),
-//           decoration: BoxDecoration(
-//             color: current == i
-//                 ? Colors.white.withOpacity(0.6)
-//                 : Colors.grey.withOpacity(0.7),
-//             shape: BoxShape.circle,
-//           ),
-//         ),
-//       );
-//     }
-
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: children,
-//     );
-//   }
-// }
-
 class ItemDetailBuy extends StatefulWidget {
   final Estate estate;
 
@@ -250,8 +214,9 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ContactOwnerScreen()),
+                                builder: (context) => ContactOwnerScreen(
+                                    ownerID: widget.estate.OwnerID),
+                              ),
                             );
                           },
                           child: Container(
@@ -267,11 +232,13 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                         SizedBox(height: 5),
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context)
-                                .pushReplacement(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const ContactOwnerScreen(),
-                            ));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContactOwnerScreen(
+                                    ownerID: widget.estate.OwnerID),
+                              ),
+                            );
                           },
                           child: Text(
                             "تواصل",
@@ -550,7 +517,9 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return ReserveAppointment();
+                      return ReserveAppointment(
+                          ownerID: widget.estate.OwnerID,
+                          city: widget.estate.city);
                     },
                   );
                 },

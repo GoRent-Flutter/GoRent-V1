@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../constraints.dart';
 
 class ReserveAppointment extends StatefulWidget {
+  final String ownerID;
+  final String city;
+  const ReserveAppointment(
+      {Key? key, required this.ownerID, required this.city})
+      : super(key: key);
   @override
   _ReserveAppointmentState createState() => _ReserveAppointmentState();
 }
@@ -35,6 +42,54 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       setState(() {
         _selectedTime = picked;
       });
+  }
+
+  void _saveReservation() {
+    String custId = "may-GRCU";
+    String apartmentOwnerId = widget.ownerID;
+    String apartmentcity = widget.city;
+    DatabaseReference reservationRef =
+        FirebaseDatabase.instance.reference().child('reservations');
+
+    reservationRef.push().set({
+      'apartmentOwnerId': apartmentOwnerId,
+      'apartmentcity': apartmentcity,
+      'custId': custId,
+      'date': DateFormat('dd/MM/yyyy').format(_selectedDate),
+      'time': _selectedTime.format(context),
+    }).then((_) {
+      Navigator.of(context).pop();
+      _showSuccessMessage();
+    }).catchError((error) {
+      print('error');
+    });
+  }
+
+  void _showSuccessMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('تم ارسال طلب الحجز'),
+          content: Text(
+              'الحجز الخاص بك قد ارسل الى صاحب العقار, لتفاصيل اكثر بامكانك التواصل معه عبر ايقونة التواصل فوق'),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: primaryRed,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -128,9 +183,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
-          onPressed: () {
-            // TODO: Implement reservation logic
-          },
+          onPressed: _saveReservation,
           child: Text(
             'حجز',
             style: TextStyle(

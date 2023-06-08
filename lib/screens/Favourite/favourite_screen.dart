@@ -35,7 +35,10 @@ class FavouriteScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainScreen(currentIndex: 1,)),
+                  MaterialPageRoute(
+                      builder: (context) => const MainScreen(
+                            currentIndex: 1,
+                          )),
                 );
               },
               child: Transform.scale(
@@ -69,7 +72,7 @@ class FavouriteScreen extends StatelessWidget {
             child: const Text(
               "العقارات المفضلة",
               style: TextStyle(
-                 fontFamily:'Scheherazade_New',
+                fontFamily: 'Scheherazade_New',
                 fontSize: 20,
                 color: primaryRed,
                 decoration: TextDecoration.none,

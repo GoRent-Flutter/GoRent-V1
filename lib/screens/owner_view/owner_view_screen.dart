@@ -3,6 +3,7 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/owner_view/add_appartment.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../users/users_screen.dart';
+import 'owner_reservations_screen.dart';
 
 class OwnerScreen extends StatelessWidget {
   const OwnerScreen({Key? key}) : super(key: key);
@@ -27,7 +28,9 @@ class OwnerScreen extends StatelessWidget {
         children: [
           Positioned(
             child: Scaffold(
-              bottomNavigationBar: const OwnerBottomNavBar(currentIndex: 0,),
+              bottomNavigationBar: const OwnerBottomNavBar(
+                currentIndex: 0,
+              ),
             ),
           ),
           Positioned(
@@ -87,7 +90,8 @@ class OwnerScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AddApartmentScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const AddApartmentScreen()),
                         );
                       },
                       icon: Icons.add,
@@ -103,12 +107,34 @@ class OwnerScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                buildButton(
-                  buttonWidth: buttonWidth,
-                  buttonHeight: buttonHeight,
-                  onPressed: () {},
-                  icon: Icons.analytics,
-                  text: 'Analytics',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildButton(
+                      buttonWidth: buttonWidth,
+                      buttonHeight: buttonHeight,
+                      onPressed: () {},
+                      icon: Icons.analytics,
+                      text: 'Analytics',
+                    ),
+                    buildButton(
+                      buttonWidth: buttonWidth,
+                      buttonHeight: buttonHeight,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                OwnerReservationsScreen(
+                              ownerId: "Aqark@gmail.com-GROW",
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icons.analytics,
+                      text: 'Reservations',
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -147,7 +173,8 @@ class OwnerScreen extends StatelessWidget {
         ),
         primary: primaryWhite,
         onPrimary: primaryRed,
-        padding: EdgeInsets.symmetric(horizontal: buttonWidth / 4, vertical: buttonHeight / 4),
+        padding: EdgeInsets.symmetric(
+            horizontal: buttonWidth / 4, vertical: buttonHeight / 4),
       ),
     );
   }

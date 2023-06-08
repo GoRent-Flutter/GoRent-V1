@@ -52,7 +52,8 @@ class MainScreenState extends State<MainScreen> {
         numRooms: 2,
         numBathrooms: 2,
         size: 1400,
-        numVerandas: 0),
+        numVerandas: 0,
+        OwnerID: 'test'),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 2',
@@ -62,7 +63,8 @@ class MainScreenState extends State<MainScreen> {
         numRooms: 3,
         numBathrooms: 1,
         size: 1040,
-        numVerandas: 0),
+        numVerandas: 0,
+        OwnerID: 'tst1'),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 3',
@@ -72,7 +74,8 @@ class MainScreenState extends State<MainScreen> {
         numRooms: 3,
         numBathrooms: 1,
         size: 1040,
-        numVerandas: 0),
+        numVerandas: 0,
+        OwnerID: 'tst3'),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 4',
@@ -82,7 +85,8 @@ class MainScreenState extends State<MainScreen> {
         numRooms: 3,
         numBathrooms: 2,
         size: 1800,
-        numVerandas: 0),
+        numVerandas: 0,
+        OwnerID: 'tst3'),
   ];
   @override
   Widget build(BuildContext context) {

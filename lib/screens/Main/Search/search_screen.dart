@@ -79,7 +79,8 @@ class SearchScreenState extends State<SearchScreen> {
                   numRooms: item['numRooms'] as int,
                   numBathrooms: item['numBathrooms'] as int,
                   size: item['size'] as int,
-                  numVerandas: item['numVerandas'] as int)
+                  numVerandas: item['numVerandas'] as int,
+                  OwnerID: item['OwnerID'] as String)
               : Post(
                   images: imageUrls,
                   city: item['city'] as String,
@@ -89,11 +90,13 @@ class SearchScreenState extends State<SearchScreen> {
                   numRooms: item['numRooms'] as int,
                   numBathrooms: item['numBathrooms'] as int,
                   size: item['size'] as int,
+                  OwnerID: item['OwnerID'] as String,
                 );
         }).toList();
         updateStateList(processedItems);
       }
     }
+
     saleDatabaseRef.onValue.listen((event) {
       processData(event.snapshot, (processedEstates) {
         setState(() {

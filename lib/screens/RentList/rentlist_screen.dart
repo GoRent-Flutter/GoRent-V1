@@ -17,6 +17,7 @@ class Post {
   final int numRooms;
   final int numBathrooms;
   final int size;
+  final String OwnerID; // Add ownerID field
 
   Post({
     required this.images,
@@ -27,6 +28,7 @@ class Post {
     required this.numRooms,
     required this.numBathrooms,
     required this.size,
+    required this.OwnerID, // Initialize ownerID field
   });
 }
 
@@ -88,6 +90,7 @@ class _RentListScreenState extends State<RentListScreen> {
           numRooms: post['numRooms'] as int,
           numBathrooms: post['numBathrooms'] as int,
           size: post['size'] as int,
+          OwnerID: post['OwnerID'] as String,
         );
       }).toList();
     });

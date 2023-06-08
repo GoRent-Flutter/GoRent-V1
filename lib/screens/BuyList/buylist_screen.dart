@@ -15,17 +15,20 @@ class Estate {
   final int numBathrooms;
   final int size;
   final int numVerandas;
+  final String OwnerID;
 
-  Estate(
-      {required this.images,
-      required this.city,
-      required this.type,
-      required this.description,
-      required this.price,
-      required this.numRooms,
-      required this.numBathrooms,
-      required this.size,
-      required this.numVerandas});
+  Estate({
+    required this.images,
+    required this.city,
+    required this.type,
+    required this.description,
+    required this.price,
+    required this.numRooms,
+    required this.numBathrooms,
+    required this.size,
+    required this.numVerandas,
+    required this.OwnerID,
+  });
 }
 
 class BuyListScreen extends StatefulWidget {
@@ -86,7 +89,8 @@ class _BuyListScreenState extends State<BuyListScreen> {
             numRooms: estate['numRooms'] as int,
             numBathrooms: estate['numBathrooms'] as int,
             size: estate['size'] as int,
-            numVerandas: estate['numVerandas'] as int);
+            numVerandas: estate['numVerandas'] as int,
+            OwnerID: estate['OwnerID'] as String);
       }).toList();
     });
   }
