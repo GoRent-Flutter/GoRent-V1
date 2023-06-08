@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,8 @@ class LoginScreen extends StatelessWidget {
               await firestore.collection('customers').doc(userId).get();
           if (userDoc.exists) {
             // Check if password matches
-            if (userDoc.data()!['password'] == password) {
+            bool crackedPassword=BCrypt.checkpw(password,userDoc.data()!['password']);
+            if (crackedPassword==true) {
               // Generate and store session ID
               String sessionId = Uuid().v4();
 
@@ -68,7 +70,8 @@ class LoginScreen extends StatelessWidget {
               await firestore.collection('owners').doc(userId).get();
           if (userDoc.exists) {
             // Check if password matches
-            if (userDoc.data()!['password'] == password) {
+            bool crackedPassword=BCrypt.checkpw(password,userDoc.data()!['password']);
+            if (crackedPassword==true) {
               // Generate and store session ID
               String sessionId = Uuid().v4();
 
