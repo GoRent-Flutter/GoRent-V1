@@ -40,29 +40,6 @@ class EditProfilePageState extends StatelessWidget {
             );
           },
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: TextButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.remove('sessionId');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const UsersScreen()),
-                );
-              },
-              child: const Text(
-                'تسجيل الخروج',
-                style: TextStyle(
-                  color: primaryRed,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),

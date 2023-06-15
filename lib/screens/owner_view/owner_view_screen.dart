@@ -179,14 +179,6 @@ class OwnerScreen extends StatelessWidget {
                           buttonWidth: buttonWidth,
                           buttonHeight: buttonHeight,
                           context: context,
-                          onPressed: () {},
-                          icon: Icons.analytics,
-                          text: 'Analytics',
-                        ),
-                        buildButton(
-                          buttonWidth: buttonWidth,
-                          buttonHeight: buttonHeight,
-                          context: context,
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -199,7 +191,7 @@ class OwnerScreen extends StatelessWidget {
                             );
                           },
                           icon: Icons.analytics,
-                          text: 'Reservations',
+                          text: 'الحجوزات',
                         ),
                         const SizedBox(width: 10.0),
                         buildButton(
@@ -214,7 +206,7 @@ class OwnerScreen extends StatelessWidget {
                             );
                           },
                           icon: Icons.message,
-                          text: 'Messages',
+                          text: 'المسجات',
                         ),
                       ],
                     ),

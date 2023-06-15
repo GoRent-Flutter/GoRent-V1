@@ -5,9 +5,13 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/owner_view/succes_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+
 
 class AddApartmentScreen extends StatefulWidget {
   const AddApartmentScreen({Key? key}) : super(key: key);
@@ -27,7 +31,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   late int _numVerandas = 0;
   late int _numSalons = 0;
   late int _numKitchens = 0;
-  late String _OwnerID = '';
+  late String _OwnerID = 'mahmoad@gmail.com-GROW';
   late double _size = 0.0;
   late double _price = 0.0;
   late double _latitude = 0.0;
@@ -38,7 +42,24 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   bool _isLoading = false;
 
   final picker = ImagePicker();
-  
+
+  List<String> _selectedNeighborhoods = [];
+  List<String> _availableNeighborhoods = [
+    'مدرسة',
+    'روضة',
+    'جامع',
+    'سوبر ماركت',
+    'مطعم',
+  ];
+
+  GoogleMapController? mapController;
+  LatLng _selectedLatLng = LatLng(0, 0); // Initialize with default coordinates
+
+  @override
+  void dispose() {
+    mapController?.dispose();
+    super.dispose();
+  }
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -47,119 +68,171 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       if (pickedFile != null) {
         _images.add(File(pickedFile.path));
       } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('قم بآدخال الصور المطلوبة'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: const Text('قم بآدخال الصور المطلوبة'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
     });
   }
 
-  Future<void> _submitForm() async {
+  void _openMapPopup() async {
+    LatLng? selectedLocation = LatLng(0.0, 0.0);
 
- setState(() {
+    // Get current location
+    LocationData? currentLocation;
+    var location = Location();
+    try {
+      currentLocation = await location.getLocation();
+    } catch (e) {
+      print('Error getting current location: $e');
+    }
+
+    final result = await showDialog<LatLng>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('اختار الموقع'),
+          content: Container(
+            width: double.maxFinite,
+            height: 300,
+            child: GoogleMap(
+              onMapCreated: (GoogleMapController controller) {},
+              onTap: (LatLng location) {
+                selectedLocation = location;
+              },
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                  currentLocation?.latitude ?? 0.0,
+                  currentLocation?.longitude ?? 0.0,
+                ),
+                zoom: 15,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(selectedLocation);
+              },
+              child: Text('اختار'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _latitude = result.latitude;
+        _longitude = result.longitude;
+      });
+    }
+  }
+
+  Future<void> _submitForm() async {
+    setState(() {
       _isLoading = true;
     });
 
+    // Generate a unique ID for the new apartment
+    final id = FirebaseDatabase.instance.reference().push().key;
 
-      // Generate a unique ID for the new apartment
-      final id = FirebaseDatabase.instance.reference().push().key;
+    // Create a new instance of the apartment with the given data
+    final apartment = {
+      'type': _type,
+      'city': _city,
+      'address1': _address1,
+      'numRooms': _numRooms,
+      'numBathrooms': _numBathrooms,
+      'numVerandas': _numVerandas,
+      'numSalons': _numSalons,
+      'numKitchens': _numKitchens,
+      'size': _size,
+      'price': _price,
+      'latitude': _latitude,
+      'longitude': _longitude,
+      'description': _description,
+      'images': [],
+      'isApproves': isApproved,
+      'OwnerID': _OwnerID,
+      'neighborhoods': _selectedNeighborhoods, // Add the selected neighborhoods
+    };
 
-      // Create a new instance of the apartment with the given data
-      final apartment = {
-        'type': _type,
-        'city': _city,
-        'address1': _address1,
-        'numRooms': _numRooms,
-        'numBathrooms': _numBathrooms,
-        'numVerandas': _numVerandas,
-        'numSalons': _numSalons,
-        'numKitchens': _numKitchens,
-        'size': _size,
-        'price': _price,
-        'latitude': _latitude,
-        'longitude': _longitude,
-        'description': _description,
-        'images': [],
-        'isApproves': isApproved,
-        'OwnerID': _OwnerID,
-      };
+    // Upload the apartment data to the appropriate Firebase Realtime Database location
+    if (_type == 'اجار') {
+      FirebaseDatabase.instance
+          .reference()
+          .child('rent')
+          .child(id!)
+          .set(apartment);
+    } else if (_type == 'بيع') {
+      FirebaseDatabase.instance
+          .reference()
+          .child('sale')
+          .child(id!)
+          .set(apartment);
+    }
 
-      // Upload the apartment data to the appropriate Firebase Realtime Database location
+    // Upload the apartment images to Firebase Storage
+    for (final imageFile in _images) {
+      // Generate a unique ID for the new image
+      final imageId =
+          FirebaseDatabase.instance.reference().child(id!).push().key;
+
+      // Upload the image file to Firebase Storage
+      final storageReference = FirebaseStorage.instance
+          .ref()
+          .child('images')
+          .child('$id/$imageId.jpg');
+      final uploadTask = storageReference.putFile(imageFile);
+      final snapshot = await uploadTask.whenComplete(() => null);
+
+      // Get the download URL of the uploaded image
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      // Add the download URL of the uploaded image to the apartment data
+      // Add the download URL of the uploaded image to the apartment data
+
       if (_type == 'اجار') {
         FirebaseDatabase.instance
             .reference()
             .child('rent')
-            .child(id!)
-            .set(apartment);
+            .child(id)
+            .child('images')
+            .push()
+            .set(downloadUrl);
       } else if (_type == 'بيع') {
         FirebaseDatabase.instance
             .reference()
             .child('sale')
-            .child(id!)
-            .set(apartment);
-      }
-
-      // Upload the apartment images to Firebase Storage
-      for (final imageFile in _images) {
-        // Generate a unique ID for the new image
-        final imageId =
-            FirebaseDatabase.instance.reference().child(id!).push().key;
-
-        // Upload the image file to Firebase Storage
-        final storageReference = FirebaseStorage.instance
-            .ref()
+            .child(id)
             .child('images')
-            .child('$id/$imageId.jpg');
-        final uploadTask = storageReference.putFile(imageFile);
-        final snapshot = await uploadTask.whenComplete(() => null);
-
-        // Get the download URL of the uploaded image
-        final downloadUrl = await snapshot.ref.getDownloadURL();
-
-        // Add the download URL of the uploaded image to the apartment data
-        // Add the download URL of the uploaded image to the apartment data
-
-        if (_type == 'اجار') {
-          FirebaseDatabase.instance
-              .reference()
-              .child('rent')
-              .child(id)
-              .child('images')
-              .push()
-              .set(downloadUrl);
-        } else if (_type == 'بيع') {
-          FirebaseDatabase.instance
-              .reference()
-              .child('sale')
-              .child(id)
-              .child('images')
-              .push()
-              .set(downloadUrl);
-        }
+            .push()
+            .set(downloadUrl);
       }
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const SuccessScreen(),
-        ),
-      );
-
     }
-  
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SuccessScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,334 +255,364 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DropdownButtonFormField<String>(
-                  value: _type,
-                  decoration:const InputDecoration(labelText: 'Type'),
-                  items: ['بيع', 'اجار']
-                      .map((type) => DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _type = value!;
-                    });
-                  },
-                  onSaved: (value) {
-                    setState(() {
-                      _type = value!;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please choose the type';
-                    }
-                    return null;
-                  },
-                ),
-                DropdownButtonFormField<String>(
-                  value: _city,
-                  decoration: const InputDecoration(labelText: 'City'),
-                  items: ['رام الله', 'نابلس', 'بيت لحم', 'طولكرم']
-                      .map((type) => DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _city = value!;
-                    });
-                  },
-                  onSaved: (value) {
-                    setState(() {
-                      _city = value!;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please choose the city';
-                    }
-                    return null;
-                  },
-                ),
-                DropdownButtonFormField<bool>(
-                  value: isApproved,
-                  decoration: const InputDecoration(labelText: 'isApproved'),
-                  items: const [
-                    DropdownMenuItem<bool>(
-                      value: true,
-                      child: Text('True'),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: DropdownButtonFormField<String>(
+                    value: _type,
+                    decoration: InputDecoration(
+                      labelText: 'النوع',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                      alignLabelWithHint: true,
+                      hintTextDirection: TextDirection.rtl,
                     ),
-                    DropdownMenuItem<bool>(
-                      value: false,
-                      child: Text('False'),
+                    items: ['بيع', 'اجار']
+                        .map((type) => DropdownMenuItem<String>(
+                              value: type,
+                              child: Text(
+                                type,
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _type = value!;
+                      });
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        _type = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'الرجاء اختيار النوع';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: DropdownButtonFormField<String>(
+                    value: _city,
+                    decoration: InputDecoration(
+                      labelText: 'المدينة',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                      alignLabelWithHint: true,
                     ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      isApproved = value!;
-                    });
-                  },
-                  onSaved: (value) {
-                    setState(() {
-                      isApproved = value!;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please choose a value';
-                    }
-                    return null;
-                  },
+                    items: ['رام الله', 'نابلس', 'بيت لحم', 'طولكرم']
+                        .map((type) => DropdownMenuItem<String>(
+                              value: type,
+                              child: Text(type),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _city = value!;
+                      });
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        _city = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'الرجاء اختيار المدينة'; // Update the error message to Arabic
+                      }
+                      return null;
+                    },
+                    dropdownColor: Colors
+                        .white, // Add this line to set the dropdown menu color
+                  ),
                 ),
-                TextFormField(
-                  decoration:const InputDecoration(labelText: 'Address 1'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the address';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    _address1 = value;
-                  },
-                  onSaved: (value) {
-                    _address1 = value!;
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'العنوان 1',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'يرجى إدخال العنوان';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      _address1 = value;
+                    },
+                    onSaved: (value) {
+                      _address1 = value!;
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration:const  InputDecoration(labelText: 'Number of rooms'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the number of rooms';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _numRooms = int.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    setState(() {
-                      _numRooms = int.parse(value!);
-                    });
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'عدد الغرف',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'يرجى إدخال عدد الغرف';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _numRooms = int.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        _numRooms = int.parse(value!);
+                      });
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Number of bathrooms'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the number of bathrooms';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _numBathrooms = int.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _numBathrooms = int.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'عدد الحمامات',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'يرجى إدخال عدد الحمامات';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _numBathrooms = int.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      _numBathrooms = int.parse(value!);
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration:const  InputDecoration(labelText: 'Number of verandas'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the number of verandas';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _numVerandas = int.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _numVerandas = int.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'عدد الشرفات',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'الرجاء إدخال عدد الشرفات';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _numVerandas = int.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      _numVerandas = int.parse(value!);
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Number of salons'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the number of salons';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _numSalons = int.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _numSalons = int.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'عدد الصالونات',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'الرجاء إدخال عدد الصالونات';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _numSalons = int.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      _numSalons = int.parse(value!);
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Number of kitchens'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the number of kitchens';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _numKitchens = int.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _numKitchens = int.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'عدد المطابخ',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'الرجاء إدخال عدد المطابخ';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _numKitchens = int.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      _numKitchens = int.parse(value!);
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration:const InputDecoration(labelText: 'Size'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the size';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _size = double.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _size = double.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'المساحة',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'الرجاء إدخال المساحة';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _size = double.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      _size = double.parse(value!);
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Price'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the price';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _price = double.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _price = double.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'السعر',
+                      labelStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Scheherazade_New',
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'الرجاء إدخال السعر';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _price = double.parse(value);
+                      });
+                    },
+                    onSaved: (value) {
+                      _price = double.parse(value!);
+                    },
+                  ),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Latitude'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the latitude';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _latitude = double.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _latitude = double.parse(value!);
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'الوصف',
+                        alignLabelWithHint: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10.0),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null, // Allow unlimited number of lines
+                      onChanged: (value) {
+                        setState(() {
+                          _description = value;
+                        });
+                      },
+                      onSubmitted: (value) {
+                        // Perform validation here if needed
+                      },
+                      textAlign: TextAlign.right,
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Longitude'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the longitude';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _longitude = double.parse(value);
-                    });
-                  },
-                  onSaved: (value) {
-                    _longitude = double.parse(value!);
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the description';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _description = value;
-                    });
-                  },
-                  onSaved: (value) {
-                    _description = value!;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Owner_id'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter the address';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    _OwnerID = value;
-                  },
-                  onSaved: (value) {
-                    _OwnerID = value!;
-                  },
-                ),
-                const SizedBox(height: 16),
-                const Text('Images'),
-                const SizedBox(height: 8),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
-                      child:               ElevatedButton(
-                onPressed: getImage,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  primary: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'إرفاق صور',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+                      child: ElevatedButton(
+                        onPressed: getImage,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          primary: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          'إرفاق صور',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-               const SizedBox(height: 8),
-               const Text(
-                'الصور المرفقة:',
-                style: TextStyle(
-                  fontFamily: 'Scheherazade_New',
-                  fontSize: 16,
-                ),
-              ),
+                const SizedBox(height: 8),
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
@@ -574,16 +677,75 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                            Row(
+                const Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text(
+                    'قريب من : ',
+                    style: TextStyle(
+                      fontFamily: 'Scheherazade_New',
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: _availableNeighborhoods.map((neighborhood) {
+                    final isSelected =
+                        _selectedNeighborhoods.contains(neighborhood);
+                    return FilterChip(
+                      label: Text(neighborhood),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        setState(() {
+                          if (selected) {
+                            _selectedNeighborhoods.add(neighborhood);
+                          } else {
+                            _selectedNeighborhoods.remove(neighborhood);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 16),
+                Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            _submitForm();
-                          }
-                        },
+                        onPressed: _openMapPopup,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          primary: primaryRed,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          ' اختار الموقع',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+                                  _submitForm();
+                                }
+                              },
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(double.infinity, 50),
                           primary: primaryRed,

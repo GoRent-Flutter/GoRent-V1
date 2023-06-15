@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
+import '../Users/users_screen.dart';
 import 'notification/notification_screen.dart';
 String username = "";
 void fetchUserData() async {
@@ -27,7 +28,46 @@ class UserAccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
       // fetchUserData();
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return Scaffold(
+      backgroundColor: primaryWhite,
+      appBar: AppBar(
+        backgroundColor: primaryWhite,
+        elevation: 1,
+        leading: IconButton(
+          icon: Image.asset('assets/icons/Red_back.png', width: 24, height: 24),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => UserAccountScreen(currentIndex: currentIndex,)),
+            );
+          },
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: TextButton(
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('sessionId');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UsersScreen()),
+                );
+              },
+              child: const Text(
+                'تسجيل الخروج',
+                style: TextStyle(
+                  color: primaryRed,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body:Container(
       color: Colors.transparent,
       child: SizedBox(
         child: Stack(
@@ -133,7 +173,7 @@ class UserAccountScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildButtonWithDivider(
