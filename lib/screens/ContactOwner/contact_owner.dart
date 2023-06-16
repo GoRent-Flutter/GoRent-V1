@@ -11,6 +11,42 @@ import 'package:firebase_database/firebase_database.dart' as firebase;
 
 import '../RentList/rentlist_screen.dart';
 
+class apartment {
+  final String city;
+  final String type;
+  final int price;
+
+  apartment({
+    required this.city,
+    required this.type,
+    required this.price,
+  });
+}
+
+class Myapartment extends apartment {
+  final String city;
+  final String type;
+  final int price;
+
+  Myapartment({
+    required this.city,
+    required this.type,
+    required this.price,
+  }) : super(city: city, type: type, price: price);
+}
+
+class Myapartment2 extends apartment {
+  final String city;
+  final String type;
+  final int price;
+
+  Myapartment2({
+    required this.city,
+    required this.type,
+    required this.price,
+  }) : super(city: city, type: type, price: price);
+}
+
 class ContactOwnerScreen extends StatefulWidget {
   final String ownerID;
 
@@ -24,17 +60,63 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
   bool propertiesInfo = true;
   bool aboutOwner = false;
   firestore.DocumentSnapshot? ownerSnapshot;
-
-  // List<Post> _posts = [];
+  late DatabaseReference _databaseRef;
+  late DatabaseReference _databaseRef2;
+  List<Myapartment> _Myapartment = [];
+  List<Myapartment2> _Myapartment2 = [];
+  // List<apartment> _combinedList = [];
 
   @override
   void initState() {
     super.initState();
     fetchOwnerData();
-    // fetchApartments();
+    _databaseRef = FirebaseDatabase.instance.reference().child('rent');
+    _databaseRef2 = FirebaseDatabase.instance.reference().child('sale');
+    _databaseRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final rentmyapartment = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          _Myapartment = rentmyapartment.entries
+              .where((entry) => entry.value['OwnerID'] == widget.ownerID)
+              .map((entry) {
+            final rentedapartment = Map<String, dynamic>.from(entry.value);
+            return Myapartment(
+              city: rentedapartment['city'] as String,
+              type: rentedapartment['type'] as String,
+              price: rentedapartment['price'] as int,
+            );
+          }).toList();
+        });
+      }
+    });
+    _databaseRef2.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final salemyapartment = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          _Myapartment2 = salemyapartment.entries
+              .where((entry) => entry.value['OwnerID'] == widget.ownerID)
+              .map((entry) {
+            final saleapartment = Map<String, dynamic>.from(entry.value);
+            return Myapartment2(
+              city: saleapartment['city'] as String,
+              type: saleapartment['type'] as String,
+              price: saleapartment['price'] as int,
+            );
+          }).toList();
+        });
+      }
+    });
   }
 
-  List<String> apartments = [];
+  List<apartment> _combineApartments() {
+    List<apartment> combinedList = [];
+    combinedList.addAll(_Myapartment);
+    combinedList.addAll(_Myapartment2);
+    return combinedList;
+  }
+
   Future<void> fetchOwnerData() async {
     try {
       final firestore.DocumentSnapshot snapshot = await firestore
@@ -50,50 +132,6 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
       print('Error fetching owner data: $e');
     }
   }
-
-  // Future<void> fetchApartments() async {
-  //   try {
-  //     final databaseReference = FirebaseDatabase.instance.reference();
-  //     final rentSnapshot = await databaseReference
-  //         .child('rent')
-  //         .orderByChild('OwnerID')
-  //         .equalTo(widget.ownerID)
-  //         .once();
-  //     final buySnapshot = await databaseReference
-  //         .child('buy')
-  //         .orderByChild('OwnerID')
-  //         .equalTo(widget.ownerID)
-  //         .once();
-
-  //     final List<String> rentedApartments = [];
-  //     final List<String> boughtApartments = [];
-
-  //     if (rentSnapshot.snapshot.value != null) {
-  //       final Map<dynamic, dynamic>? rentData =
-  //           rentSnapshot.snapshot.value as Map?;
-  //       rentData?.forEach((key, value) {
-  //         rentedApartments.add(
-  //             key as String); // Assuming each key represents an apartment ID
-  //       });
-  //     }
-
-  //     if (buySnapshot.snapshot.value != null) {
-  //       final Map<dynamic, dynamic>? buyData =
-  //           buySnapshot.snapshot.value as Map?;
-  //       buyData?.forEach((key, value) {
-  //         boughtApartments.add(
-  //             key as String); // Assuming each key represents an apartment ID
-  //       });
-  //     }
-
-  //     setState(() {
-  //       apartments = [...rentedApartments, ...boughtApartments];
-  //       print(apartments);
-  //     });
-  //   } catch (e) {
-  //     print('Error fetching apartments: $e');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -337,234 +375,95 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
                     ),
                   ),
                 ])
+              //  : Positioned(
+              //     top: size.height - 330,
+              //     left: 30,
+              //     right: 30,
+              //     child: const Text(
+              //       "not available yet",
+              //       style: TextStyle(
+              //         fontSize: 12,
+              //         color: primaryRed,
+              //         decoration: TextDecoration.none,
+              //       ),
+              //     ),
+              //   ),
               : Positioned(
-                  top: size.height - 330,
-                  left: 30,
-                  right: 30,
-                  child: const Text(
-                    "not available yet",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: primaryRed,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ),
-          // Material(
-          //     child: Positioned(
+                  top: 470,
+                  left: 20,
+                  right: 20,
+                  bottom: 20,
+                  child: ListView.builder(
+                    itemCount: _combineApartments().length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final rentapart = _combineApartments()[index];
+                      return Card(
+                        elevation: 2,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: ListTile(
+                          title: Text(
+                            'Apartment City: ${rentapart.city}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 8),
+                              Text(
+                                'type: ${rentapart.type}',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'price: ${rentapart.price}' as String,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              SizedBox(height: 8),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  )),
+          // Positioned(
           //     top: 470,
           //     left: 20,
           //     right: 20,
           //     bottom: 20,
-          // child: ListView.builder(
-          //   itemCount: apartments.length,
-          //   itemBuilder: (context, index) {
-          //     final apartmentId = apartments[index];
-          //     child:
-          //     Column(
-          //       children: [
-          //         Padding(
-          //           padding: EdgeInsets.only(top: 7.0),
-          //           child: Stack(
-          //             children: [
-          //               Container(
-          //                 width: 310,
-          //                 height: 150,
-          //                 decoration: BoxDecoration(
-          //                   color: primaryWhite,
-          //                   borderRadius: BorderRadius.circular(24.0),
-          //                   boxShadow: [
-          //                     BoxShadow(
-          //                       color: Colors.black.withOpacity(0.3),
-          //                       spreadRadius: 2,
-          //                       blurRadius: 5,
-          //                     ),
-          //                   ],
-          //                   // image: DecorationImage(
-          //                   //   image: NetworkImage(apartmentId.images.first),
-          //                   //   fit: BoxFit.cover,
-          //                   // ),
+          //     child: ListView.builder(
+          //       itemCount: _Myapartment2.length,
+          //       itemBuilder: (BuildContext context, int index) {
+          //         final rentapart = _Myapartment2[index];
+          //         return Card(
+          //           elevation: 2,
+          //           margin:
+          //               EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          //           child: ListTile(
+          //             title: Text(
+          //               'Apartment City: ${rentapart.city}',
+          //               style: TextStyle(fontWeight: FontWeight.bold),
+          //             ),
+          //             subtitle: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //                 SizedBox(height: 8),
+          //                 Text(
+          //                   'type: ${rentapart.type}',
+          //                   style: TextStyle(fontSize: 16),
           //                 ),
-          //               ),
-          //               Positioned(
-          //                 top: 10,
-          //                 right: 10,
-          //                 child: Icon(Icons.favorite_border,
-          //                     color: Colors.white),
-          //               ),
-          //             ],
+          //                 SizedBox(height: 4),
+          //                 Text(
+          //                   'price: ${rentapart.price}' as String,
+          //                   style: TextStyle(fontSize: 14),
+          //                 ),
+          //                 SizedBox(height: 8),
+          //               ],
+          //             ),
           //           ),
-          //         ),
-          //         Row(
-          //           mainAxisAlignment:
-          //               MainAxisAlignment.spaceBetween, // set alignment
-          //           children: [
-          //             Padding(
-          //               padding: EdgeInsets.only(left: 13.0),
-          //               child: Text(
-          //                 "\$ + post.price.toString()",
-          //                 style: const TextStyle(
-          //                   fontSize: 12,
-          //                   color: primaryRed,
-          //                   decoration: TextDecoration.none,
-          //                 ),
-          //               ),
-          //             ),
-          //             Padding(
-          //               padding: EdgeInsets.only(right: 13.0),
-          //               child: Text(
-          //                 'Apartment ID: $apartmentId',
-          //                 style: const TextStyle(
-          //                   fontFamily: 'Scheherazade_New',
-          //                   fontSize: 16,
-          //                   color: primaryRed,
-          //                   decoration: TextDecoration.none,
-          //                 ),
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //         Row(
-          //           mainAxisAlignment:
-          //               MainAxisAlignment.spaceBetween, // set alignment
-          //           children: [
-          //             Row(
-          //               children: [
-          //                 Padding(
-          //                   padding: EdgeInsets.only(left: 6.0),
-          //                   child: Image(
-          //                     image: AssetImage(
-          //                         'assets/icons/Red_bedroom.png'),
-          //                     width: 20,
-          //                     height: 18,
-          //                   ),
-          //                 ),
-          //                 SizedBox(
-          //                     width:
-          //                         5), // add some spacing between the icon and text
-
-          //                 Padding(
-          //                   padding: EdgeInsets.only(right: 6.0),
-          //                   // child: Text(
-          //                   //   post.numRooms.toString(),
-          //                   //   style: TextStyle(
-          //                   //     fontSize: 12,
-          //                   //     color: primaryRed,
-          //                   //     decoration: TextDecoration.none,
-          //                   //   ),
-          //                   // ),
-          //                 ),
-          //               ],
-          //             ),
-          //             Row(
-          //               children: [
-          //                 Padding(
-          //                   padding: EdgeInsets.only(left: 6.0),
-          //                   child: Image(
-          //                     image: AssetImage(
-          //                         'assets/icons/Red_bathroom.png'),
-          //                     width: 20,
-          //                     height: 18,
-          //                   ),
-          //                 ),
-          //                 SizedBox(
-          //                     width:
-          //                         5), // add some spacing between the icon and text
-
-          //                 Padding(
-          //                   padding: EdgeInsets.only(right: 13.0),
-          //                   // child: Text(
-          //                   //   post.numBathrooms.toString(),
-          //                   //   style: TextStyle(
-          //                   //     fontSize: 12,
-          //                   //     color: primaryRed,
-          //                   //     decoration: TextDecoration.none,
-          //                   //   ),
-          //                   // ),
-          //                 ),
-          //               ],
-          //             ),
-          //             Row(
-          //               children: [
-          //                 Padding(
-          //                   padding: EdgeInsets.only(left: 0.0),
-          //                   child: Image(
-          //                     image: AssetImage(
-          //                         'assets/icons/Red_size.png'),
-          //                     width: 20,
-          //                     height: 18,
-          //                   ),
-          //                 ),
-          //                 SizedBox(
-          //                     width:
-          //                         5), // add some spacing between the icon and text
-
-          //                 Padding(
-          //                   padding: EdgeInsets.only(right: 75.0),
-          //                   // child: Text(
-          //                   //   post.size.toString(),
-          //                   //   style: TextStyle(
-          //                   //     fontSize: 12,
-          //                   //     color: primaryRed,
-          //                   //     decoration: TextDecoration.none,
-          //                   //   ),
-          //                   // ),
-          //                 ),
-          //               ],
-          //             ),
-          //             Padding(
-          //               padding: EdgeInsets.only(right: 13.0),
-          //               // child: Text(
-          //               //   post.type,
-          //               //   style: const TextStyle(
-          //               //     fontFamily: 'Scheherazade_New',
-          //               //     fontSize: 12,
-          //               //     color: primaryRed,
-          //               //     decoration: TextDecoration.none,
-          //               //   ),
-          //               // ),
-          //             ),
-          //           ],
-          //         ),
-          //       ],
-          //     );
-          //   },
-          // ),
-          // Add Material widget here
-
-          // child: ListView.builder(
-          //   itemCount: apartments.length,
-          //   itemBuilder: (context, index) {
-          //     final apartmentId = apartments[index];
-          //     return FutureBuilder(
-          //       //future: fetchApartmentDetails(apartmentId),
-          //       builder: (context, snapshot) {
-          //         if (snapshot.connectionState ==
-          //             ConnectionState.waiting) {
-          //           return CircularProgressIndicator();
-          //         } else if (snapshot.hasError) {
-          //           return Text('Error fetching apartment details.');
-          //         } else if (snapshot.hasData) {
-          //           final apartment = snapshot.data
-          //               as Apartment; // Replace `Apartment` with your apartment data model
-          //           return ApartmentWidget(
-          //             images: apartment.images,
-          //             city: apartment.city,
-          //             type: apartment.type,
-          //             description: apartment.description,
-          //             price: apartment.price,
-          //             numRooms: apartment.numRooms,
-          //             numBathrooms: apartment.numBathrooms,
-          //             size: apartment.size,
-          //           );
-          //         } else {
-          //           return Text('Apartment data not available.');
-          //         }
+          //         );
           //       },
-          //     );
-          //   },
-          // ),
-          // ))
+          //     ))
         ])));
   }
 }

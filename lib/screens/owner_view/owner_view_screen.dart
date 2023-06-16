@@ -4,6 +4,7 @@ import 'package:gorent_application1/screens/ContactOwner/Chatting_System/chats_s
 import 'package:gorent_application1/screens/owner_view/add_appartment.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../users/users_screen.dart';
+import 'owner_apartments.dart';
 import 'owner_reservations_screen.dart';
 
 class OwnerScreen extends StatelessWidget {
@@ -160,7 +161,17 @@ class OwnerScreen extends StatelessWidget {
                     buttonWidth: buttonWidth,
                     buttonHeight: buttonHeight,
                     context: context,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              OwnerApartmentsScreen(
+                            ownerId: "Aqark@gmail.com-GROW",
+                          ),
+                        ),
+                      );
+                    },
                     icon: Icons.home,
                     text: 'عرض عقاراتي',
                   ),

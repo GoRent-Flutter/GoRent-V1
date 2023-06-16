@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constraints.dart';
 
@@ -19,6 +21,23 @@ class ReserveAppointment extends StatefulWidget {
 class _ReserveAppointmentState extends State<ReserveAppointment> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  late String username;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  void fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionId = prefs.getString('sessionId');
+    List<String> parts = sessionId!.split('.');
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final userDoc =
+        await firestore.collection('customers').doc(parts[1].toString()).get();
+    username = userDoc.data()!['fullname'];
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -45,7 +64,6 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
   }
 
   void _saveReservation() {
-    String custId = "may-GRCU";
     String apartmentOwnerId = widget.ownerID;
     String apartmentcity = widget.city;
     DatabaseReference reservationRef =
@@ -54,7 +72,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
     reservationRef.push().set({
       'apartmentOwnerId': apartmentOwnerId,
       'apartmentcity': apartmentcity,
-      'custId': custId,
+      'custId': username,
       'date': DateFormat('dd/MM/yyyy').format(_selectedDate),
       'time': _selectedTime.format(context),
     }).then((_) {

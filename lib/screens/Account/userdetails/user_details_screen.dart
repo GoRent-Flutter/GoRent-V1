@@ -7,22 +7,54 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../users/users_screen.dart';
 import 'change_password_screen.dart';
 
-Future<void> fetchUserData() async {
-  final prefs = await SharedPreferences.getInstance();
-  final sessionId = prefs.getString('sessionId');
-  List<String> parts = sessionId!.split('.');
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final userDoc =
-      await firestore.collection('customers').doc(parts[1].toString()).get();
-  String username = userDoc.data()!['fullname'];
-  String email=userDoc.data()!['email'];
-  String phone_number=userDoc.data()!['phone_number'];
-  print("teeeeeeeeee" + username.toString());
+// Future<void> fetchUserData() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   final sessionId = prefs.getString('sessionId');
+//   List<String> parts = sessionId!.split('.');
+//   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+//   final userDoc =
+//       await firestore.collection('customers').doc(parts[1].toString()).get();
+//   String username = userDoc.data()!['fullname'];
+//   String email=userDoc.data()!['email'];
+//   String phone_number=userDoc.data()!['phone_number'];
+//   print("teeeeeeeeee" + username.toString());
+// }
+
+class EditProfilePageState extends StatefulWidget {
+  final int currentIndex;
+
+  const EditProfilePageState({Key? key, required this.currentIndex})
+      : super(key: key);
+
+  @override
+  _EditProfilePageStateState createState() => _EditProfilePageStateState();
 }
 
-class EditProfilePageState extends StatelessWidget {
-  final int currentIndex;
-  const EditProfilePageState({Key? key, required this.currentIndex}) : super(key: key);
+class _EditProfilePageStateState extends State<EditProfilePageState> {
+  String username = '';
+  String email = '';
+  String phoneNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionId = prefs.getString('sessionId');
+    List<String> parts = sessionId!.split('.');
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final userDoc =
+        await firestore.collection('customers').doc(parts[1].toString()).get();
+    setState(() {
+      username = userDoc.data()!['fullname'];
+      email = userDoc.data()!['email'];
+      phoneNumber = userDoc.data()!['phone_number'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +68,8 @@ class EditProfilePageState extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => UserAccountScreen(currentIndex: currentIndex,)),
+                  builder: (context) =>
+                      UserAccountScreen(currentIndex: widget.currentIndex)),
             );
           },
         ),
@@ -63,17 +96,18 @@ class EditProfilePageState extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              buildTextField("اسمك", "ايمان خلف"),
-              buildTextField(
-                  "البريد الآليكتروني", "eman.mufeed.khala@gmail.com"),
-              buildTextField("رقم التواصل", "٠٥٩٩٨٣٤٥٤٦٤"),
+              buildTextField("اسمك", username),
+              buildTextField("البريد الآليكتروني", email),
+              buildTextField("رقم التواصل", phoneNumber),
               Column(
                 children: [
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => ChangePasswordScreen(currentIndex:currentIndex))
+                          builder: (_) => ChangePasswordScreen(
+                              currentIndex: widget.currentIndex),
+                        ),
                       );
                     },
                     child: Container(
