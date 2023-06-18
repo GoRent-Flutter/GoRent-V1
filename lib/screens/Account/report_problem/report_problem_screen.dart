@@ -3,7 +3,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../user_account_screen.dart';
 import 'success_screen.dart';

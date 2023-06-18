@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 
+import '../../Models_Folder/OwnerModel.dart';
+import 'chat_room_model.dart';
+
 class ChatRoomScreen extends StatefulWidget {
-  const ChatRoomScreen({Key? key}) : super(key: key);
+  final OwnerModel targetOwner;
+  final ChatRoomModel chatroom;
+  const ChatRoomScreen({Key? key, required this.targetOwner, required this.chatroom}) : super(key: key);
 
   @override
   ChatRoomScreenState createState() => ChatRoomScreenState();
@@ -13,7 +18,10 @@ class ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: primaryRed
+          backgroundColor: primaryRed,
+          title: Row(
+            children: [Text(widget.targetOwner.fullname.toString())],
+          ),
         ),
         body: SafeArea(
           child: Container(

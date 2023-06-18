@@ -3,22 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Account/user_account_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../users/users_screen.dart';
 import 'change_password_screen.dart';
-
-// Future<void> fetchUserData() async {
-//   final prefs = await SharedPreferences.getInstance();
-//   final sessionId = prefs.getString('sessionId');
-//   List<String> parts = sessionId!.split('.');
-//   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-//   final userDoc =
-//       await firestore.collection('customers').doc(parts[1].toString()).get();
-//   String username = userDoc.data()!['fullname'];
-//   String email=userDoc.data()!['email'];
-//   String phone_number=userDoc.data()!['phone_number'];
-//   print("teeeeeeeeee" + username.toString());
-// }
 
 class EditProfilePageState extends StatefulWidget {
   final int currentIndex;
@@ -46,8 +31,17 @@ class _EditProfilePageStateState extends State<EditProfilePageState> {
     final sessionId = prefs.getString('sessionId');
     List<String> parts = sessionId!.split('.');
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final userDoc =
-        await firestore.collection('customers').doc(parts[1].toString()).get();
+    final userDoc;
+    if (parts[1].toString().contains("GRCU")) {
+      userDoc = await firestore
+          .collection('customers')
+          .doc(parts[1].toString())
+          .get();
+    } else {
+      userDoc =
+          await firestore.collection('owners').doc(parts[1].toString()).get();
+    }
+
     setState(() {
       username = userDoc.data()!['fullname'];
       email = userDoc.data()!['email'];

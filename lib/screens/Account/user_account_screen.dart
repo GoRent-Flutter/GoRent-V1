@@ -15,11 +15,24 @@ String username = "";
 void fetchUserData() async {
   final prefs = await SharedPreferences.getInstance();
   final sessionId = prefs.getString('sessionId');
-  List<String> parts = sessionId!.split('.');
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final userDoc =
-      await firestore.collection('customers').doc(parts[1].toString()).get();
-  username = userDoc.data()!['fullname'];
+  if (sessionId != null) {
+    List<String> parts = sessionId.split('.');
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final userDoc;
+    if (parts[1].toString().contains("GRCU")) {
+      userDoc = await firestore
+          .collection('customers')
+          .doc(parts[1].toString())
+          .get();
+    } else {
+      userDoc =
+          await firestore.collection('owners').doc(parts[1].toString()).get();
+    }
+    username = userDoc.data()!['fullname'];
+  }
+  else{
+    username=" ";
+  }
 }
 
 class UserAccountScreen extends StatelessWidget {

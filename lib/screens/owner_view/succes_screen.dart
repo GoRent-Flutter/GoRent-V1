@@ -21,13 +21,13 @@ class SuccessScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16),
-              Icon(
+              const SizedBox(height: 16),
+              const Icon(
                 Icons.sentiment_satisfied, // Smiley face icon
                 size: 150,
                 color: primaryRed, // Changed color to red
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -44,7 +44,7 @@ class SuccessScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      minimumSize: Size(160, 50), // Increased button size
+                      minimumSize: const Size(160, 50), // Increased button size
                     ),
                     child: const Text(
                       'متابعة التحميل',
@@ -64,7 +64,7 @@ class SuccessScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      minimumSize: Size(160, 50), // Increased button size
+                      minimumSize: const Size(160, 50), // Increased button size
                     ),
                     child: const Text(
                       'إيقاف التحميل',

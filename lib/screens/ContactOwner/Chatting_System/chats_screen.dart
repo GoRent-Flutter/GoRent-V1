@@ -19,9 +19,9 @@ class ChatsScreenState extends State<ChatsScreen> {
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ChatsSearchScreen();
-          }));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return ChatsSearchScreen();
+          // }));
         },
         child: Icon(Icons.search_sharp, color: primaryWhite,),
           backgroundColor:primaryRed

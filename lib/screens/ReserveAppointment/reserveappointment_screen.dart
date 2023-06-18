@@ -1,9 +1,10 @@
+// ignore_for_file: unnecessary_import
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constraints.dart';
@@ -88,8 +89,8 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('تم ارسال طلب الحجز'),
-          content: Text(
+          title: const Text('تم ارسال طلب الحجز'),
+          content: const Text(
               'الحجز الخاص بك قد ارسل الى صاحب العقار, لتفاصيل اكثر بامكانك التواصل معه عبر ايقونة التواصل فوق'),
           actions: [
             ElevatedButton(
@@ -102,7 +103,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -113,7 +114,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
+      title: const Text(
         'حجز موعد',
         style: TextStyle(
           color: primaryRed,
@@ -123,17 +124,17 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             ': احجز موعد في الوقت الذي يناسبك',
             style: TextStyle(
               color: primaryRed,
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
-              Text(
+              const Text(
                 'تاريخ الحجز: ',
                 style: TextStyle(
                   color: primaryRed,
@@ -144,7 +145,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
                 onPressed: () => _selectDate(context),
                 child: Text(
                   DateFormat('dd/MM/yyyy').format(_selectedDate),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: primaryRed,
                     fontSize: 16,
                   ),
@@ -154,7 +155,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
           ),
           Row(
             children: [
-              Text(
+              const Text(
                 'وقت الحجز: ',
                 style: TextStyle(
                   color: primaryRed,
@@ -165,7 +166,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
                 onPressed: () => _selectTime(context),
                 child: Text(
                   _selectedTime.format(context),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: primaryRed,
                     fontSize: 16,
                   ),
@@ -186,7 +187,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(
+          child: const Text(
             'إلغاء',
             style: TextStyle(
               color: Colors.white,
@@ -202,7 +203,7 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
             ),
           ),
           onPressed: _saveReservation,
-          child: Text(
+          child: const Text(
             'حجز',
             style: TextStyle(
               color: Colors.white,

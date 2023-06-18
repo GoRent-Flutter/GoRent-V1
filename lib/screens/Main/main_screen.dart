@@ -144,7 +144,7 @@ class MainScreenState extends State<MainScreen> {
                       bottom: 3,
                       child: Transform.scale(
                         scale: 0.8,
-                        child: Icon(Icons.message, color: primaryRed,),
+                        child: const Icon(Icons.message, color: primaryRed,),
                       ),
                     ),
                   ],
@@ -187,10 +187,10 @@ class MainScreenState extends State<MainScreen> {
                         child: Image.asset('assets/icons/buy.png'),
                       ),
                     ),
-                    Center(
+                    const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
+                        children: [
                           Padding(
                             padding: EdgeInsets.only(bottom: 2),
                             child: Text(
@@ -247,10 +247,10 @@ class MainScreenState extends State<MainScreen> {
                         child: Image.asset('assets/icons/rent.png'),
                       ),
                     ),
-                    Center(
+                    const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
+                        children: [
                           Padding(
                             padding: EdgeInsets.only(bottom: 2),
                             child: Text(
@@ -411,7 +411,7 @@ class MainScreenState extends State<MainScreen> {
                                             blurRadius: 5,
                                           ),
                                         ],
-                                        image: DecorationImage(
+                                        image: const DecorationImage(
                                           image: AssetImage(
                                               'assets/images/apartments.jpg'),
                                           fit: BoxFit.cover,
@@ -641,7 +641,7 @@ class MainScreenState extends State<MainScreen> {
                   },
                   child: TextFormField(
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
                       border: InputBorder.none,
                       hintText: 'ابحث',
                       hintTextDirection: TextDirection.rtl,

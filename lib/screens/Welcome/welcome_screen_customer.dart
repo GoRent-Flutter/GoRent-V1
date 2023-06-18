@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Login/login_screen.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/screens/SignUp/signup_screen.dart';
-import 'package:gorent_application1/screens/guest_view/guest_view_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../../constraints.dart';
@@ -21,8 +20,8 @@ class WelcomeScreenCustomer extends StatelessWidget {
 
     return Scaffold(
         body: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomLeft,
                 colors: [
@@ -141,7 +140,7 @@ class WelcomeScreenCustomer extends StatelessWidget {
                   child: TextButton(
                     onPressed: () async {
                       
-                      String sessionId = Uuid().v4();
+                      String sessionId = const Uuid().v4();
                        String userId = sessionId+"-GRGU"; 
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       await prefs.setString('sessionId', userId);

@@ -4,7 +4,6 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import '../Models_Folder/CustModel.dart';
 import '../owner_view/owner_view_screen.dart';
 
 class AboutYouScreen extends StatefulWidget {
@@ -43,7 +42,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           });
 
           // Generate and store session ID
-          String sessionId = Uuid().v4();
+          String sessionId = const Uuid().v4();
 
           //distinguish between customer and owner session ID
           String userSessionId = sessionId + ".customer";
@@ -58,7 +57,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           });
 
           // Generate and store session ID
-          String sessionId = Uuid().v4();
+          String sessionId = const Uuid().v4();
 
           //distinguish between customer and owner session ID
           String userSessionId = sessionId + ".owner";
@@ -165,7 +164,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                     ),
                     child: TextField(
                       controller: fullnameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: ' اسم المستخدم',
                         hintStyle: TextStyle(
                           fontSize: 14,
@@ -194,7 +193,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                     child: TextField(
                       controller: phone_numberController,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'رقم الهاتف',
                         hintStyle: TextStyle(
                           fontSize: 14,
@@ -281,11 +280,11 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                         ? Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MainScreen(currentIndex:1)))
+                                builder: (context) => const MainScreen(currentIndex:1)))
                         : Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => OwnerScreen()),
+                                builder: (context) => const OwnerScreen()),
                           );
                   } else if (success == false) {
                     print("an error occurred while trying to sign up");

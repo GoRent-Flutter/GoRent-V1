@@ -19,18 +19,18 @@ class ItemDetail extends StatefulWidget {
 
 class _ItemDetailState extends State<ItemDetail> {
   int _current = 0;
-  Future<int> estimated() async {
-    RentPredModel model = RentPredModel(
-      size: widget.post.size.toDouble(),
-      numRooms: widget.post.numRooms.toDouble(),
-      numBathrooms: widget.post.numBathrooms.toDouble(),
-    );
+  // Future<int> estimated() async {
+  //   RentPredModel model = RentPredModel(
+  //     size: widget.post.size.toDouble(),
+  //     numRooms: widget.post.numRooms.toDouble(),
+  //     numBathrooms: widget.post.numBathrooms.toDouble(),
+  //   );
 
-    String predValue = await model.predData();
-    double estimatedValue = double.parse(predValue);
-    int estimatedIntValue = estimatedValue.round();
-    return estimatedIntValue;
-  }
+  //   String predValue = await model.predData();
+  //   double estimatedValue = double.parse(predValue);
+  //   int estimatedIntValue = estimatedValue.round();
+  //   return estimatedIntValue;
+  // }
 
   Widget _dotIndicator() {
     return Row(
@@ -331,7 +331,7 @@ class _ItemDetailState extends State<ItemDetail> {
             child: Padding(
               padding: const EdgeInsets.only(right: 12.0, bottom: 0.0),
               child: FutureBuilder<int>(
-                future: estimated(),
+                // future: estimated(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Return a loading indicator or placeholder text

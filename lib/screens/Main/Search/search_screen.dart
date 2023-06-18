@@ -207,7 +207,7 @@ class SearchScreenState extends State<SearchScreen> {
                             child: Column(
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(top: 7.0),
+                                  padding: const EdgeInsets.only(top: 7.0),
                                   child: Stack(
                                     children: [
                                       Container(
@@ -232,7 +232,7 @@ class SearchScreenState extends State<SearchScreen> {
                                           ),
                                         ),
                                       ),
-                                      Positioned(
+                                      const Positioned(
                                         top: 10,
                                         right: 10,
                                         child: Icon(Icons.favorite_border,
@@ -246,7 +246,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       .spaceBetween, // set alignment
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(left: 13.0),
+                                      padding: const EdgeInsets.only(left: 13.0),
                                       child: Text(
                                         "\$" + estate.price.toString(),
                                         style: const TextStyle(
@@ -257,7 +257,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(right: 13.0),
+                                      padding: const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         estate.city,
                                         style: const TextStyle(
@@ -275,7 +275,7 @@ class SearchScreenState extends State<SearchScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding: EdgeInsets.only(left: 6.0),
                                           child: Image(
                                             image: AssetImage(
@@ -284,15 +284,15 @@ class SearchScreenState extends State<SearchScreen> {
                                             height: 18,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width:
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 6.0),
+                                          padding: const EdgeInsets.only(right: 6.0),
                                           child: Text(
                                             estate.numRooms.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: primaryRed,
                                               decoration: TextDecoration.none,
@@ -303,7 +303,7 @@ class SearchScreenState extends State<SearchScreen> {
                                     ),
                                     Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding: EdgeInsets.only(left: 6.0),
                                           child: Image(
                                             image: AssetImage(
@@ -312,15 +312,15 @@ class SearchScreenState extends State<SearchScreen> {
                                             height: 18,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width:
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 13.0),
+                                          padding: const EdgeInsets.only(right: 13.0),
                                           child: Text(
                                             estate.numBathrooms.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: primaryRed,
                                               decoration: TextDecoration.none,
@@ -331,7 +331,7 @@ class SearchScreenState extends State<SearchScreen> {
                                     ),
                                     Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding: EdgeInsets.only(left: 0.0),
                                           child: Image(
                                             image: AssetImage(
@@ -340,15 +340,15 @@ class SearchScreenState extends State<SearchScreen> {
                                             height: 18,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width:
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 75.0),
+                                          padding: const EdgeInsets.only(right: 75.0),
                                           child: Text(
                                             estate.size.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: primaryRed,
                                               decoration: TextDecoration.none,
@@ -358,7 +358,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       ],
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(right: 13.0),
+                                      padding: const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         estate.type,
                                         style: const TextStyle(
@@ -381,7 +381,7 @@ class SearchScreenState extends State<SearchScreen> {
                             child: Column(
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(top: 7.0),
+                                  padding: const EdgeInsets.only(top: 7.0),
                                   child: Stack(
                                     children: [
                                       Container(
@@ -406,7 +406,7 @@ class SearchScreenState extends State<SearchScreen> {
                                           ),
                                         ),
                                       ),
-                                      Positioned(
+                                      const Positioned(
                                         top: 10,
                                         right: 10,
                                         child: Icon(Icons.favorite_border,
@@ -420,7 +420,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       .spaceBetween, // set alignment
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(left: 13.0),
+                                      padding: const EdgeInsets.only(left: 13.0),
                                       child: Text(
                                         "\$" + post.price.toString(),
                                         style: const TextStyle(
@@ -431,7 +431,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(right: 13.0),
+                                      padding: const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         post.city,
                                         style: const TextStyle(
@@ -449,7 +449,7 @@ class SearchScreenState extends State<SearchScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding: EdgeInsets.only(left: 6.0),
                                           child: Image(
                                             image: AssetImage(
@@ -458,15 +458,15 @@ class SearchScreenState extends State<SearchScreen> {
                                             height: 18,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width:
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 6.0),
+                                          padding: const EdgeInsets.only(right: 6.0),
                                           child: Text(
                                             post.numRooms.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: primaryRed,
                                               decoration: TextDecoration.none,
@@ -477,7 +477,7 @@ class SearchScreenState extends State<SearchScreen> {
                                     ),
                                     Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding: EdgeInsets.only(left: 6.0),
                                           child: Image(
                                             image: AssetImage(
@@ -486,15 +486,15 @@ class SearchScreenState extends State<SearchScreen> {
                                             height: 18,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width:
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 13.0),
+                                          padding: const EdgeInsets.only(right: 13.0),
                                           child: Text(
                                             post.numBathrooms.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: primaryRed,
                                               decoration: TextDecoration.none,
@@ -505,7 +505,7 @@ class SearchScreenState extends State<SearchScreen> {
                                     ),
                                     Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding: EdgeInsets.only(left: 0.0),
                                           child: Image(
                                             image: AssetImage(
@@ -514,15 +514,15 @@ class SearchScreenState extends State<SearchScreen> {
                                             height: 18,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width:
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 75.0),
+                                          padding: const EdgeInsets.only(right: 75.0),
                                           child: Text(
                                             post.size.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: primaryRed,
                                               decoration: TextDecoration.none,
@@ -532,7 +532,7 @@ class SearchScreenState extends State<SearchScreen> {
                                       ],
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(right: 13.0),
+                                      padding: const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         post.type,
                                         style: const TextStyle(
@@ -569,7 +569,7 @@ class SearchScreenState extends State<SearchScreen> {
                 color: Colors.transparent,
                 child: TextFormField(
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: InputBorder.none,
                     hintText: 'ابحث',
                     hintTextDirection: TextDirection.rtl,

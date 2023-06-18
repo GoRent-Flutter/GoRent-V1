@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_owner.dart';
-import 'package:gorent_application1/screens/owner_view/owner_view_screen.dart';
 
 import '../../constraints.dart';
 
