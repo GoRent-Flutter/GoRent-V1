@@ -190,7 +190,7 @@ class MainScreenState extends State<MainScreen> {
                         child: Image.asset('assets/icons/buy.png'),
                       ),
                     ),
-                    const Center(
+                     Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -250,7 +250,7 @@ class MainScreenState extends State<MainScreen> {
                         child: Image.asset('assets/icons/rent.png'),
                       ),
                     ),
-                    const Center(
+                     Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
