@@ -10,23 +10,25 @@ import '../../user_bottom_nav_bar.dart';
 import '../Users/users_screen.dart';
 import 'notification/notification_screen.dart';
 
-String username = "";
+String username = " ";
 
 void fetchUserData() async {
   final prefs = await SharedPreferences.getInstance();
   final sessionId = prefs.getString('sessionId');
+  String mergedID="";
   if (sessionId != null) {
     List<String> parts = sessionId.split('.');
+     mergedID=parts[1].toString()+"."+parts[2].toString();
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final userDoc;
-    if (parts[1].toString().contains("GRCU")) {
+    if (parts[2].toString().contains("GRCU")) {
       userDoc = await firestore
           .collection('customers')
-          .doc(parts[1].toString())
+          .doc(mergedID)
           .get();
     } else {
       userDoc =
-          await firestore.collection('owners').doc(parts[1].toString()).get();
+          await firestore.collection('owners').doc(mergedID).get();
     }
     username = userDoc.data()!['fullname'];
   }

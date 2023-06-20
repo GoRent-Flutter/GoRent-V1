@@ -284,7 +284,7 @@ class AboutYouScreenState extends State<AboutYouScreen> {
                         : Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const OwnerScreen()),
+                                builder: (context) =>  OwnerScreen()),
                           );
                   } else if (success == false) {
                     print("an error occurred while trying to sign up");

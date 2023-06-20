@@ -106,7 +106,7 @@ class LoggedInOwner extends StatelessWidget {
         future: Future.delayed(const Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return const OwnerScreen();
+            return OwnerScreen();
           } else {
             return const SplashScreen();
           }

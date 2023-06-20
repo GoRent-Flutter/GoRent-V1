@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/ContactOwner/Chatting_System/chats_screen.dart';
 import 'package:gorent_application1/screens/owner_view/add_appartment.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../users/users_screen.dart';
 import 'owner_apartments.dart';
 import 'owner_reservations_screen.dart';
 
 class OwnerScreen extends StatelessWidget {
-  const OwnerScreen({Key? key}) : super(key: key);
-
+  OwnerScreen({Key? key}) : super(key: key);
+  String mergedID="";
+void fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionId = prefs.getString('sessionId');
+    List<String> parts = sessionId!.split('.');
+    mergedID=parts[1].toString()+"."+parts[2].toString();
+  }
   @override
   Widget build(BuildContext context) {
     final double buttonWidth = MediaQuery.of(context).size.width * 0.4;
@@ -161,13 +168,14 @@ class OwnerScreen extends StatelessWidget {
                     buttonWidth: buttonWidth,
                     buttonHeight: buttonHeight,
                     context: context,
-                    onPressed: () {
+                    onPressed: () async{
+                       fetchUserData();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
                               OwnerApartmentsScreen(
-                            ownerId: "Aqark@gmail.com-GROW",
+                            ownerId: mergedID,
                           ),
                         ),
                       );
@@ -190,13 +198,14 @@ class OwnerScreen extends StatelessWidget {
                           buttonWidth: buttonWidth,
                           buttonHeight: buttonHeight,
                           context: context,
-                          onPressed: () {
+                          onPressed: () async {
+                              fetchUserData();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     OwnerReservationsScreen(
-                                  ownerId: "Aqark@gmail.com-GROW",
+                                  ownerId: mergedID,
                                 ),
                               ),
                             );
@@ -217,7 +226,7 @@ class OwnerScreen extends StatelessWidget {
                             );
                           },
                           icon: Icons.message,
-                          text: 'المسجات',
+                          text: 'الرسائل',
                         ),
                       ],
                     ),

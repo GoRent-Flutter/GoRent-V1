@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/Search/search_screen.dart';
 
-import 'chats_search_screen.dart';
-
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({Key? key}) : super(key: key);
   @override

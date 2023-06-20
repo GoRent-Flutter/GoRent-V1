@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
@@ -11,6 +13,7 @@ import '../RentList/rentlist_screen.dart';
 import 'Search/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  // String id="";
   final int currentIndex;
   // final String userSessionId;
   const MainScreen({Key? key, required this.currentIndex}) : super(key: key);

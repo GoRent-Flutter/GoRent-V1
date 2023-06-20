@@ -56,7 +56,7 @@ class SuccessScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const OwnerScreen()),
+                            builder: (context) =>  OwnerScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

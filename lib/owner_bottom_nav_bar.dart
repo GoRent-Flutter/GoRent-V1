@@ -60,7 +60,7 @@ class BottomNavBarState extends State<OwnerBottomNavBar> {
                 if (currentIndex == 0) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const OwnerScreen()),
+                  MaterialPageRoute(builder: (context) => OwnerScreen()),
                 );
                 }
                 // problem here, will go to normal users screen when these are pressed
