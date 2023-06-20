@@ -11,97 +11,113 @@ import 'package:uuid/uuid.dart';
 import '../../constraints.dart';
 import '../Main/main_screen.dart';
 import '../owner_view/owner_view_screen.dart';
+import 'ResetPasswordScreen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   final int currentIndex;
 
   LoginScreen({Key? key, required this.currentIndex}) : super(key: key);
 
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String? errorText;
 
-  Future<bool> checkValues(BuildContext context) async {
+  Future<void> checkValues(BuildContext context) async {
+    setState(() {
+      errorText = null; // Reset error text
+    });
+
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
-    if (email == "" || password == "") {
-      //a text should appear to the user/owner (will do this later)
-      print("fill the empty fields!");
-      return false;
-    } else {
-      final FirebaseFirestore firestore = FirebaseFirestore.instance;
-      try {
-        if (currentIndex == 1) {
-          String userId =
-              email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
-          // Check if owner already exists in collection
-          final userDoc =
-              await firestore.collection('customers').doc(userId).get();
-          if (userDoc.exists) {
-            // Check if password matches
-            bool crackedPassword=BCrypt.checkpw(password,userDoc.data()!['password']);
-            if (crackedPassword==true) {
-              // Generate and store session ID
-              String sessionId = Uuid().v4();
 
-              //distinguish between customer and owner session ID
-              String userSessionId = sessionId + "." + userId;
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setString('sessionId', userSessionId);
-              print('SESSION ID: ' + userSessionId);
-
-              CustModel custModel =
-                  CustModel.fromMap(userDoc.data() as Map<String, dynamic>);
-
-              Navigator.pop(context);
-              return true;
-            } else {
-              print('Incorrect password');
-              return false;
-            }
-          } else {
-            print('User does not exist in collection');
-            return false;
-          }
-        } else if (currentIndex == 0) {
-          String userId =
-              email + "-GROW"; // Use email as user ID --GO RENT OWNER
-          // Check if owner already exists in collection
-          final userDoc =
-              await firestore.collection('owners').doc(userId).get();
-          if (userDoc.exists) {
-            // Check if password matches
-            bool crackedPassword=BCrypt.checkpw(password,userDoc.data()!['password']);
-            if (crackedPassword==true) {
-              // Generate and store session ID
-              String sessionId = Uuid().v4();
-
-              //distinguish between customer and owner session ID
-              String userSessionId = sessionId + "." + userId;
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setString('sessionId', userSessionId);
-              print('SESSION ID: ' + userSessionId);
-
-              OwnerModel ownerModel =
-                  OwnerModel.fromMap(userDoc.data() as Map<String, dynamic>);
-
-              Navigator.pop(context);
-              return true;
-            } else {
-              print('Incorrect password');
-              return false;
-            }
-          } else {
-            print('User does not exist in collection');
-            return false;
-          }
-        }
-      } catch (ex) {
-        print(ex.toString() + "here");
-        return false;
-      }
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        errorText = 'Please fill in all fields';
+      });
+      return;
     }
-    return false; // def return value
+
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      if (widget.currentIndex == 1) {
+        String userId = email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
+        // Check if owner already exists in collection
+        final userDoc =
+            await firestore.collection('customers').doc(userId).get();
+        if (userDoc.exists) {
+          // Check if password matches
+          bool crackedPassword =
+              BCrypt.checkpw(password, userDoc.data()!['password']);
+          if (crackedPassword) {
+            // Generate and store session ID
+            String sessionId = Uuid().v4();
+            // Distinguish between customer and owner session ID
+            String userSessionId = sessionId + "." + userId;
+            SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            await prefs.setString('sessionId', userSessionId);
+            print('SESSION ID: ' + userSessionId);
+
+            CustModel custModel =
+                CustModel.fromMap(userDoc.data() as Map<String, dynamic>);
+
+            Navigator.pop(context);
+          } else {
+            setState(() {
+              errorText = 'Incorrect password';
+            });
+          }
+        } else {
+          setState(() {
+            errorText = 'User does not exist';
+          });
+        }
+      } else if (widget.currentIndex == 0) {
+        String userId = email + "-GROW"; // Use email as user ID --GO RENT OWNER
+        // Check if owner already exists in collection
+        final userDoc = await firestore.collection('owners').doc(userId).get();
+        if (userDoc.exists) {
+          // Check if password matches
+          bool crackedPassword =
+              BCrypt.checkpw(password, userDoc.data()!['password']);
+          if (crackedPassword) {
+            // Generate and store session ID
+            String sessionId = Uuid().v4();
+            // Distinguish between customer and owner session ID
+            String userSessionId = sessionId + "." + userId;
+            SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            await prefs.setString('sessionId', userSessionId);
+            print('SESSION ID: ' + userSessionId);
+
+            OwnerModel ownerModel =
+                OwnerModel.fromMap(userDoc.data() as Map<String, dynamic>);
+
+            Navigator.pop(context);
+          } else {
+            setState(() {
+              errorText = 'Incorrect password';
+            });
+          }
+        } else {
+          setState(() {
+            errorText = 'User does not exist';
+          });
+        }
+      }
+    } catch (ex) {
+      print(ex.toString());
+      setState(() {
+        errorText = 'An error occurred while trying to sign in';
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +198,7 @@ class LoginScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LoginScreen(
-                                      currentIndex: currentIndex,
+                                      currentIndex: widget.currentIndex,
                                     )),
                           );
                         },
@@ -211,7 +227,7 @@ class LoginScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SignupScreen(
-                                      currentIndex: currentIndex,
+                                      currentIndex: widget.currentIndex,
                                     )),
                           );
                         },
@@ -242,7 +258,6 @@ class LoginScreen extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                       color: primaryWhite,
-                      // borderRadius: BorderRadius.circular(13.0),
                       border: Border.all(
                         color: primaryGrey,
                         width: 1,
@@ -260,6 +275,7 @@ class LoginScreen extends StatelessWidget {
                           horizontal: 20,
                           vertical: 16,
                         ),
+                        errorText: errorText,
                       ),
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.right,
@@ -272,7 +288,6 @@ class LoginScreen extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                       color: primaryWhite,
-                      // borderRadius: BorderRadius.circular(13.0),
                       border: Border.all(
                         color: primaryGrey,
                         width: 1,
@@ -290,6 +305,13 @@ class LoginScreen extends StatelessWidget {
                           horizontal: 20,
                           vertical: 16,
                         ),
+                        errorText: errorText,
+                        errorStyle: TextStyle(
+                          color: Colors.red,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
                       ),
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.right,
@@ -300,41 +322,50 @@ class LoginScreen extends StatelessWidget {
               ],
             ),
           ),
-          const Positioned(
+
+          Positioned(
             top: 390,
             left: 60,
-            // right: 60,
-            child: Text(
-              'نسيت كلمة المرور؟',
-              style: TextStyle(
-                fontFamily: 'Scheherazade_New',
-                color: primaryLine,
-                fontSize: 14.0,
-                decoration: TextDecoration.none,
+            child: GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => ForgetPasswordScreen(),
+                );
+              },
+              child: const Text(
+                'نسيت كلمة المرور؟',
+                style: TextStyle(
+                  fontFamily: 'Scheherazade_New',
+                  color: primaryLine,
+                  fontSize: 14.0,
+                  decoration: TextDecoration.none,
+                ),
               ),
             ),
           ),
-          Positioned(
-              top: 480,
-              left: 60,
-              right: 60,
-              child: TextButton(
-                onPressed: () async {
-                  bool success = await checkValues(context);
-                  if (success == true) {
-                    currentIndex == 1
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MainScreen(currentIndex: 1,)))
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OwnerScreen()),
-                          );
-                  } else if (success == false) {
-                    print("an error occurred while trying to sign in");
-                  }
+           Positioned(
+            top: 480,
+            left: 60,
+            right: 60,
+            child: TextButton(
+              onPressed: () async {
+                await checkValues(context);
+                if (errorText == null) {
+                  widget.currentIndex == 1
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainScreen(currentIndex: 1),
+                          ),
+                        )
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OwnerScreen(),
+                          ),
+                        );
+                }
                 },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),

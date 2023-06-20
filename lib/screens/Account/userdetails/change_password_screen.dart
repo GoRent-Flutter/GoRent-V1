@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
@@ -13,23 +14,80 @@ class ChangePasswordScreen extends StatefulWidget {
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
 
-Future<void> fetchUserData() async {
-  final prefs = await SharedPreferences.getInstance();
-  final sessionId = prefs.getString('sessionId');
-  List<String> parts = sessionId!.split('.');
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final userDoc =
-      await firestore.collection('customers').doc(parts[1].toString()).get();
-      //here we can compare written password with the password in DB
-  // String password = userDoc.data()!['password'];
-}
-
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   bool _showPassword = false;
+
+  Future<void> changePassword(BuildContext context) async {
+    String oldPassword = _oldPasswordController.text;
+    String newPassword = _newPasswordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (oldPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('يرجى ملء جميع الحقول'),
+        ),
+      );
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('كلمة المرور الجديدة غير متطابقة مع التأكيد'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final sessionId = prefs.getString('sessionId');
+      List<String> parts = sessionId!.split('.');
+      String mergedID = parts[1] + '.' + parts[2];
+
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final userDoc;
+      if (parts[2].contains("GRCU")) {
+        userDoc = await firestore.collection('customers').doc(mergedID).get();
+      } else {
+        userDoc = await firestore.collection('owners').doc(mergedID).get();
+      }
+
+      String hashedOldPassword = userDoc.data()!['password'];
+      bool isPasswordMatched = BCrypt.checkpw(oldPassword, hashedOldPassword);
+
+      if (isPasswordMatched) {
+        String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+        // Update the password in the collection
+        await userDoc.reference.update({'password': hashedNewPassword});
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('تم تغيير كلمة المرور بنجاح'),
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('كلمة المرور القديمة غير صحيحة'),
+          ),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('حدث خطأ أثناء تغيير كلمة المرور'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +109,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>  UserAccountScreen(currentIndex: widget.currentIndex,),
+                        builder: (context) => UserAccountScreen(currentIndex: widget.currentIndex),
                       ),
                     );
                   },
@@ -78,12 +136,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       controller: _oldPasswordController,
                       obscureText: !_showPassword,
                       decoration: InputDecoration(
-                        labelText: 'كلمة المرور',
+                        labelText: 'كلمة المرور الحالية',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _showPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _showPassword ? Icons.visibility : Icons.visibility_off,
                             color: Colors.grey,
                           ),
                           onPressed: () {
@@ -99,12 +155,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       controller: _newPasswordController,
                       obscureText: !_showPassword,
                       decoration: InputDecoration(
-                        labelText: 'كلمة مرور جديدة',
+                        labelText: 'كلمة المرور الجديدة',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _showPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _showPassword ? Icons.visibility : Icons.visibility_off,
                             color: Colors.grey,
                           ),
                           onPressed: () {
@@ -120,12 +174,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       controller: _confirmPasswordController,
                       obscureText: !_showPassword,
                       decoration: InputDecoration(
-                        labelText: 'تآكيد كلمة المرور',
+                        labelText: 'تأكيد كلمة المرور',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _showPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _showPassword ? Icons.visibility : Icons.visibility_off,
                             color: Colors.grey,
                           ),
                           onPressed: () {
@@ -141,7 +193,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       height: 50,
                       width: double.infinity,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () => changePassword(context),
                         style: TextButton.styleFrom(
                           backgroundColor: primaryRed,
                           shape: RoundedRectangleBorder(

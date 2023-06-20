@@ -10,7 +10,7 @@ import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/owner_view/succes_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddApartmentScreen extends StatefulWidget {
   const AddApartmentScreen({Key? key}) : super(key: key);
@@ -22,6 +22,15 @@ class AddApartmentScreen extends StatefulWidget {
 class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  late String _OwnerID = '';
+
+  void fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionId = prefs.getString('sessionId');
+    List<String> parts = sessionId!.split('.');
+    _OwnerID = parts[1].toString() + "." + parts[2].toString();
+  }
+
   late String _type = 'بيع';
   late String _city = 'رام الله';
   late String _address1 = '';
@@ -30,7 +39,6 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   late int _numVerandas = 0;
   late int _numSalons = 0;
   late int _numKitchens = 0;
-  late String _OwnerID = 'mahmoad@gmail.com-GROW';
   late double _size = 0.0;
   late double _price = 0.0;
   late double _latitude = 0.0;
@@ -234,6 +242,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    fetchUserData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryWhite,
@@ -557,6 +566,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     },
                   ),
                 ),
+                const SizedBox(height: 16),
                 Directionality(
                   textDirection: TextDirection.rtl,
                   child: Container(
