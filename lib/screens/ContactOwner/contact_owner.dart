@@ -146,6 +146,9 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
     final fullName = ownerData['fullname'] as String;
     final email = ownerData['email'] as String;
     final phoneNumber = ownerData['phone_number'] as String;
+    final cleanedPhoneNumber = phoneNumber.replaceAll(
+        RegExp(r'\D'), ''); // Remove non-digit characters
+
     final city = ownerData['city'] as String;
     return Container(
         color: primaryGrey,
@@ -214,7 +217,12 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      if (await canLaunch('tel:$cleanedPhoneNumber')) {
+                        launch('tel:$cleanedPhoneNumber');
+                      } else {
+                        print('Could not launch the phone app');
+                      }
                       //direct trans
                       launch(phoneNumber);
                     },
