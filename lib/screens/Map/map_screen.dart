@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:gorent_application1/screens/Map/places_search.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,7 @@ import '../Models_Folder/Map_Models/place.dart';
 
 class MapScreen extends StatefulWidget {
   final int currentIndex;
+
   const MapScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
@@ -26,23 +28,12 @@ class MapScreenState extends State<MapScreen> {
   late PlaceSearch placeSuggestion;
   Completer<GoogleMapController> placesController = Completer();
 
-  final List<Marker> markers = [
-    const Marker(
-      markerId: MarkerId('place1'),
-      position: LatLng(31.92157, 35.20329),
-      infoWindow: InfoWindow(title: 'Place 1'),
-    ),
-    const Marker(
-      markerId: MarkerId('place2'),
-      position: LatLng(31.92583, 35.22524),
-      infoWindow: InfoWindow(title: 'Place 2'),
-    ),
-    const Marker(
-      markerId: MarkerId('place3'),
-      position: LatLng(31.92105, 35.21220),
-      infoWindow: InfoWindow(title: 'Place 3'),
-    ),
-  ];
+  List<Marker> markers = [];
+
+  final DatabaseReference rentRef =
+      FirebaseDatabase.instance.reference().child('rent');
+  final DatabaseReference saleRef =
+      FirebaseDatabase.instance.reference().child('sale');
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +48,17 @@ class MapScreenState extends State<MapScreen> {
           children: <Widget>[
             Positioned(
               child: Scaffold(
-              bottomNavigationBar: currentIndex == 1
-                ? const BottomNavBar(
-                    currentIndex: 2,
-                  )
-                    :currentIndex == 0? const OwnerBottomNavBar(
+                bottomNavigationBar: currentIndex == 1
+                    ? const BottomNavBar(
                         currentIndex: 2,
                       )
-                    : const GuestBottomNavBar(
-                        currentIndex: 2,
-                      ),
+                    : currentIndex == 0
+                        ? const OwnerBottomNavBar(
+                            currentIndex: 2,
+                          )
+                        : const GuestBottomNavBar(
+                            currentIndex: 2,
+                          ),
               ),
             ),
             Positioned(
@@ -86,9 +78,6 @@ class MapScreenState extends State<MapScreen> {
                     target: LatLng(31.92157, 35.20329),
                     zoom: 10,
                   ),
-                  // onMapCreated:(GoogleMapController (controller) {
-                  //   placesController.complete(controller);
-                  // }),
                   markers: Set<Marker>.of(markers),
                 ),
               ),
@@ -103,7 +92,6 @@ class MapScreenState extends State<MapScreen> {
                   width: size.width - 50,
                   decoration: BoxDecoration(
                     color: primaryWhite,
-                    // borderRadius: BorderRadius.circular(24.0),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
@@ -135,44 +123,47 @@ class MapScreenState extends State<MapScreen> {
               top: 91,
               left: 10,
               right: 10,
-              child: Stack(children: [
-                if (applicationBloc.searchResults != null &&
-                    applicationBloc.searchResults.length != 0)
-                  Container(
+              child: Stack(
+                children: [
+                  if (applicationBloc.searchResults != null &&
+                      applicationBloc.searchResults.length != 0)
+                    Container(
                       height: 410.0,
                       width: double.infinity,
                       decoration: BoxDecoration(
                           color: Colors.black.withOpacity(.6),
-                          backgroundBlendMode: BlendMode.darken)),
-                if (applicationBloc.searchResults != null)
-                  Container(
-                    height: 300.0,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: ListView.builder(
-                          itemCount: applicationBloc.searchResults.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(
-                                applicationBloc
-                                    .searchResults[index].description,
-                                style: TextStyle(
-                                    color: primaryWhite, fontSize: 18),
-                              ),
-                              onTap: () {
-                                applicationBloc.setSelectedLocation(
-                                    applicationBloc
-                                        .searchResults[index].placeId);
-                                applicationBloc.clearSearchResults();
-                                setState(() {
-                                  isDisplayed = false;
-                                });
-                              },
-                            );
-                          }),
+                          backgroundBlendMode: BlendMode.darken),
                     ),
-                  ),
-              ]),
+                  if (applicationBloc.searchResults != null)
+                    Container(
+                      height: 300.0,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: ListView.builder(
+                            itemCount: applicationBloc.searchResults.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  applicationBloc
+                                      .searchResults[index].description,
+                                  style: TextStyle(
+                                      color: primaryWhite, fontSize: 18),
+                                ),
+                                onTap: () {
+                                  applicationBloc.setSelectedLocation(
+                                      applicationBloc
+                                          .searchResults[index].placeId);
+                                  applicationBloc.clearSearchResults();
+                                  setState(() {
+                                    isDisplayed = false;
+                                  });
+                                },
+                              );
+                            }),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ],
         ),
@@ -180,12 +171,75 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
+  Future<void> readRentData() async {
+    rentRef.onValue.listen((event) {
+      markers.clear();
+      if (event.snapshot.value != null) {
+        if (event.snapshot.value is Map) {
+          Map<dynamic, dynamic> rentData =
+              event.snapshot.value as Map<dynamic, dynamic>;
+          rentData.forEach((key, value) {
+            if (value is Map) {
+              double latitude = double.parse(value['latitude'].toString());
+              double longitude = double.parse(value['longitude'].toString());
+              double title = double.parse(value['price'].toString());
+
+              setState(() {
+                markers.add(
+                  Marker(
+                    markerId: MarkerId(key.toString()),
+                    position: LatLng(latitude, longitude),
+                    infoWindow: InfoWindow(title: title.toString()),
+                  ),
+                );
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+
+  Future<void> readSaleData() async {
+    saleRef.onValue.listen((event) {
+      markers.clear();
+      if (event.snapshot.value != null) {
+        if (event.snapshot.value is Map) {
+          Map<dynamic, dynamic> saleData =
+              event.snapshot.value as Map<dynamic, dynamic>;
+          saleData.forEach((key, value) {
+            if (value is Map) {
+              double latitude = double.parse(value['latitude'].toString());
+              double longitude = double.parse(value['longitude'].toString());
+              double title = double.parse(value['price'].toString());
+
+              setState(() {
+                markers.add(
+                  Marker(
+                    markerId: MarkerId(key.toString()),
+                    position: LatLng(latitude, longitude),
+                    infoWindow: InfoWindow(title: title.toString()),
+                  ),
+                );
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+
   Future<void> goToPlace(Place place) async {
     final GoogleMapController goToController = await placesController.future;
-    goToController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target:
-            LatLng(place.geometry.location.lat, place.geometry.location.long),
-        zoom: 14.0)));
+    goToController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        target: LatLng(
+          place.geometry.location.lat,
+          place.geometry.location.long,
+        ),
+        zoom: 14.0,
+      ),
+    ));
   }
 
   @override
@@ -205,6 +259,8 @@ class MapScreenState extends State<MapScreen> {
         goToPlace(place);
       }
     });
+    readRentData();
+    readSaleData();
     super.initState();
   }
 }
