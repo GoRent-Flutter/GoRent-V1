@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
@@ -8,32 +9,26 @@ import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import '../Users/users_screen.dart';
-import 'notification/notification_screen.dart';
 
 String username = " ";
 
 void fetchUserData() async {
   final prefs = await SharedPreferences.getInstance();
   final sessionId = prefs.getString('sessionId');
-  String mergedID="";
+  String mergedID = "";
   if (sessionId != null) {
     List<String> parts = sessionId.split('.');
-     mergedID=parts[1].toString()+"."+parts[2].toString();
+    mergedID = parts[1].toString() + "." + parts[2].toString();
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final userDoc;
     if (parts[2].toString().contains("GRCU")) {
-      userDoc = await firestore
-          .collection('customers')
-          .doc(mergedID)
-          .get();
+      userDoc = await firestore.collection('customers').doc(mergedID).get();
     } else {
-      userDoc =
-          await firestore.collection('owners').doc(mergedID).get();
+      userDoc = await firestore.collection('owners').doc(mergedID).get();
     }
     username = userDoc.data()!['fullname'];
-  }
-  else{
-    username=" ";
+  } else {
+    username = " ";
   }
 }
 
@@ -52,18 +47,6 @@ class UserAccountScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: primaryWhite,
         elevation: 1,
-        leading: IconButton(
-          icon: Image.asset('assets/icons/Red_back.png', width: 24, height: 24),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    UserAccountScreen(currentIndex: currentIndex),
-              ),
-            );
-          },
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -178,18 +161,14 @@ class UserAccountScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           _buildButtonWithDivider(
-                            context, // pass context as a parameter
+                            context,
                             "assets/images/notification.png",
                             "الاشعارات",
-                            const NotificationsPage(),
                           ),
                           _buildButtonWithDivider(
-                            context, // pass context as a parameter
+                            context,
                             "assets/images/reportProblem.png",
                             "الابلاغ عن مشكلة",
-                            ReportProblemScreen(
-                              currentIndex: currentIndex,
-                            ),
                           )
                         ],
                       ),
@@ -205,18 +184,25 @@ class UserAccountScreen extends StatelessWidget {
   }
 
   Widget _buildButtonWithDivider(
-    BuildContext context, // add BuildContext as a parameter
+    BuildContext context,
     String imagePath,
     String text,
-    Widget screen,
   ) {
     return Column(
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => screen),
-            );
+            if (text == "الاشعارات") {
+              AppSettings.openNotificationSettings();
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ReportProblemScreen(currentIndex: currentIndex),
+                ),
+              );
+            }
           },
           child: Container(
             height: 60,
