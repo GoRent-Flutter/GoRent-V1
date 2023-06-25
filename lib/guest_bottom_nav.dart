@@ -78,9 +78,14 @@ class GuestBottomNavBarState extends State<GuestBottomNavBar> {
                         actions: [
                           TextButton(
                             onPressed: () async {
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const WelcomeScreenCustomer());
+                              // Navigate to the WelcomeScreenCustomer
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const WelcomeScreenCustomer()),
+                              );
+
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
                               await prefs.remove('sessionId');
@@ -119,9 +124,14 @@ class GuestBottomNavBarState extends State<GuestBottomNavBar> {
                         actions: [
                           TextButton(
                             onPressed: () async {
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const WelcomeScreenCustomer());
+                              // Navigate to the WelcomeScreenCustomer
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const WelcomeScreenCustomer()),
+                              );
+
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
                               await prefs.remove('sessionId');

@@ -222,7 +222,7 @@ void fetchUserData() async {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ChatsScreen()),
+                                  builder: (context) => ChatsScreen()),
                             );
                           },
                           icon: Icons.message,

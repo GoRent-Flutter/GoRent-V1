@@ -8,6 +8,7 @@ import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import '../BuyList/buylist_screen.dart';
 import '../BuyList/card.dart';
+import '../ContactOwner/Chatting_System/chats_screen.dart';
 import '../Filters/filters.dart';
 import '../RentList/rentlist_screen.dart';
 import 'Search/search_screen.dart';
@@ -161,7 +162,7 @@ class MainScreenState extends State<MainScreen> {
                 ),
                 onTap: () {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => const FiltersScreen(),
+                    builder: (BuildContext context) =>  ChatsScreen(),
                   ));
                 },
               ),

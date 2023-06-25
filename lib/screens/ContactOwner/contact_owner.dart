@@ -2,14 +2,21 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:firebase_database/firebase_database.dart' as firebase;
+import 'package:uuid/uuid.dart';
 
+import '../Models_Folder/CustModel.dart';
+import '../Models_Folder/OwnerModel.dart';
 import '../RentList/rentlist_screen.dart';
+import 'Chatting_System/chat_room_model.dart';
+import 'Chatting_System/chat_room_screen.dart';
+import 'Chatting_System/user_models_helper.dart';
 
 class apartment {
   final String city;
@@ -59,6 +66,10 @@ class ContactOwnerScreen extends StatefulWidget {
 class ContactOwnerState extends State<ContactOwnerScreen> {
   bool propertiesInfo = true;
   bool aboutOwner = false;
+  helper models_helper=helper();
+  // late CustModel customer;
+  // late OwnerModel owner;
+  // late String id;
   firestore.DocumentSnapshot? ownerSnapshot;
   late DatabaseReference _databaseRef;
   late DatabaseReference _databaseRef2;
@@ -69,6 +80,7 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
   @override
   void initState() {
     super.initState();
+    models_helper.getUsersModels(widget.ownerID);
     fetchOwnerData();
     _databaseRef = FirebaseDatabase.instance.reference().child('rent');
     _databaseRef2 = FirebaseDatabase.instance.reference().child('sale');
@@ -133,6 +145,96 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
     }
   }
 
+  // Future<void> getUsersModels(String passedOwnerId) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final sessionId = prefs.getString('sessionId');
+  //   List<String> parts = sessionId!.split('.');
+  //   id = parts[1].toString() + '.' + parts[2].toString();
+  //   //get customer model
+  //   QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+  //       .instance
+  //       .collection("customers")
+  //       .where("custId", isEqualTo: id.toString())
+  //       .get();
+
+  //   if (snapshot.docs.isNotEmpty) {
+  //     QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+  //         snapshot.docs[0];
+
+  //     Map<String, dynamic> custdata = documentSnapshot.data();
+
+  //     customer = CustModel.fromMap(custdata);
+  //   }
+  //   //get owner model
+  //   QuerySnapshot<Map<String, dynamic>> snapshot2 = await FirebaseFirestore
+  //       .instance
+  //       .collection("owners")
+  //       .where("ownerId", isEqualTo: passedOwnerId.toString())
+  //       .get();
+
+  //   if (snapshot2.docs.isNotEmpty) {
+  //     QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
+  //         snapshot2.docs[0];
+  //     Map<String, dynamic> ownerdata = documentSnapshot2.data();
+
+  //     owner = OwnerModel.fromMap(ownerdata);
+  //   }
+  // }
+
+  Future<ChatRoomModel?> getChatRoomModel() async {
+    ChatRoomModel? chatRoom;
+String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.ownerId}";
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection("chatrooms")
+       .doc(chatRoomId)
+        .get();
+
+    if (snapshot.exists) {
+      // Fetch the existing one
+      // var docData = snapshot.docs[0].data();
+      // ChatRoomModel existingChatroom =
+      //     ChatRoomModel.fromMap(docData as Map<String, dynamic>);
+
+      // chatRoom = existingChatroom;
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("chatrooms")
+        .where("chatRoomId", isEqualTo: chatRoomId.toString())
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          snapshot.docs[0];
+
+      Map<String, dynamic> chatdata = documentSnapshot.data();
+
+      chatRoom = ChatRoomModel.fromMap(chatdata);
+    }
+      print("ALREADY EXISTS");
+    } else {
+       
+
+      // Create a new one
+      ChatRoomModel newChatroom = ChatRoomModel(
+        chatRoomId: chatRoomId,
+        lastMessage: "",
+        participants: {
+          models_helper.customer.custId.toString(): true,
+         models_helper.owner.ownerId.toString(): true,
+        },
+      );
+
+      await FirebaseFirestore.instance
+          .collection("chatrooms")
+          .doc(newChatroom.chatRoomId)
+          .set(newChatroom.toMap());
+
+      chatRoom = newChatroom;
+    }
+
+    return chatRoom;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -146,8 +248,8 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
     final fullName = ownerData['fullname'] as String;
     final email = ownerData['email'] as String;
     final phoneNumber = ownerData['phone_number'] as String;
-    final cleanedPhoneNumber = phoneNumber.replaceAll(
-        RegExp(r'\D'), ''); // Remove non-digit characters
+    // final cleanedPhoneNumber = phoneNumber.replaceAll(
+    //     RegExp(r'\D'), ''); // Remove non-digit characters
 
     final city = ownerData['city'] as String;
     return Container(
@@ -218,13 +320,8 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: TextButton(
                     onPressed: () async {
-                      if (await canLaunch('tel:$cleanedPhoneNumber')) {
-                        launch('tel:$cleanedPhoneNumber');
-                      } else {
-                        print('Could not launch the phone app');
-                      }
                       //direct trans
-                      launch(phoneNumber);
+                      launch('tel:$phoneNumber');
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: primaryRed,
@@ -245,11 +342,34 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: TextButton(
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => const MainScreen()),
-                      // );
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Center(
+                            child:
+                                CircularProgressIndicator(), // Show a circular progress indicator
+                          );
+                        },
+                      );
+                      ChatRoomModel? chatRoom =
+                          await getChatRoomModel();
+                      Navigator.pop(context); // Dismiss the progress indicator
+
+                      if (models_helper.customer != null &&
+                          models_helper.owner != null &&
+                          chatRoom != null) {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return ChatRoomScreen(
+                                customer: models_helper.customer,
+                                owner: models_helper.owner,
+                                chatroom: chatRoom);
+                          }),
+                        );
+                      }
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: primaryRed,
@@ -383,19 +503,6 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
                     ),
                   ),
                 ])
-              //  : Positioned(
-              //     top: size.height - 330,
-              //     left: 30,
-              //     right: 30,
-              //     child: const Text(
-              //       "not available yet",
-              //       style: TextStyle(
-              //         fontSize: 12,
-              //         color: primaryRed,
-              //         decoration: TextDecoration.none,
-              //       ),
-              //     ),
-              //   ),
               : Positioned(
                   top: 470,
                   left: 20,
@@ -434,44 +541,6 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
                       );
                     },
                   )),
-          // Positioned(
-          //     top: 470,
-          //     left: 20,
-          //     right: 20,
-          //     bottom: 20,
-          //     child: ListView.builder(
-          //       itemCount: _Myapartment2.length,
-          //       itemBuilder: (BuildContext context, int index) {
-          //         final rentapart = _Myapartment2[index];
-          //         return Card(
-          //           elevation: 2,
-          //           margin:
-          //               EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          //           child: ListTile(
-          //             title: Text(
-          //               'Apartment City: ${rentapart.city}',
-          //               style: TextStyle(fontWeight: FontWeight.bold),
-          //             ),
-          //             subtitle: Column(
-          //               crossAxisAlignment: CrossAxisAlignment.start,
-          //               children: [
-          //                 SizedBox(height: 8),
-          //                 Text(
-          //                   'type: ${rentapart.type}',
-          //                   style: TextStyle(fontSize: 16),
-          //                 ),
-          //                 SizedBox(height: 4),
-          //                 Text(
-          //                   'price: ${rentapart.price}' as String,
-          //                   style: TextStyle(fontSize: 14),
-          //                 ),
-          //                 SizedBox(height: 8),
-          //               ],
-          //             ),
-          //           ),
-          //         );
-          //       },
-          //     ))
         ])));
   }
 }
