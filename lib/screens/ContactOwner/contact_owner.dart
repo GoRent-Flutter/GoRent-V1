@@ -248,6 +248,9 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
     final fullName = ownerData['fullname'] as String;
     final email = ownerData['email'] as String;
     final phoneNumber = ownerData['phone_number'] as String;
+    // final cleanedPhoneNumber = phoneNumber.replaceAll(
+    //     RegExp(r'\D'), ''); // Remove non-digit characters
+
     final city = ownerData['city'] as String;
     return Container(
         color: primaryGrey,
@@ -316,8 +319,9 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: TextButton(
-                    onPressed: () {
-                     launch("tel://$phoneNumber");
+                    onPressed: () async {
+                      //direct trans
+                      launch('tel:$phoneNumber');
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: primaryRed,
