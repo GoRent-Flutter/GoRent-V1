@@ -34,10 +34,16 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
     final prefs = await SharedPreferences.getInstance();
     final sessionId = prefs.getString('sessionId');
     List<String> parts = sessionId!.split('.');
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final userDoc =
-        await firestore.collection('customers').doc(parts[1].toString()).get();
-    username = userDoc.data()!['fullname'];
+    String mergedID = "";
+    if (sessionId != null) {
+      List<String> parts = sessionId.split('.');
+      mergedID = parts[1].toString() + "." + parts[2].toString();
+      print('llllllllll' + mergedID);
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final userDoc =
+          await firestore.collection('customers').doc(mergedID).get();
+      username = userDoc.data()!['fullname'];
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {

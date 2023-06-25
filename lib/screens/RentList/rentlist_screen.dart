@@ -17,6 +17,7 @@ class Post {
   final int numRooms;
   final int numBathrooms;
   final int size;
+  final String address1;
   final String OwnerID; // Add ownerID field
 
   Post({
@@ -28,6 +29,7 @@ class Post {
     required this.numRooms,
     required this.numBathrooms,
     required this.size,
+    required this.address1,
     required this.OwnerID, // Initialize ownerID field
   });
 }
@@ -90,6 +92,7 @@ class _RentListScreenState extends State<RentListScreen> {
           numRooms: post['numRooms'] as int,
           numBathrooms: post['numBathrooms'] as int,
           size: post['size'] as int,
+          address1: post['address1'] as String,
           OwnerID: post['OwnerID'] as String,
         );
       }).toList();
@@ -240,10 +243,10 @@ class _RentListScreenState extends State<RentListScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(right: 13.0),
                                     child: Text(
-                                      post.city,
+                                      '${post.city} , ${post.address1}',
                                       style: const TextStyle(
                                         fontFamily: 'Scheherazade_New',
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         color: primaryRed,
                                         decoration: TextDecoration.none,
                                       ),

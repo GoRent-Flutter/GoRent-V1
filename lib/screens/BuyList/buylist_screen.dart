@@ -15,6 +15,7 @@ class Estate {
   final int numBathrooms;
   final int size;
   final int numVerandas;
+  final String address1;
   final String OwnerID;
 
   Estate({
@@ -27,6 +28,7 @@ class Estate {
     required this.numBathrooms,
     required this.size,
     required this.numVerandas,
+    required this.address1,
     required this.OwnerID,
   });
 }
@@ -90,6 +92,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
             numBathrooms: estate['numBathrooms'] as int,
             size: estate['size'] as int,
             numVerandas: estate['numVerandas'] as int,
+            address1: estate['address1'] as String,
             OwnerID: estate['OwnerID'] as String);
       }).toList();
     });
@@ -240,10 +243,10 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(right: 13.0),
                                     child: Text(
-                                      estate.city,
+                                      '${estate.city} , ${estate.address1}',
                                       style: const TextStyle(
                                         fontFamily: 'Scheherazade_New',
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         color: primaryRed,
                                         decoration: TextDecoration.none,
                                       ),

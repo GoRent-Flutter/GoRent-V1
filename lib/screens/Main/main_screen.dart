@@ -54,7 +54,8 @@ class MainScreenState extends State<MainScreen> {
         numBathrooms: 2,
         size: 1400,
         numVerandas: 0,
-        OwnerID: 'test'),
+        OwnerID: 'test',
+        address1: ''),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 2',
@@ -65,7 +66,8 @@ class MainScreenState extends State<MainScreen> {
         numBathrooms: 1,
         size: 1040,
         numVerandas: 0,
-        OwnerID: 'tst1'),
+        OwnerID: 'tst1',
+        address1: ''),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 3',
@@ -76,7 +78,8 @@ class MainScreenState extends State<MainScreen> {
         numBathrooms: 1,
         size: 1040,
         numVerandas: 0,
-        OwnerID: 'tst3'),
+        OwnerID: 'tst3',
+        address1: ''),
     Estate(
         images: ['assets/images/apartments.jpg'],
         city: 'العقار 4',
@@ -87,7 +90,8 @@ class MainScreenState extends State<MainScreen> {
         numBathrooms: 2,
         size: 1800,
         numVerandas: 0,
-        OwnerID: 'tst3'),
+        OwnerID: 'tst3',
+        address1: ''),
   ];
   @override
   Widget build(BuildContext context) {
@@ -147,7 +151,10 @@ class MainScreenState extends State<MainScreen> {
                       bottom: 3,
                       child: Transform.scale(
                         scale: 0.8,
-                        child: const Icon(Icons.message, color: primaryRed,),
+                        child: const Icon(
+                          Icons.message,
+                          color: primaryRed,
+                        ),
                       ),
                     ),
                   ],
@@ -190,7 +197,7 @@ class MainScreenState extends State<MainScreen> {
                         child: Image.asset('assets/icons/buy.png'),
                       ),
                     ),
-                     Center(
+                    Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -250,7 +257,7 @@ class MainScreenState extends State<MainScreen> {
                         child: Image.asset('assets/icons/rent.png'),
                       ),
                     ),
-                     Center(
+                    Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

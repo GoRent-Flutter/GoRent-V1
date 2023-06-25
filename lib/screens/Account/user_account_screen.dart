@@ -10,42 +10,53 @@ import '../../user_bottom_nav_bar.dart';
 import '../Users/users_screen.dart';
 import 'notification/notification_screen.dart';
 
-String username = " ";
-
-void fetchUserData() async {
-  final prefs = await SharedPreferences.getInstance();
-  final sessionId = prefs.getString('sessionId');
-  String mergedID="";
-  if (sessionId != null) {
-    List<String> parts = sessionId.split('.');
-     mergedID=parts[1].toString()+"."+parts[2].toString();
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final userDoc;
-    if (parts[2].toString().contains("GRCU")) {
-      userDoc = await firestore
-          .collection('customers')
-          .doc(mergedID)
-          .get();
-    } else {
-      userDoc =
-          await firestore.collection('owners').doc(mergedID).get();
-    }
-    username = userDoc.data()!['fullname'];
-  }
-  else{
-    username=" ";
-  }
-}
-
-class UserAccountScreen extends StatelessWidget {
+class UserAccountScreen extends StatefulWidget {
   final int currentIndex;
 
   const UserAccountScreen({Key? key, required this.currentIndex})
       : super(key: key);
 
   @override
+  _UserAccountScreenState createState() => _UserAccountScreenState();
+}
+
+class _UserAccountScreenState extends State<UserAccountScreen> {
+  String username = " ";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  void fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionId = prefs.getString('sessionId');
+
+    String mergedID = "";
+    if (sessionId != null) {
+      List<String> parts = sessionId.split('.');
+      mergedID = parts[1].toString() + "." + parts[2].toString();
+      print('llllllllll' + mergedID);
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final userDoc;
+      if (parts[2].toString().contains("GRCU")) {
+        userDoc = await firestore.collection('customers').doc(mergedID).get();
+      } else {
+        userDoc = await firestore.collection('owners').doc(mergedID).get();
+      }
+      setState(() {
+        username = userDoc.data()!['fullname'];
+      });
+    } else {
+      setState(() {
+        username = " ";
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    fetchUserData(); // Call the fetchUserData function to fetch the username
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: primaryWhite,
@@ -59,7 +70,7 @@ class UserAccountScreen extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    UserAccountScreen(currentIndex: currentIndex),
+                    UserAccountScreen(currentIndex: widget.currentIndex),
               ),
             );
           },
@@ -95,11 +106,11 @@ class UserAccountScreen extends StatelessWidget {
             children: <Widget>[
               Positioned(
                 child: Scaffold(
-                  bottomNavigationBar: currentIndex == 1
+                  bottomNavigationBar: widget.currentIndex == 1
                       ? const BottomNavBar(
                           currentIndex: 3,
                         )
-                      : currentIndex == 0
+                      : widget.currentIndex == 0
                           ? const OwnerBottomNavBar(
                               currentIndex: 3,
                             )
@@ -132,7 +143,7 @@ class UserAccountScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EditProfilePageState(
-                                currentIndex: currentIndex),
+                                currentIndex: widget.currentIndex),
                           ),
                         );
                       },
@@ -188,7 +199,7 @@ class UserAccountScreen extends StatelessWidget {
                             "assets/images/reportProblem.png",
                             "الابلاغ عن مشكلة",
                             ReportProblemScreen(
-                              currentIndex: currentIndex,
+                              currentIndex: widget.currentIndex,
                             ),
                           )
                         ],

@@ -80,6 +80,7 @@ class SearchScreenState extends State<SearchScreen> {
                   numBathrooms: item['numBathrooms'] as int,
                   size: item['size'] as int,
                   numVerandas: item['numVerandas'] as int,
+                  address1: item['address1'] as String,
                   OwnerID: item['OwnerID'] as String)
               : Post(
                   images: imageUrls,
@@ -90,6 +91,7 @@ class SearchScreenState extends State<SearchScreen> {
                   numRooms: item['numRooms'] as int,
                   numBathrooms: item['numBathrooms'] as int,
                   size: item['size'] as int,
+                  address1: item['address1'] as String,
                   OwnerID: item['OwnerID'] as String,
                 );
         }).toList();
@@ -246,7 +248,8 @@ class SearchScreenState extends State<SearchScreen> {
                                       .spaceBetween, // set alignment
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 13.0),
+                                      padding:
+                                          const EdgeInsets.only(left: 13.0),
                                       child: Text(
                                         "\$" + estate.price.toString(),
                                         style: const TextStyle(
@@ -257,7 +260,8 @@ class SearchScreenState extends State<SearchScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 13.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         estate.city,
                                         style: const TextStyle(
@@ -289,7 +293,8 @@ class SearchScreenState extends State<SearchScreen> {
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 6.0),
+                                          padding:
+                                              const EdgeInsets.only(right: 6.0),
                                           child: Text(
                                             estate.numRooms.toString(),
                                             style: const TextStyle(
@@ -317,7 +322,8 @@ class SearchScreenState extends State<SearchScreen> {
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 13.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 13.0),
                                           child: Text(
                                             estate.numBathrooms.toString(),
                                             style: const TextStyle(
@@ -345,7 +351,8 @@ class SearchScreenState extends State<SearchScreen> {
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 75.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 75.0),
                                           child: Text(
                                             estate.size.toString(),
                                             style: const TextStyle(
@@ -358,7 +365,8 @@ class SearchScreenState extends State<SearchScreen> {
                                       ],
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 13.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         estate.type,
                                         style: const TextStyle(
@@ -420,7 +428,8 @@ class SearchScreenState extends State<SearchScreen> {
                                       .spaceBetween, // set alignment
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 13.0),
+                                      padding:
+                                          const EdgeInsets.only(left: 13.0),
                                       child: Text(
                                         "\$" + post.price.toString(),
                                         style: const TextStyle(
@@ -431,7 +440,8 @@ class SearchScreenState extends State<SearchScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 13.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         post.city,
                                         style: const TextStyle(
@@ -463,7 +473,8 @@ class SearchScreenState extends State<SearchScreen> {
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 6.0),
+                                          padding:
+                                              const EdgeInsets.only(right: 6.0),
                                           child: Text(
                                             post.numRooms.toString(),
                                             style: const TextStyle(
@@ -491,7 +502,8 @@ class SearchScreenState extends State<SearchScreen> {
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 13.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 13.0),
                                           child: Text(
                                             post.numBathrooms.toString(),
                                             style: const TextStyle(
@@ -519,7 +531,8 @@ class SearchScreenState extends State<SearchScreen> {
                                                 5), // add some spacing between the icon and text
 
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 75.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 75.0),
                                           child: Text(
                                             post.size.toString(),
                                             style: const TextStyle(
@@ -532,7 +545,8 @@ class SearchScreenState extends State<SearchScreen> {
                                       ],
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 13.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 13.0),
                                       child: Text(
                                         post.type,
                                         style: const TextStyle(

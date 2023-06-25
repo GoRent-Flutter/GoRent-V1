@@ -285,7 +285,7 @@ class _ItemDetailState extends State<ItemDetail> {
                         style: TextStyle(
                           fontFamily: 'Scheherazade_New',
                           color: primaryRed,
-                          fontSize: 15,
+                          fontSize: 14,
                           decoration: TextDecoration.none,
                         ),
                       ),
@@ -295,11 +295,11 @@ class _ItemDetailState extends State<ItemDetail> {
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0, bottom: 8.0),
                   child: Text(
-                    widget.post.city,
+                    '${widget.post.city} , ${widget.post.address1}',
                     style: TextStyle(
                       fontFamily: 'Scheherazade_New',
                       color: Colors.black,
-                      fontSize: 30,
+                      fontSize: 19,
                       decoration: TextDecoration.none,
                     ),
                   ),

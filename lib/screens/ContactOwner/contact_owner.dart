@@ -187,11 +187,11 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
           ),
           Positioned(
             top: 255,
-            left: size.width - 120,
+            left: size.width - 130,
             child: Text(
               fullName,
               style: TextStyle(
-                  fontSize: 23,
+                  fontSize: 15,
                   color: primaryRed,
                   decoration: TextDecoration.none),
             ),
