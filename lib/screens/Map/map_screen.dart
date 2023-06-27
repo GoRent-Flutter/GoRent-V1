@@ -29,6 +29,14 @@ class MapScreenState extends State<MapScreen> {
   Completer<GoogleMapController> placesController = Completer();
 
   List<Marker> markers = [];
+  bool isDisplayed2 = false;
+  String selectedPlaceTitle = '';
+  String selectedPlaceCity = '';
+  String selectedPlaceType = '';
+  String selectedPlaceNumRooms = '';
+  String selectedPlaceNumBathrooms = '';
+  String selectedPlaceSize = '';
+  String selectedPlaceAddress1 = '';
 
   final DatabaseReference rentRef =
       FirebaseDatabase.instance.reference().child('rent');
@@ -41,6 +49,7 @@ class MapScreenState extends State<MapScreen> {
     var currentIndex = widget.currentIndex;
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     bool isDisplayed = true;
+
     return Container(
       color: primaryGrey,
       child: SizedBox(
@@ -165,6 +174,155 @@ class MapScreenState extends State<MapScreen> {
                 ],
               ),
             ),
+            //here for apartment widget
+            Positioned(
+              bottom: 70,
+              left: 10,
+              right: 10,
+              child: isDisplayed2
+                  ? Container(
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 3,
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 13.0),
+                                child: Text(
+                                  "\$" + selectedPlaceTitle,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: primaryRed,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(right: 13.0),
+                                child: Text(
+                                  selectedPlaceCity +
+                                      ", " +
+                                      selectedPlaceAddress1,
+                                  style: TextStyle(
+                                    fontFamily: 'Scheherazade_New',
+                                    fontSize: 15,
+                                    color: primaryRed,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 6.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/icons/Red_bedroom.png'),
+                                      width: 20,
+                                      height: 18,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 6.0),
+                                    child: Text(
+                                      selectedPlaceNumRooms,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 6.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/icons/Red_bathroom.png'),
+                                      width: 20,
+                                      height: 18,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 13.0),
+                                    child: Text(
+                                      selectedPlaceNumBathrooms,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 0.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/icons/Red_size.png'),
+                                      width: 20,
+                                      height: 18,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 75.0),
+                                    child: Text(
+                                      selectedPlaceSize,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(right: 13.0),
+                                child: Text(
+                                  selectedPlaceType,
+                                  style: TextStyle(
+                                    fontFamily: 'Scheherazade_New',
+                                    fontSize: 12,
+                                    color: primaryRed,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
+            ),
           ],
         ),
       ),
@@ -182,14 +340,31 @@ class MapScreenState extends State<MapScreen> {
             if (value is Map) {
               double latitude = double.parse(value['latitude'].toString());
               double longitude = double.parse(value['longitude'].toString());
-              double title = double.parse(value['price'].toString());
+              int price = int.parse(value['price'].toString());
+              String city = (value['city'].toString());
+              String type = (value['type'].toString());
+              int numRooms = int.parse(value['numRooms'].toString());
+              int numBathrooms = int.parse(value['numBathrooms'].toString());
+              int size = int.parse(value['size'].toString());
+              String address1 = (value['address1'].toString());
 
               setState(() {
                 markers.add(
                   Marker(
                     markerId: MarkerId(key.toString()),
                     position: LatLng(latitude, longitude),
-                    infoWindow: InfoWindow(title: title.toString()),
+                    onTap: () {
+                      setState(() {
+                        selectedPlaceTitle = price.toString();
+                        selectedPlaceCity = city.toString();
+                        selectedPlaceType = type.toString();
+                        selectedPlaceNumRooms = numRooms.toString();
+                        selectedPlaceNumBathrooms = numBathrooms.toString();
+                        selectedPlaceSize = size.toString();
+                        selectedPlaceAddress1 = address1.toString();
+                        isDisplayed2 = true;
+                      });
+                    },
                   ),
                 );
               });
@@ -211,14 +386,30 @@ class MapScreenState extends State<MapScreen> {
             if (value is Map) {
               double latitude = double.parse(value['latitude'].toString());
               double longitude = double.parse(value['longitude'].toString());
-              double title = double.parse(value['price'].toString());
-
+              int price = int.parse(value['price'].toString());
+              String city = (value['city'].toString());
+              String type = (value['type'].toString());
+              int numRooms = int.parse(value['numRooms'].toString());
+              int numBathrooms = int.parse(value['numBathrooms'].toString());
+              int size = int.parse(value['size'].toString());
+              String address1 = (value['address1'].toString());
               setState(() {
                 markers.add(
                   Marker(
                     markerId: MarkerId(key.toString()),
                     position: LatLng(latitude, longitude),
-                    infoWindow: InfoWindow(title: title.toString()),
+                    onTap: () {
+                      setState(() {
+                        selectedPlaceTitle = price.toString();
+                        selectedPlaceCity = city.toString();
+                        selectedPlaceType = type.toString();
+                        selectedPlaceNumRooms = numRooms.toString();
+                        selectedPlaceNumBathrooms = numBathrooms.toString();
+                        selectedPlaceSize = size.toString();
+                        selectedPlaceAddress1 = address1.toString();
+                        isDisplayed2 = true;
+                      });
+                    },
                   ),
                 );
               });
