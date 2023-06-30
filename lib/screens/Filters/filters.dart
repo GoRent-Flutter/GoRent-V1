@@ -2,7 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 
 class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({Key? key}) : super(key: key);
+  final bool isRentSelected;
+  final bool isBuySelected;
+  final RangeValues priceRange;
+  final RangeValues areaRange;
+  final int selectedRooms;
+  final int selectedBathrooms;
+  final Function(bool, bool, RangeValues, RangeValues, int, int)
+      onFiltersApplied;
+
+  FiltersScreen({
+    required this.isRentSelected,
+    required this.isBuySelected,
+    required this.priceRange,
+    required this.areaRange,
+    required this.selectedRooms,
+    required this.selectedBathrooms,
+    required this.onFiltersApplied,
+  });
 
   @override
   _FilterPageState createState() => _FilterPageState();
@@ -11,7 +28,7 @@ class FiltersScreen extends StatefulWidget {
 class _FilterPageState extends State<FiltersScreen> {
   bool _isRentSelected = true;
   bool _isBuySelected = true;
-  RangeValues _priceRange = const RangeValues(0, 100000);
+  RangeValues _priceRange = const RangeValues(0, 200000);
   RangeValues _areaRange = const RangeValues(0, 200);
   int _selectedRooms = 0; // Initialize with 0
   int _selectedBathrooms = 0; // Initialize with 0
@@ -23,6 +40,17 @@ class _FilterPageState extends State<FiltersScreen> {
     'مطعم',
   ];
   List<String> selectedPlaces = [];
+  @override
+  void initState() {
+    super.initState();
+    _isRentSelected = widget.isRentSelected;
+    _isBuySelected = widget.isBuySelected;
+    _priceRange = widget.priceRange;
+    _areaRange = widget.areaRange;
+    _selectedRooms = widget.selectedRooms;
+    _selectedBathrooms = widget.selectedBathrooms;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,9 +79,9 @@ class _FilterPageState extends State<FiltersScreen> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'خاصية البحث المميزة',
+                  'خاصية البحث',
                   style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold,
                     color: primaryRed,
                   ),
@@ -65,7 +93,7 @@ class _FilterPageState extends State<FiltersScreen> {
                 child: Text(
                   'نوع العقار',
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     color: primaryRed,
                   ),
@@ -143,7 +171,7 @@ class _FilterPageState extends State<FiltersScreen> {
                 child: Text(
                   'نطاق السعر',
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     color: primaryRed,
                   ),
@@ -153,7 +181,7 @@ class _FilterPageState extends State<FiltersScreen> {
               RangeSlider(
                 values: _priceRange,
                 min: 0,
-                max: 100000,
+                max: 200000,
                 divisions: 10,
                 onChanged: (values) {
                   setState(() {
@@ -232,6 +260,7 @@ class _FilterPageState extends State<FiltersScreen> {
                         onTap: () {
                           setState(() {
                             _selectedRooms = 1;
+                            // print("_selectedRooms"+_selectedRooms.toString());
                           });
                         },
                         child: Container(
@@ -562,7 +591,15 @@ class _FilterPageState extends State<FiltersScreen> {
                     SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
-                        // TODO: Apply filters and navigate back to the previous page
+                        widget.onFiltersApplied(
+                          _isRentSelected,
+                          _isBuySelected,
+                          _priceRange,
+                          _areaRange,
+                          _selectedRooms,
+                          _selectedBathrooms,
+                        );
+                        Navigator.pop(context);
                       },
                       child: const Text('تطبيق الفلاتر'),
                       style: ElevatedButton.styleFrom(

@@ -145,41 +145,6 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
     }
   }
 
-  // Future<void> getUsersModels(String passedOwnerId) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final sessionId = prefs.getString('sessionId');
-  //   List<String> parts = sessionId!.split('.');
-  //   id = parts[1].toString() + '.' + parts[2].toString();
-  //   //get customer model
-  //   QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-  //       .instance
-  //       .collection("customers")
-  //       .where("custId", isEqualTo: id.toString())
-  //       .get();
-
-  //   if (snapshot.docs.isNotEmpty) {
-  //     QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-  //         snapshot.docs[0];
-
-  //     Map<String, dynamic> custdata = documentSnapshot.data();
-
-  //     customer = CustModel.fromMap(custdata);
-  //   }
-  //   //get owner model
-  //   QuerySnapshot<Map<String, dynamic>> snapshot2 = await FirebaseFirestore
-  //       .instance
-  //       .collection("owners")
-  //       .where("ownerId", isEqualTo: passedOwnerId.toString())
-  //       .get();
-
-  //   if (snapshot2.docs.isNotEmpty) {
-  //     QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot2 =
-  //         snapshot2.docs[0];
-  //     Map<String, dynamic> ownerdata = documentSnapshot2.data();
-
-  //     owner = OwnerModel.fromMap(ownerdata);
-  //   }
-  // }
 
   Future<ChatRoomModel?> getChatRoomModel() async {
     ChatRoomModel? chatRoom;
@@ -190,12 +155,6 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
         .get();
 
     if (snapshot.exists) {
-      // Fetch the existing one
-      // var docData = snapshot.docs[0].data();
-      // ChatRoomModel existingChatroom =
-      //     ChatRoomModel.fromMap(docData as Map<String, dynamic>);
-
-      // chatRoom = existingChatroom;
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("chatrooms")
@@ -284,16 +243,16 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
             child: const CircleAvatar(
               radius: 50,
               backgroundColor: Colors.white70,
-              // backgroundImage: AssetImage('assets/icons//White_back.png'),
+              backgroundImage: AssetImage('assets/icons/user.png'),
             ),
           ),
           Positioned(
             top: 255,
-            left: size.width - 130,
+            left: size.width - 120,
             child: Text(
               fullName,
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 23,
                   color: primaryRed,
                   decoration: TextDecoration.none),
             ),
@@ -366,7 +325,8 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                             return ChatRoomScreen(
                                 customer: models_helper.customer,
                                 owner: models_helper.owner,
-                                chatroom: chatRoom);
+                                chatroom: chatRoom,
+                                number: 1,);
                           }),
                         );
                       }

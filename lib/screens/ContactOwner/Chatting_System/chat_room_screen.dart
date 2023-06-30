@@ -11,11 +11,13 @@ class ChatRoomScreen extends StatefulWidget {
   final ChatRoomModel chatroom;
   final CustModel customer;
   final OwnerModel owner;
-  const ChatRoomScreen(
+  int number;
+  ChatRoomScreen(
       {Key? key,
       required this.customer,
       required this.owner,
-      required this.chatroom})
+      required this.chatroom,
+      required this.number})
       : super(key: key);
 
   @override
@@ -31,10 +33,13 @@ class ChatRoomScreenState extends State<ChatRoomScreen> {
     if (msg != "") {
       MessageModel newMessage = MessageModel(
           messageId: Uuid().v1(),
-          sender: widget.customer.custId,
+          sender: widget.number == 1
+              ? widget.customer.custId
+              : widget.owner.ownerId,
           createdOn: DateTime.now(),
           text: msg,
           seen: false);
+
       FirebaseFirestore.instance
           .collection("chatrooms")
           .doc(widget.chatroom.chatRoomId)
@@ -57,7 +62,9 @@ class ChatRoomScreenState extends State<ChatRoomScreen> {
         appBar: AppBar(
           backgroundColor: primaryRed,
           title: Row(
-            children: [Text(widget.owner.fullname.toString())],
+            children: (widget.number == 1)
+                ? [Text(widget.owner.fullname.toString())]
+                : [Text(widget.customer.fullname.toString())],
           ),
         ),
         body: SafeArea(
@@ -79,55 +86,57 @@ class ChatRoomScreenState extends State<ChatRoomScreen> {
                       if (snapshot.hasData) {
                         QuerySnapshot dataSnapshot =
                             snapshot.data as QuerySnapshot;
-                        return ListView.builder(
+                        List<MessageModel> messages = dataSnapshot.docs
+                            .map((doc) => MessageModel.fromMap(
+                                doc.data() as Map<String, dynamic>))
+                            .toList();
+
+                        return ListView(
                           reverse: true,
-                          itemCount: dataSnapshot.docs.length,
-                          itemBuilder: (context, index) {
-                            MessageModel currentMessage = MessageModel.fromMap(
-                                dataSnapshot.docs[index].data()
-                                    as Map<String, dynamic>);
+                          children: messages.map((currentMessage) {
+                            bool isOwnerMessage =
+                                currentMessage.sender == widget.owner.ownerId;
                             return Row(
-                                mainAxisAlignment: (currentMessage.sender ==
-                                        widget.customer.custId)
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      margin: EdgeInsets.symmetric(
-                                        vertical: 2,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 10),
-                                      decoration: BoxDecoration(
-                                        color: primaryPale,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(13),
-                                          bottomLeft: Radius.circular(13),
-                                          bottomRight: Radius.circular(13),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        currentMessage.text.toString(),
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ))
-                                ]);
-                          },
+                              mainAxisAlignment: isOwnerMessage
+                                  ? MainAxisAlignment.start
+                                  : MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    vertical: 2,
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: isOwnerMessage
+                                        ? primaryPale
+                                        : Colors.grey,
+                                    borderRadius: isOwnerMessage
+                                        ? BorderRadius.only(
+                                            topRight: Radius.circular(13),
+                                            bottomLeft: Radius.circular(13),
+                                            bottomRight: Radius.circular(13))
+                                        : BorderRadius.only(
+                                            topLeft: Radius.circular(13),
+                                            bottomLeft: Radius.circular(13),
+                                            bottomRight: Radius.circular(13)),
+                                  ),
+                                  child: Text(
+                                    currentMessage.text.toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              ],
+                            );
+                          }).toList(),
                         );
                       } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text("check internet connection"),
-                        );
+                        return Center(child: Text("check internet connection"));
                       } else {
-                        return Center(
-                          child: Text("say hello!!!!"),
-                        );
+                        return Center(child: Text("say hello!!!!"));
                       }
                     } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return Center(child: CircularProgressIndicator());
                     }
                   },
                 ),
@@ -135,8 +144,7 @@ class ChatRoomScreenState extends State<ChatRoomScreen> {
               Container(
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 209, 206, 206),
-                  borderRadius:
-                      BorderRadius.circular(30.0), // Set the border radius
+                  borderRadius: BorderRadius.circular(30.0),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 margin: EdgeInsets.only(bottom: 20, right: 10, left: 10),

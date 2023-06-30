@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Main/main_screen.dart';
+import 'package:gorent_application1/screens/Models_Folder/CustModel.dart';
+import 'package:gorent_application1/screens/Models_Folder/OwnerModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../owner_view/owner_view_screen.dart';
@@ -45,9 +47,12 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           String sessionId = const Uuid().v4();
 
           //distinguish between customer and owner session ID
-          String userSessionId = sessionId + ".customer";
+          String userSessionId = sessionId + "." + widget.userId;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('sessionId', userSessionId);
+            final userDoc = await firestore.collection('customers').doc(widget.userId).get();
+            CustModel custModel =
+                CustModel.fromMap(userDoc.data() as Map<String, dynamic>);
           return true;
         } else if (widget.currentIndex == 0) {
           await firestore.collection('owners').doc(widget.userId).update({
@@ -60,9 +65,12 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           String sessionId = const Uuid().v4();
 
           //distinguish between customer and owner session ID
-          String userSessionId = sessionId + ".owner";
+          String userSessionId = sessionId + "." + widget.userId;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('sessionId', userSessionId);
+           final userDoc = await firestore.collection('owners').doc(widget.userId).get();
+            OwnerModel ownerModel =
+                OwnerModel.fromMap(userDoc.data() as Map<String, dynamic>);
           return true;
         }
       } catch (ex) {

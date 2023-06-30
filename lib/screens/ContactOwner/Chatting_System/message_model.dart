@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 class MessageModel {
   String? sender;
   String? text;
@@ -21,7 +20,7 @@ class MessageModel {
       "text": text,
       "seen": seen,
       "createdOn": createdOn,
-      "messageId":messageId
+      "messageId":messageId,
     };
   }
 }

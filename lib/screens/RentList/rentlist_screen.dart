@@ -61,19 +61,19 @@ class _RentListScreenState extends State<RentListScreen> {
               .where((entry) => entry.value['isApproves'] == true)
               .map((entry) => Map<String, dynamic>.from(entry.value))
               .toList();
-          applySearchFilters();
+          applySearchByCity();
         });
       }
     });
   }
 
-  void applySearchFilters() {
+  void applySearchByCity() {
     setState(() {
       _posts = postsAll
           .where((entry) =>
               entry['isApproves'] == true &&
               (searchQuery.isEmpty ||
-                  entry['city'].toString().contains(searchQuery)))
+                  entry['city'].toString().contains(searchQuery)) || entry['address1'].toString().contains(searchQuery))
           .map((entry) {
         final post = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -391,7 +391,7 @@ class _RentListScreenState extends State<RentListScreen> {
                     hintTextDirection: TextDirection.rtl,
                     suffixIcon: IconButton(
                       onPressed: () {
-                        applySearchFilters();
+                        applySearchByCity();
                       },
                       icon: const Icon(Icons.search),
                     ),
@@ -436,9 +436,9 @@ class _RentListScreenState extends State<RentListScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => const FiltersScreen(),
-                  ));
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //   builder: (BuildContext context) =>  FiltersScreen(),
+                  // ));
                 },
               ),
             ),

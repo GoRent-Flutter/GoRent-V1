@@ -44,6 +44,16 @@ class SearchScreenState extends State<SearchScreen> {
   late DatabaseReference rentDatabaseRef;
   List<Estate> _estates = [];
   List<Post> _posts = [];
+  late String searchQuery = '';
+  List<Map<String, dynamic>> allItems = [];
+
+//for filters
+  bool _isRentSelected = true;
+  bool _isBuySelected = true;
+  RangeValues _priceRange = RangeValues(0, 200000);
+  RangeValues _areaRange = RangeValues(0, 200);
+  int _selectedRooms = 0;
+  int _selectedBathrooms = 0;
 
   @override
   void initState() {
@@ -52,67 +62,92 @@ class SearchScreenState extends State<SearchScreen> {
         FirebaseDatabase.instance.reference().child('sale');
     DatabaseReference rentDatabaseRef =
         FirebaseDatabase.instance.reference().child('rent');
-    void processData(
-        DataSnapshot snapshot, Function(List<dynamic>) updateStateList) {
-      if (snapshot.value != null) {
-        final items =
-            (snapshot.value as Map<dynamic, dynamic>).cast<String, dynamic>();
-        final processedItems = items.entries
-            .where((entry) => entry.value['isApproves'] == true)
-            .map((entry) {
-          final item = Map<String, dynamic>.from(entry.value);
-          List<String> imageUrls = [];
-          if (item['images'] != null) {
-            final images = item['images'] as Map<dynamic, dynamic>;
-            if (images.isNotEmpty) {
-              imageUrls =
-                  images.values.map((value) => value.toString()).toList();
-            }
-          }
-          return item['type'] == 'بيع'
-              ? Estate(
-                  images: imageUrls,
-                  city: item['city'] as String,
-                  type: item['type'] as String,
-                  description: item['description'] as String,
-                  price: item['price'] as int,
-                  numRooms: item['numRooms'] as int,
-                  numBathrooms: item['numBathrooms'] as int,
-                  size: item['size'] as int,
-                  numVerandas: item['numVerandas'] as int,
-                  address1: item['address1'] as String,
-                  OwnerID: item['OwnerID'] as String)
-              : Post(
-                  images: imageUrls,
-                  city: item['city'] as String,
-                  type: item['type'] as String,
-                  description: item['description'] as String,
-                  price: item['price'] as int,
-                  numRooms: item['numRooms'] as int,
-                  numBathrooms: item['numBathrooms'] as int,
-                  size: item['size'] as int,
-                  address1: item['address1'] as String,
-                  OwnerID: item['OwnerID'] as String,
-                );
-        }).toList();
-        updateStateList(processedItems);
-      }
-    }
-
     saleDatabaseRef.onValue.listen((event) {
-      processData(event.snapshot, (processedEstates) {
+      if (event.snapshot.value != null) {
+        final estates = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
         setState(() {
-          _estates = processedEstates.cast<Estate>();
+          allItems = estates.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList();
+          applySearchByCity();
         });
-      });
+      }
     });
-
     rentDatabaseRef.onValue.listen((event) {
-      processData(event.snapshot, (processedPosts) {
+      if (event.snapshot.value != null) {
+        final posts = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
         setState(() {
-          _posts = processedPosts.cast<Post>();
+          allItems.addAll(posts.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList());
+          applySearchByCity();
         });
-      });
+      }
+    });
+  }
+
+  void applySearchByCity() {
+    setState(() {
+      _estates = allItems
+          .where((entry) =>
+              entry['type'] == 'بيع' &&
+              (searchQuery.isEmpty ||
+                  entry['city'].toString().contains(searchQuery) ||
+                  entry['address1'].toString().contains(searchQuery)))
+          .map((entry) {
+        final estate = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (estate['images'] != null) {
+          final images = estate['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Estate(
+            images: imageUrls,
+            city: estate['city'] as String,
+            type: estate['type'] as String,
+            description: estate['description'] as String,
+            price: estate['price'] as int,
+            numRooms: estate['numRooms'] as int,
+            numBathrooms: estate['numBathrooms'] as int,
+            size: estate['size'] as int,
+            numVerandas: estate['numVerandas'] as int,
+            address1: estate['address1'] as String,
+            OwnerID: estate['OwnerID'] as String);
+      }).toList();
+
+      _posts = allItems
+          .where((entry) =>
+              entry['type'] == 'اجار' &&
+              (searchQuery.isEmpty ||
+                  entry['city'].toString().contains(searchQuery) ||
+                  entry['address1'].toString().contains(searchQuery)))
+          .map((entry) {
+        final post = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (post['images'] != null) {
+          final images = post['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Post(
+            images: imageUrls,
+            city: post['city'] as String,
+            type: post['type'] as String,
+            description: post['description'] as String,
+            price: post['price'] as int,
+            numRooms: post['numRooms'] as int,
+            numBathrooms: post['numBathrooms'] as int,
+            size: post['size'] as int,
+            address1: post['address1'] as String,
+            OwnerID: post['OwnerID'] as String);
+      }).toList();
     });
   }
 
@@ -582,13 +617,20 @@ class SearchScreenState extends State<SearchScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: InputBorder.none,
                     hintText: 'ابحث',
                     hintTextDirection: TextDirection.rtl,
                     suffixIcon: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        applySearchByCity();
+                      },
                       icon: const Icon(Icons.search),
                     ),
                   ),
@@ -632,13 +674,53 @@ class SearchScreenState extends State<SearchScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => const FiltersScreen(),
-                  ));
+                  navigateToFiltersScreen(context);
+
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //   builder: (BuildContext context) => FiltersScreen(),
+                  // ));
                 },
               ),
             ),
           ),
         ]))));
+  }
+
+  void navigateToFiltersScreen(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FiltersScreen(
+          isRentSelected: _isRentSelected,
+          isBuySelected: _isBuySelected,
+          priceRange: _priceRange,
+          areaRange: _areaRange,
+          selectedRooms: _selectedRooms,
+          selectedBathrooms: _selectedBathrooms,
+          onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
+              areaRange, selectedRooms, selectedBathrooms) {
+            setState(() {
+              _isRentSelected = isRentSelected;
+              _isBuySelected = isBuySelected;
+              _priceRange = priceRange;
+              _areaRange = areaRange;
+              _selectedRooms = selectedRooms;
+              _selectedBathrooms = selectedBathrooms;
+            });
+            print(_isRentSelected.toString() +
+                ":" +
+                _isBuySelected.toString() +
+                ":" +
+                _priceRange.toString() +
+                ":" +
+                _areaRange.toString() +
+                ":" +
+                _selectedRooms.toString() +
+                ":" +
+                _selectedBathrooms.toString());
+          },
+        ),
+      ),
+    );
   }
 }

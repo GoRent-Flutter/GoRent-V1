@@ -33,7 +33,6 @@ class SignupScreen extends StatelessWidget {
       print("password doesn't match!");
       return false;
     } else {
-      // signUp(email, password, currentIndex);
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       try {
         if (currentIndex == 1) {
@@ -61,23 +60,7 @@ class SignupScreen extends StatelessWidget {
                 .collection('customers')
                 .doc(userId)
                 .set(newCustomer.toMap());
-            // await firestore.collection('customers').doc(userId).set({
-            //   'email': email,
-            //   'password': password,
-            //   'fullname': "",
-            //   'custId': userId,
-            //   'phone_number': 0,
-            //   'city': "",
-            // });
             passedUserId = userId;
-
-            // // Generate and store session ID
-            // String sessionId = Uuid().v4();
-
-            // //distinguish between customer and owner session ID
-            // String userSessionId = sessionId + ".customer";
-            // SharedPreferences prefs = await SharedPreferences.getInstance();
-            // await prefs.setString('sessionId', userSessionId);
 
             return true;
           }
@@ -106,25 +89,7 @@ class SignupScreen extends StatelessWidget {
                 .collection('owners')
                 .doc(userId)
                 .set(newOwner.toMap());
-
-
-            // await firestore.collection('owners').doc(userId).set({
-            //   'email': email,
-            //   'password': password,
-            //   'fullname': "",
-            //   'ownerId': userId,
-            //   'phone_number': 0,
-            //   'city': "",
-            // });
             passedUserId = userId;
-
-            // // Generate and store session ID
-            // String sessionId = Uuid().v4();
-
-            // //distinguish between customer and owner session ID
-            // String userSessionId = sessionId + ".owner";
-            // SharedPreferences prefs = await SharedPreferences.getInstance();
-            // await prefs.setString('sessionId', userSessionId);
             return true;
           }
         }

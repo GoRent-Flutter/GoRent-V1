@@ -60,19 +60,19 @@ class _BuyListScreenState extends State<BuyListScreen> {
               .where((entry) => entry.value['isApproves'] == true)
               .map((entry) => Map<String, dynamic>.from(entry.value))
               .toList();
-          applySearchFilters();
+          applySearchByCity();
         });
       }
     });
   }
 
-  void applySearchFilters() {
+  void applySearchByCity() {
     setState(() {
       _estates = estatesAll
           .where((entry) =>
               entry['isApproves'] == true &&
               (searchQuery.isEmpty ||
-                  entry['city'].toString().contains(searchQuery)))
+                  entry['city'].toString().contains(searchQuery)) || entry['address1'].toString().contains(searchQuery))
           .map((entry) {
         final estate = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -391,7 +391,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                     hintTextDirection: TextDirection.rtl,
                     suffixIcon: IconButton(
                       onPressed: () {
-                        applySearchFilters();
+                        applySearchByCity();
                       },
                       icon: const Icon(Icons.search),
                     ),
@@ -436,9 +436,9 @@ class _BuyListScreenState extends State<BuyListScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => const FiltersScreen(),
-                  ));
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //   builder: (BuildContext context) => const FiltersScreen(),
+                  // ));
                 },
               ),
             ),
