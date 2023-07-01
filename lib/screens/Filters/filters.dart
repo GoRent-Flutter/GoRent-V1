@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 
+import '../BuyList/buylist_screen.dart';
+import '../RentList/rentlist_screen.dart';
+
 class FiltersScreen extends StatefulWidget {
   final bool isRentSelected;
   final bool isBuySelected;
@@ -40,6 +43,8 @@ class _FilterPageState extends State<FiltersScreen> {
     'مطعم',
   ];
   List<String> selectedPlaces = [];
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -590,7 +595,12 @@ class _FilterPageState extends State<FiltersScreen> {
                     buildSelectedPlaces(),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        await Future.delayed(Duration(seconds: 3));
                         widget.onFiltersApplied(
                           _isRentSelected,
                           _isBuySelected,
@@ -599,9 +609,23 @@ class _FilterPageState extends State<FiltersScreen> {
                           _selectedRooms,
                           _selectedBathrooms,
                         );
-                        Navigator.pop(context);
+
+                        setState(() {
+                          _isLoading = false;
+                        });
+
+                        Navigator.pop(context, {
+                          'isRentSelected': _isRentSelected,
+                          'isBuySelected': _isBuySelected,
+                          'priceRange': _priceRange,
+                          'areaRange': _areaRange,
+                          'selectedRooms': _selectedRooms,
+                          'selectedBathrooms': _selectedBathrooms,
+                        });
                       },
-                      child: const Text('تطبيق الفلاتر'),
+                      child: _isLoading
+                          ? CircularProgressIndicator()
+                          : Text('تطبيق الفلاتر'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryRed,
                       ),

@@ -151,6 +151,75 @@ class SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void applySearchWithFilters() {
+    setState(() {
+      _estates = allItems
+          .where((entry) =>
+              (_isBuySelected || !_isRentSelected) &&
+              entry['type'] == 'بيع' &&
+              (entry['price'] >= _priceRange.start &&
+                  entry['price'] <= _priceRange.end) &&
+              (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
+              (_selectedBathrooms == 0 ||
+                  entry['numBathrooms'] == _selectedBathrooms))
+          .map((entry) {
+        final estate = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (estate['images'] != null) {
+          final images = estate['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Estate(
+          images: imageUrls,
+          city: estate['city'] as String,
+          type: estate['type'] as String,
+          description: estate['description'] as String,
+          price: estate['price'] as int,
+          numRooms: estate['numRooms'] as int,
+          numBathrooms: estate['numBathrooms'] as int,
+          size: estate['size'] as int,
+          numVerandas: estate['numVerandas'] as int,
+          address1: estate['address1'] as String,
+          OwnerID: estate['OwnerID'] as String,
+        );
+      }).toList();
+
+      _posts = allItems
+          .where((entry) =>
+              (!_isBuySelected || _isRentSelected) &&
+              entry['type'] == 'اجار' &&
+              (entry['price'] >= _priceRange.start &&
+                  entry['price'] <= _priceRange.end) &&
+              (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
+              (_selectedBathrooms == 0 ||
+                  entry['numBathrooms'] == _selectedBathrooms))
+          .map((entry) {
+        final post = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (post['images'] != null) {
+          final images = post['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Post(
+          images: imageUrls,
+          city: post['city'] as String,
+          type: post['type'] as String,
+          description: post['description'] as String,
+          price: post['price'] as int,
+          numRooms: post['numRooms'] as int,
+          numBathrooms: post['numBathrooms'] as int,
+          size: post['size'] as int,
+          address1: post['address1'] as String,
+          OwnerID: post['OwnerID'] as String,
+        );
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -673,12 +742,21 @@ class SearchScreenState extends State<SearchScreen> {
                     ),
                   ],
                 ),
-                onTap: () {
-                  navigateToFiltersScreen(context);
+                onTap: () async {
+                  var result = await navigateToFiltersScreen(context);
 
-                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  //   builder: (BuildContext context) => FiltersScreen(),
-                  // ));
+                  if (result != null) {
+                    setState(() {
+                      _isRentSelected = result['isRentSelected'];
+                      _isBuySelected = result['isBuySelected'];
+                      _priceRange = result['priceRange'];
+                      _areaRange = result['areaRange'];
+                      _selectedRooms = result['selectedRooms'];
+                      _selectedBathrooms = result['selectedBathrooms'];
+                    });
+
+                    applySearchWithFilters();
+                  }
                 },
               ),
             ),
@@ -686,7 +764,8 @@ class SearchScreenState extends State<SearchScreen> {
         ]))));
   }
 
-  void navigateToFiltersScreen(BuildContext context) async {
+  Future<Map<String, dynamic>> navigateToFiltersScreen(
+      BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -722,5 +801,16 @@ class SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+    if(result==null){
+       return {
+    'isRentSelected': true,
+    'isBuySelected': true,
+    'priceRange': RangeValues(0, 200000), 
+    'areaRange': RangeValues(0, 200),
+    'selectedRooms': 0,
+    'selectedBathrooms': 0,
+  };
+    }
+    return result;
   }
 }
