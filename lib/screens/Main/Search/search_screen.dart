@@ -159,6 +159,8 @@ class SearchScreenState extends State<SearchScreen> {
               entry['type'] == 'بيع' &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
+              (entry['size'] >= _areaRange.start &&
+                  entry['size'] <= _areaRange.end) &&
               (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
               (_selectedBathrooms == 0 ||
                   entry['numBathrooms'] == _selectedBathrooms))
@@ -801,15 +803,15 @@ class SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
-    if(result==null){
-       return {
-    'isRentSelected': true,
-    'isBuySelected': true,
-    'priceRange': RangeValues(0, 200000), 
-    'areaRange': RangeValues(0, 200),
-    'selectedRooms': 0,
-    'selectedBathrooms': 0,
-  };
+    if (result == null) {
+      return {
+        'isRentSelected': true,
+        'isBuySelected': true,
+        'priceRange': RangeValues(0, 200000),
+        'areaRange': RangeValues(0, 200),
+        'selectedRooms': 0,
+        'selectedBathrooms': 0,
+      };
     }
     return result;
   }

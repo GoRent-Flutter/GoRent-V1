@@ -1,11 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-import 'package:gorent_application1/screens/BuyList/buylist_screen.dart';
 import 'package:gorent_application1/screens/ItemDetail/itemdetailrent_screen.dart';
 import 'package:gorent_application1/screens/RentList/square.dart';
 import 'package:flutter/widgets.dart';
 
+import '../BuyList/buylist_screen.dart';
+import '../BuyList/card.dart';
 import '../Filters/filters.dart';
 import '../Main/main_screen.dart';
 
@@ -47,31 +48,46 @@ class _RentListScreenState extends State<RentListScreen> {
   late String searchQuery = '';
   late DatabaseReference _databaseRef;
   List<Post> _posts = [];
-  List<Estate> _estates = [];
   List<Map<String, dynamic>> postsAll = [];
-List<Map<String, dynamic>> allItems = [];
+  List<Estate> _estates = [];
+  List<Map<String, dynamic>> estatesAll = [];
 
-//for filters
+  //for filters
   bool _isRentSelected = true;
   bool _isBuySelected = true;
   RangeValues _priceRange = RangeValues(0, 200000);
   RangeValues _areaRange = RangeValues(0, 200);
   int _selectedRooms = 0;
   int _selectedBathrooms = 0;
-
   @override
   void initState() {
     super.initState();
-    _databaseRef = FirebaseDatabase.instance.reference().child('rent');
-    _databaseRef.onValue.listen((event) {
+    DatabaseReference saleDatabaseRef =
+        FirebaseDatabase.instance.reference().child('sale');
+    DatabaseReference rentDatabaseRef =
+        FirebaseDatabase.instance.reference().child('rent');
+    saleDatabaseRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final estates = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          estatesAll = estates.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList();
+          applySearchByCity();
+        });
+      }
+    });
+    rentDatabaseRef.onValue.listen((event) {
       if (event.snapshot.value != null) {
         final posts = (event.snapshot.value as Map<dynamic, dynamic>)
             .cast<String, dynamic>();
         setState(() {
-          postsAll = posts.entries
+          postsAll.addAll(posts.entries
               .where((entry) => entry.value['isApproves'] == true)
               .map((entry) => Map<String, dynamic>.from(entry.value))
-              .toList();
+              .toList());
           applySearchByCity();
         });
       }
@@ -83,8 +99,9 @@ List<Map<String, dynamic>> allItems = [];
       _posts = postsAll
           .where((entry) =>
               entry['isApproves'] == true &&
-              (searchQuery.isEmpty ||
-                  entry['city'].toString().contains(searchQuery)) || entry['address1'].toString().contains(searchQuery))
+                  (searchQuery.isEmpty ||
+                      entry['city'].toString().contains(searchQuery)) ||
+              entry['address1'].toString().contains(searchQuery))
           .map((entry) {
         final post = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -109,14 +126,17 @@ List<Map<String, dynamic>> allItems = [];
       }).toList();
     });
   }
-void applySearchWithFilters() {
+
+  void applySearchWithFilters() {
     setState(() {
-      _estates = allItems
+      _estates = estatesAll
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
+              (entry['size'] >= _areaRange.start &&
+                  entry['size'] <= _areaRange.end) &&
               (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
               (_selectedBathrooms == 0 ||
                   entry['numBathrooms'] == _selectedBathrooms))
@@ -144,7 +164,7 @@ void applySearchWithFilters() {
         );
       }).toList();
 
-      _posts = allItems
+      _posts = postsAll
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
@@ -177,6 +197,7 @@ void applySearchWithFilters() {
       }).toList();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     Size size1 = MediaQuery.of(context).size;
@@ -260,185 +281,576 @@ void applySearchWithFilters() {
                     height: size1.height - 250,
                     width: size1.width -
                         40, // subtract the left and right padding from the total width
-                    child: ListView.builder(
-                      itemCount: _posts.length,
-                      itemBuilder: (context, index) {
-                        final post = _posts[index];
-                        return MySquare(
-                          post: post,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 7.0),
-                                child: Stack(
+                    child: (!_isBuySelected && _isBuySelected)
+                        ? ListView.builder(
+                            itemCount: _posts.length,
+                            itemBuilder: (context, index) {
+                              final post = _posts[index];
+                              return MySquare(
+                                post: post,
+                                child: Column(
                                   children: [
-                                    Container(
-                                      width: 310,
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                        color: primaryWhite,
-                                        borderRadius:
-                                            BorderRadius.circular(24.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            spreadRadius: 2,
-                                            blurRadius: 5,
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 7.0),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            width: 310,
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                              color: primaryWhite,
+                                              borderRadius:
+                                                  BorderRadius.circular(24.0),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.3),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 5,
+                                                ),
+                                              ],
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    post.images.first),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 10,
+                                            right: 10,
+                                            child: Icon(Icons.favorite_border,
+                                                color: Colors.white),
                                           ),
                                         ],
-                                        image: DecorationImage(
-                                          image:
-                                              NetworkImage(post.images.first),
-                                          fit: BoxFit.cover,
-                                        ),
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: Icon(Icons.favorite_border,
-                                          color: Colors.white),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween, // set alignment
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 13.0),
+                                          child: Text(
+                                            "\$" + post.price.toString(),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: primaryRed,
+                                              decoration: TextDecoration.none,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 13.0),
+                                          child: Text(
+                                            '${post.city} , ${post.address1}',
+                                            style: const TextStyle(
+                                              fontFamily: 'Scheherazade_New',
+                                              fontSize: 15,
+                                              color: primaryRed,
+                                              decoration: TextDecoration.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween, // set alignment
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 6.0),
+                                              child: Image(
+                                                image: AssetImage(
+                                                    'assets/icons/Red_bedroom.png'),
+                                                width: 20,
+                                                height: 18,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                width:
+                                                    5), // add some spacing between the icon and text
+
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 6.0),
+                                              child: Text(
+                                                post.numRooms.toString(),
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: primaryRed,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 6.0),
+                                              child: Image(
+                                                image: AssetImage(
+                                                    'assets/icons/Red_bathroom.png'),
+                                                width: 20,
+                                                height: 18,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                width:
+                                                    5), // add some spacing between the icon and text
+
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 13.0),
+                                              child: Text(
+                                                post.numBathrooms.toString(),
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: primaryRed,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 0.0),
+                                              child: Image(
+                                                image: AssetImage(
+                                                    'assets/icons/Red_size.png'),
+                                                width: 20,
+                                                height: 18,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                width:
+                                                    5), // add some spacing between the icon and text
+
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 75.0),
+                                              child: Text(
+                                                post.size.toString(),
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: primaryRed,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 13.0),
+                                          child: Text(
+                                            post.type,
+                                            style: const TextStyle(
+                                              fontFamily: 'Scheherazade_New',
+                                              fontSize: 12,
+                                              color: primaryRed,
+                                              decoration: TextDecoration.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // set alignment
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 13.0),
-                                    child: Text(
-                                      "\$" + post.price.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: primaryRed,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 13.0),
-                                    child: Text(
-                                      '${post.city} , ${post.address1}',
-                                      style: const TextStyle(
-                                        fontFamily: 'Scheherazade_New',
-                                        fontSize: 15,
-                                        color: primaryRed,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // set alignment
-                                children: [
-                                  Row(
+                              );
+                            },
+                          )
+                        : ListView.builder(
+                            itemCount: _estates.length + _posts.length,
+                            itemBuilder: (context, index) {
+                              if (index < _estates.length) {
+                                final estate = _estates[index];
+
+                                return MyCard(
+                                  estate: estate,
+                                  child: Column(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 6.0),
-                                        child: Image(
-                                          image: AssetImage(
-                                              'assets/icons/Red_bedroom.png'),
-                                          width: 20,
-                                          height: 18,
+                                        padding:
+                                            const EdgeInsets.only(top: 7.0),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 310,
+                                              height: 150,
+                                              decoration: BoxDecoration(
+                                                color: primaryWhite,
+                                                borderRadius:
+                                                    BorderRadius.circular(24.0),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 5,
+                                                  ),
+                                                ],
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      estate.images.first),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            const Positioned(
+                                              top: 10,
+                                              right: 10,
+                                              child: Icon(Icons.favorite_border,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(
-                                          width:
-                                              5), // add some spacing between the icon and text
-
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 6.0),
-                                        child: Text(
-                                          post.numRooms.toString(),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: primaryRed,
-                                            decoration: TextDecoration.none,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 13.0),
+                                            child: Text(
+                                              "\$" + estate.price.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 13.0),
+                                            child: Text(
+                                              estate.city,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 6.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bedroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 6.0),
+                                                child: Text(
+                                                  estate.numRooms.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 6.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bathroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 13.0),
+                                                child: Text(
+                                                  estate.numBathrooms
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 0.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_size.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 75.0),
+                                                child: Text(
+                                                  estate.size.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 13.0),
+                                            child: Text(
+                                              estate.type,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                  Row(
+                                );
+                              } else {
+                                final postIndex = index - _estates.length;
+                                final post = _posts[postIndex];
+                                return MySquare(
+                                  post: post,
+                                  child: Column(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 6.0),
-                                        child: Image(
-                                          image: AssetImage(
-                                              'assets/icons/Red_bathroom.png'),
-                                          width: 20,
-                                          height: 18,
+                                        padding:
+                                            const EdgeInsets.only(top: 7.0),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 310,
+                                              height: 150,
+                                              decoration: BoxDecoration(
+                                                color: primaryWhite,
+                                                borderRadius:
+                                                    BorderRadius.circular(24.0),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 5,
+                                                  ),
+                                                ],
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      post.images.first),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            const Positioned(
+                                              top: 10,
+                                              right: 10,
+                                              child: Icon(Icons.favorite_border,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(
-                                          width:
-                                              5), // add some spacing between the icon and text
-
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 13.0),
-                                        child: Text(
-                                          post.numBathrooms.toString(),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: primaryRed,
-                                            decoration: TextDecoration.none,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 13.0),
+                                            child: Text(
+                                              "\$" + post.price.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 13.0),
+                                            child: Text(
+                                              post.city,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 6.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bedroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 6.0),
+                                                child: Text(
+                                                  post.numRooms.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 6.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bathroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 13.0),
+                                                child: Text(
+                                                  post.numBathrooms.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 0.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_size.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 75.0),
+                                                child: Text(
+                                                  post.size.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 13.0),
+                                            child: Text(
+                                              post.type,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 0.0),
-                                        child: Image(
-                                          image: AssetImage(
-                                              'assets/icons/Red_size.png'),
-                                          width: 20,
-                                          height: 18,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          width:
-                                              5), // add some spacing between the icon and text
-
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 75.0),
-                                        child: Text(
-                                          post.size.toString(),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: primaryRed,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 13.0),
-                                    child: Text(
-                                      post.type,
-                                      style: const TextStyle(
-                                        fontFamily: 'Scheherazade_New',
-                                        fontSize: 12,
-                                        color: primaryRed,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                );
+                              }
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
                 ),
               ],
@@ -513,7 +925,7 @@ void applySearchWithFilters() {
                     ),
                   ],
                 ),
-                 onTap: () async {
+                onTap: () async {
                   var result = await navigateToFiltersScreen(context);
 
                   if (result != null) {
@@ -534,7 +946,8 @@ void applySearchWithFilters() {
           ),
         ]))));
   }
-   Future<Map<String, dynamic>> navigateToFiltersScreen(
+
+  Future<Map<String, dynamic>> navigateToFiltersScreen(
       BuildContext context) async {
     final result = await Navigator.push(
       context,
@@ -571,15 +984,15 @@ void applySearchWithFilters() {
         ),
       ),
     );
-    if(result==null){
-       return {
-    'isRentSelected': true,
-    'isBuySelected': true,
-    'priceRange': RangeValues(0, 200000), 
-    'areaRange': RangeValues(0, 200),
-    'selectedRooms': 0,
-    'selectedBathrooms': 0,
-  };
+    if (result == null) {
+      return {
+        'isRentSelected': true,
+        'isBuySelected': true,
+        'priceRange': RangeValues(0, 200000),
+        'areaRange': RangeValues(0, 200),
+        'selectedRooms': 0,
+        'selectedBathrooms': 0,
+      };
     }
     return result;
   }
