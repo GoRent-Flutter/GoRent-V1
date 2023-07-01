@@ -42,7 +42,7 @@ class _FilterPageState extends State<FiltersScreen> {
     'سوبر ماركت',
     'مطعم',
     'حديقة',
-    'منترة'
+    'مستشفى'
   ];
   List<String> selectedPlaces = [];
   bool _isLoading = false;
