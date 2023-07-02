@@ -369,9 +369,9 @@ class SearchScreenState extends State<SearchScreen> {
                                       padding:
                                           const EdgeInsets.only(right: 13.0),
                                       child: Text(
-                                        estate.city,
+                                        '${estate.city},${estate.address1}',
                                         style: const TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 13,
                                           color: primaryRed,
                                           decoration: TextDecoration.none,
                                         ),
@@ -549,9 +549,9 @@ class SearchScreenState extends State<SearchScreen> {
                                       padding:
                                           const EdgeInsets.only(right: 13.0),
                                       child: Text(
-                                        post.city,
+                                        '${post.city},${post.address1}',
                                         style: const TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 13,
                                           color: primaryRed,
                                           decoration: TextDecoration.none,
                                         ),

@@ -277,7 +277,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       ),
                       SizedBox(width: 4),
                       Text(
-                        'للايجار',
+                        widget.estate.type,
                         style: TextStyle(
                           fontFamily: 'Scheherazade_New',
                           color: primaryRed,
