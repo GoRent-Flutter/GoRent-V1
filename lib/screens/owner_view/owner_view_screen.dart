@@ -10,13 +10,16 @@ import 'owner_reservations_screen.dart';
 
 class OwnerScreen extends StatelessWidget {
   OwnerScreen({Key? key}) : super(key: key);
-  String mergedID="";
-void fetchUserData() async {
+
+  String mergedID = "";
+
+  void fetchUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final sessionId = prefs.getString('sessionId');
     List<String> parts = sessionId!.split('.');
-    mergedID=parts[1].toString()+"."+parts[2].toString();
+    mergedID = parts[1].toString() + "." + parts[2].toString();
   }
+
   @override
   Widget build(BuildContext context) {
     final double buttonWidth = MediaQuery.of(context).size.width * 0.4;
@@ -109,9 +112,16 @@ void fetchUserData() async {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const AddApartmentScreen(),
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: AddApartmentScreen(),
+                                          );
+                                        },
+                                        transitionDuration:
+                                            const Duration(milliseconds: 500),
                                       ),
                                     );
                                   },
@@ -168,15 +178,22 @@ void fetchUserData() async {
                     buttonWidth: buttonWidth,
                     buttonHeight: buttonHeight,
                     context: context,
-                    onPressed: () async{
-                       fetchUserData();
+                    onPressed: () async {
+                      fetchUserData();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              OwnerApartmentsScreen(
-                            ownerId: mergedID,
-                          ),
+                        PageRouteBuilder(
+                          pageBuilder: (BuildContext context,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: OwnerApartmentsScreen(
+                                ownerId: mergedID,
+                              ),
+                            );
+                          },
+                          transitionDuration: const Duration(milliseconds: 500),
                         ),
                       );
                     },
@@ -199,14 +216,22 @@ void fetchUserData() async {
                           buttonHeight: buttonHeight,
                           context: context,
                           onPressed: () async {
-                              fetchUserData();
+                            fetchUserData();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OwnerReservationsScreen(
-                                  ownerId: mergedID,
-                                ),
+                              PageRouteBuilder(
+                                pageBuilder: (BuildContext context,
+                                    Animation<double> animation,
+                                    Animation<double> secondaryAnimation) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: OwnerReservationsScreen(
+                                      ownerId: mergedID,
+                                    ),
+                                  );
+                                },
+                                transitionDuration:
+                                    const Duration(milliseconds: 500),
                               ),
                             );
                           },
@@ -221,8 +246,18 @@ void fetchUserData() async {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChatsScreen(number: 0,)),
+                              PageRouteBuilder(
+                                pageBuilder: (BuildContext context,
+                                    Animation<double> animation,
+                                    Animation<double> secondaryAnimation) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: ChatsScreen(number: 0),
+                                  );
+                                },
+                                transitionDuration:
+                                    const Duration(milliseconds: 500),
+                              ),
                             );
                           },
                           icon: Icons.message,
