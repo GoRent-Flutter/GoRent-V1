@@ -162,7 +162,9 @@ class MainScreenState extends State<MainScreen> {
                 ),
                 onTap: () {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) =>  ChatsScreen(number: 1,),
+                    builder: (BuildContext context) => ChatsScreen(
+                      number: 1,
+                    ),
                   ));
                 },
               ),

@@ -36,7 +36,7 @@ class SignupScreen extends StatelessWidget {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       try {
         if (currentIndex == 1) {
-           String userId =
+          String userId =
               email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
 
           // Check if customer already exists in collection
@@ -48,7 +48,8 @@ class SignupScreen extends StatelessWidget {
           }
           // if the customer does not exist, add new user to collection
           else {
-            String hashedPassword=BCrypt.hashpw(passwordController.text, BCrypt.gensalt());
+            String hashedPassword =
+                BCrypt.hashpw(passwordController.text, BCrypt.gensalt());
             CustModel newCustomer = CustModel(
                 custId: userId,
                 phone_number: null,
@@ -65,7 +66,7 @@ class SignupScreen extends StatelessWidget {
             return true;
           }
         } else if (currentIndex == 0) {
-           String userId =
+          String userId =
               email + "-GROW"; // Use email as user ID -- GO RENT OWNER
 
           // Check if owner already exists in collection
@@ -77,8 +78,9 @@ class SignupScreen extends StatelessWidget {
           }
           // if the owner does not exist, add new user to collection
           else {
-              String hashedPassword=BCrypt.hashpw(passwordController.text, BCrypt.gensalt());
-               OwnerModel newOwner = OwnerModel(
+            String hashedPassword =
+                BCrypt.hashpw(passwordController.text, BCrypt.gensalt());
+            OwnerModel newOwner = OwnerModel(
                 ownerId: userId,
                 phone_number: null,
                 email: email,
@@ -167,67 +169,108 @@ class SignupScreen extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          height: 28,
-                          width: 155,
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          decoration: BoxDecoration(
-                            color: primaryRed,
-                            borderRadius: BorderRadius.circular(13.0),
-                            border: Border.all(
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: Duration(milliseconds: 500),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset(0.0, 0.0);
+                                  const curve = Curves.ease;
+
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return LoginScreen(
+                                    currentIndex: currentIndex,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Container(
+                            height: 28,
+                            width: 155,
+                            padding: const EdgeInsets.symmetric(vertical: 3),
+                            decoration: BoxDecoration(
                               color: primaryRed,
-                              width: 1,
+                              borderRadius: BorderRadius.circular(13.0),
+                              border: Border.all(
+                                color: primaryRed,
+                                width: 1,
+                              ),
                             ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen(
-                                          currentIndex: currentIndex,
-                                        )),
-                              );
-                            },
                             child: const Center(
                               child: Text(
                                 "تسجيل الدخول",
                                 style: TextStyle(
-                                    fontSize: 14,
-                                    color: primaryWhite,
-                                    decoration: TextDecoration.none),
+                                  fontSize: 14,
+                                  color: primaryWhite,
+                                  decoration: TextDecoration.none,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        Container(
-                          height: 28,
-                          width: 155,
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          decoration: BoxDecoration(
-                            color: primaryWhite,
-                            borderRadius: BorderRadius.circular(13.0),
-                            border: Border.all(
-                              color: primaryRed,
-                              width: 1,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: Duration(milliseconds: 500),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset(0.0, 0.0);
+                                  const curve = Curves.ease;
+
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return SignupScreen(
+                                    currentIndex: currentIndex,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Container(
+                            height: 28,
+                            width: 155,
+                            padding: const EdgeInsets.symmetric(vertical: 3),
+                            decoration: BoxDecoration(
+                              color: primaryWhite,
+                              borderRadius: BorderRadius.circular(13.0),
+                              border: Border.all(
+                                color: primaryRed,
+                                width: 1,
+                              ),
                             ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignupScreen(
-                                        currentIndex: currentIndex)),
-                              );
-                            },
                             child: const Center(
                               child: Text(
                                 "إنشاء حساب",
                                 style: TextStyle(
-                                    fontSize: 14,
-                                    color: primaryRed,
-                                    decoration: TextDecoration.none),
+                                  fontSize: 14,
+                                  color: primaryRed,
+                                  decoration: TextDecoration.none,
+                                ),
                               ),
                             ),
                           ),
@@ -338,46 +381,53 @@ class SignupScreen extends StatelessWidget {
                 ),
               ),
               Positioned(
-                  top: 480,
-                  left: 60,
-                  right: 60,
-                  child: TextButton(
-                    onPressed: () async {
-                      bool success = await checkValues();
-                      if (success == true) {
-                        currentIndex == 1
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AboutYouScreen(
-                                        userId: passedUserId,
-                                        currentIndex: currentIndex)))
-                            : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AboutYouScreen(
-                                        userId: passedUserId,
-                                        currentIndex: currentIndex)),
-                              );
-                      } else if (success == false) {
-                        print("an error occurred while trying to sign up");
-                      }
-                    },
-                    style: TextButton.styleFrom(
-                      side: const BorderSide(width: 1, color: primaryWhite),
-                      backgroundColor: primaryRed,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(37.0),
-                      ),
+                top: 480,
+                left: 60,
+                right: 60,
+                child: TextButton(
+                  onPressed: () async {
+                    bool success = await checkValues();
+                    if (success == true) {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: Duration(milliseconds: 500),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return AboutYouScreen(
+                              userId: passedUserId,
+                              currentIndex: currentIndex,
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    side: const BorderSide(width: 1, color: primaryWhite),
+                    backgroundColor: primaryRed,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(37.0),
                     ),
-                    child: const Text(
-                      'إنشاء حساب',
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'انشاء حساب',
                       style: TextStyle(
-                        color: primaryWhite,
                         fontSize: 21.0,
+                        color: primaryWhite,
                       ),
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ])));
   }
 }

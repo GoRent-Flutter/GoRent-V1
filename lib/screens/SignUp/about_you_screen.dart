@@ -50,9 +50,10 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           String userSessionId = sessionId + "." + widget.userId;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('sessionId', userSessionId);
-            final userDoc = await firestore.collection('customers').doc(widget.userId).get();
-            CustModel custModel =
-                CustModel.fromMap(userDoc.data() as Map<String, dynamic>);
+          final userDoc =
+              await firestore.collection('customers').doc(widget.userId).get();
+          CustModel custModel =
+              CustModel.fromMap(userDoc.data() as Map<String, dynamic>);
           return true;
         } else if (widget.currentIndex == 0) {
           await firestore.collection('owners').doc(widget.userId).update({
@@ -68,9 +69,10 @@ class AboutYouScreenState extends State<AboutYouScreen> {
           String userSessionId = sessionId + "." + widget.userId;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('sessionId', userSessionId);
-           final userDoc = await firestore.collection('owners').doc(widget.userId).get();
-            OwnerModel ownerModel =
-                OwnerModel.fromMap(userDoc.data() as Map<String, dynamic>);
+          final userDoc =
+              await firestore.collection('owners').doc(widget.userId).get();
+          OwnerModel ownerModel =
+              OwnerModel.fromMap(userDoc.data() as Map<String, dynamic>);
           return true;
         }
       } catch (ex) {
@@ -277,41 +279,83 @@ class AboutYouScreenState extends State<AboutYouScreen> {
             ),
           ),
           Positioned(
-              top: 480,
-              left: 60,
-              right: 60,
-              child: TextButton(
-                onPressed: () async {
-                  bool success = await userValues();
-                  if (success == true) {
-                    widget.currentIndex == 1
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainScreen(currentIndex:1)))
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>  OwnerScreen()),
-                          );
-                  } else if (success == false) {
-                    print("an error occurred while trying to sign up");
-                  }
-                },
-                style: TextButton.styleFrom(
-                  side: const BorderSide(width: 1, color: primaryWhite),
-                  backgroundColor: primaryRed,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(37.0),
-                  ),
+            top: 480,
+            left: 60,
+            right: 60,
+            child: TextButton(
+              onPressed: () async {
+                bool success = await userValues();
+                if (success == true) {
+                  widget.currentIndex == 1
+                      ? Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 500),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset(0.0, 0.0);
+                              const curve = Curves.ease;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return MainScreen(currentIndex: 1);
+                            },
+                          ),
+                        )
+                      : Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 500),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset(0.0, 0.0);
+                              const curve = Curves.ease;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return OwnerScreen();
+                            },
+                          ),
+                        );
+                } else if (success == false) {
+                  print("An error occurred while trying to sign up");
+                }
+              },
+              style: TextButton.styleFrom(
+                side: const BorderSide(width: 1, color: primaryWhite),
+                backgroundColor: primaryRed,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(37.0),
                 ),
-                child: const Text('هيا نبدأ!',
-                    style: TextStyle(
-                      color: primaryWhite,
-                      fontSize: 21.0,
-                    ),
-                    textDirection: TextDirection.rtl),
-              )),
+              ),
+              child: const Text(
+                'هيا نبدأ!',
+                style: TextStyle(
+                  color: primaryWhite,
+                  fontSize: 21.0,
+                ),
+                textDirection: TextDirection.rtl,
+              ),
+            ),
+          ),
         ]));
   }
 }
