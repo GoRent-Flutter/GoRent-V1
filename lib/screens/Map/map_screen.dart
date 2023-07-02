@@ -37,6 +37,7 @@ class MapScreenState extends State<MapScreen> {
   String selectedPlaceNumBathrooms = '';
   String selectedPlaceSize = '';
   String selectedPlaceAddress1 = '';
+  List<String> selectedImageUrls = [];
 
   final DatabaseReference rentRef =
       FirebaseDatabase.instance.reference().child('rent');
@@ -181,8 +182,10 @@ class MapScreenState extends State<MapScreen> {
               right: 10,
               child: isDisplayed2
                   ? Container(
-                      height: 120,
+                      width: 310,
+                      height: 240,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24.0),
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
@@ -195,6 +198,18 @@ class MapScreenState extends State<MapScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Container(
+                            width: 345,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24.0),
+                              image: DecorationImage(
+                                image: NetworkImage(selectedImageUrls.first),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -338,6 +353,12 @@ class MapScreenState extends State<MapScreen> {
               event.snapshot.value as Map<dynamic, dynamic>;
           rentData.forEach((key, value) {
             if (value is Map) {
+              List<String> imageUrls = [];
+
+              final images = (value['images'] as Map<dynamic, dynamic>);
+
+              imageUrls =
+                  images.values.map((value) => value.toString()).toList();
               double latitude = double.parse(value['latitude'].toString());
               double longitude = double.parse(value['longitude'].toString());
               int price = int.parse(value['price'].toString());
@@ -362,6 +383,7 @@ class MapScreenState extends State<MapScreen> {
                         selectedPlaceNumBathrooms = numBathrooms.toString();
                         selectedPlaceSize = size.toString();
                         selectedPlaceAddress1 = address1.toString();
+                        selectedImageUrls = imageUrls;
                         isDisplayed2 = true;
                       });
                     },
@@ -384,6 +406,12 @@ class MapScreenState extends State<MapScreen> {
               event.snapshot.value as Map<dynamic, dynamic>;
           saleData.forEach((key, value) {
             if (value is Map) {
+              List<String> imageUrls = [];
+
+              final images = (value['images'] as Map<dynamic, dynamic>);
+
+              imageUrls =
+                  images.values.map((value) => value.toString()).toList();
               double latitude = double.parse(value['latitude'].toString());
               double longitude = double.parse(value['longitude'].toString());
               int price = int.parse(value['price'].toString());
@@ -407,6 +435,7 @@ class MapScreenState extends State<MapScreen> {
                         selectedPlaceNumBathrooms = numBathrooms.toString();
                         selectedPlaceSize = size.toString();
                         selectedPlaceAddress1 = address1.toString();
+                        selectedImageUrls = imageUrls;
                         isDisplayed2 = true;
                       });
                     },
