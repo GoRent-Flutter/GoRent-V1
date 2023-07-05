@@ -57,6 +57,8 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
     'جامع',
     'سوبر ماركت',
     'مطعم',
+    'مستشفى',
+    'حديقة'
   ];
 
   GoogleMapController? mapController;

@@ -45,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       if (widget.currentIndex == 1) {
-        String userId = email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
+        String userId =
+            email + "-GRCU"; // Use email as user ID -- GO RENT CUSTOMER
         // Check if owner already exists in collection
         final userDoc =
             await firestore.collection('customers').doc(userId).get();
@@ -58,8 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
             String sessionId = Uuid().v4();
             // Distinguish between customer and owner session ID
             String userSessionId = sessionId + "." + userId;
-            SharedPreferences prefs =
-                await SharedPreferences.getInstance();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('sessionId', userSessionId);
             print('SESSION ID: ' + userSessionId);
 
@@ -90,8 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
             String sessionId = Uuid().v4();
             // Distinguish between customer and owner session ID
             String userSessionId = sessionId + "." + userId;
-            SharedPreferences prefs =
-                await SharedPreferences.getInstance();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('sessionId', userSessionId);
             print('SESSION ID: ' + userSessionId);
 
@@ -118,7 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -139,7 +137,18 @@ class _LoginScreenState extends State<LoginScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const UsersScreen()),
+                  PageRouteBuilder(
+                    transitionDuration: Duration(milliseconds: 500),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const UsersScreen(),
+                  ),
                 );
               },
               child: Transform.scale(
@@ -196,19 +205,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen(
-                                      currentIndex: widget.currentIndex,
-                                    )),
+                            PageRouteBuilder(
+                              transitionDuration: Duration(milliseconds: 500),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      LoginScreen(
+                                currentIndex: widget.currentIndex,
+                              ),
+                            ),
                           );
                         },
                         child: const Center(
                           child: Text(
                             "تسجيل الدخول",
                             style: TextStyle(
-                                fontSize: 14,
-                                color: primaryRed,
-                                decoration: TextDecoration.none),
+                              fontSize: 14,
+                              color: primaryRed,
+                              decoration: TextDecoration.none,
+                            ),
                           ),
                         ),
                       ),
@@ -225,19 +246,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupScreen(
-                                      currentIndex: widget.currentIndex,
-                                    )),
+                            PageRouteBuilder(
+                              transitionDuration: Duration(milliseconds: 500),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      SignupScreen(
+                                currentIndex: widget.currentIndex,
+                              ),
+                            ),
                           );
                         },
                         child: const Center(
                           child: Text(
                             "إنشاء حساب",
                             style: TextStyle(
-                                fontSize: 14,
-                                color: primaryWhite,
-                                decoration: TextDecoration.none),
+                              fontSize: 14,
+                              color: primaryWhite,
+                              decoration: TextDecoration.none,
+                            ),
                           ),
                         ),
                       ),
@@ -322,7 +355,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-
           Positioned(
             top: 390,
             left: 60,
@@ -344,28 +376,28 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-           Positioned(
-            top: 480,
-            left: 60,
-            right: 60,
-            child: TextButton(
-              onPressed: () async {
-                await checkValues(context);
-                if (errorText == null) {
-                  widget.currentIndex == 1
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MainScreen(currentIndex: 1),
-                          ),
-                        )
-                      : Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OwnerScreen(),
-                          ),
-                        );
-                }
+          Positioned(
+              top: 480,
+              left: 60,
+              right: 60,
+              child: TextButton(
+                onPressed: () async {
+                  await checkValues(context);
+                  if (errorText == null) {
+                    widget.currentIndex == 1
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MainScreen(currentIndex: 1),
+                            ),
+                          )
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OwnerScreen(),
+                            ),
+                          );
+                  }
                 },
                 style: TextButton.styleFrom(
                   side: const BorderSide(width: 1, color: primaryWhite),

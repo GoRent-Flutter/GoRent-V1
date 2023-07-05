@@ -10,7 +10,6 @@ import '../users/users_screen.dart';
 class WelcomeScreenCustomer extends StatelessWidget {
   const WelcomeScreenCustomer({Key? key}) : super(key: key);
 
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
@@ -36,10 +35,27 @@ class WelcomeScreenCustomer extends StatelessWidget {
                 left: -20,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    // Replace the current route instead of pushing a new one
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const UsersScreen()),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const UsersScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          var begin = Offset(-1.0, 0.0);
+                          var end = Offset.zero;
+                          var curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
+                      ),
                     );
                   },
                   child: Transform.scale(
@@ -70,10 +86,25 @@ class WelcomeScreenCustomer extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => SignupScreen(
-                                  currentIndex: 1,
-                                )),
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  SignupScreen(currentIndex: 1),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = Offset(1.0, 0.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                        ),
                       );
                     },
                     style: TextButton.styleFrom(
@@ -111,8 +142,25 @@ class WelcomeScreenCustomer extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => LoginScreen(currentIndex: 1)),
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  LoginScreen(currentIndex: 1),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = Offset(1.0, 0.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                        ),
                       );
                     },
                     style: TextButton.styleFrom(
@@ -139,18 +187,34 @@ class WelcomeScreenCustomer extends StatelessWidget {
                   right: 60,
                   child: TextButton(
                     onPressed: () async {
-                      
                       String sessionId = const Uuid().v4();
-                       String userId = sessionId+"-GRGU"; 
-                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      String userId = sessionId + "-GRGU";
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
                       await prefs.setString('sessionId', userId);
                       print('SESSION ID for Guest View: ' + userId);
-                     
 
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const MainScreen(currentIndex: 2   ,)),
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  MainScreen(currentIndex: 2),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = Offset(1.0, 0.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                        ),
                       );
                     },
                     style: TextButton.styleFrom(

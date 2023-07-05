@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../../constraints.dart';
+import '../Main/main_screen.dart';
+import 'owner_view_screen.dart';
+
 class Reserves {
   final String apartmentcity;
   final String custId;
@@ -57,45 +61,76 @@ class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Reservations'),
-        ),
-        body: ListView.builder(
-          itemCount: _reserves.length,
-          itemBuilder: (BuildContext context, int index) {
-            final reservation = _reserves[index];
-            return Card(
-              elevation: 2,
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ListTile(
-                title: Text(
-                  'Apartment City: ${reservation.apartmentcity}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 8),
-                    Text(
-                      'Customer ID: ${reservation.custId}',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Date: ${reservation.date}',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Time: ${reservation.time}',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    SizedBox(height: 8),
-                  ],
-                ),
-              ),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("الحجوزات"),
+        backgroundColor: primaryRed,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => OwnerScreen()),
             );
           },
-        ));
+        ),
+      ),
+      body: Container(
+        color: Colors.white,
+        child: _reserves.isEmpty
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: _reserves.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final reservation = _reserves[index];
+                  return Card(
+                    elevation: 4, // Add elevation for a subtle shadow
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    color: Colors.grey[100], // Change background color
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'المدينة: ${reservation.apartmentcity}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'اسم العميل: ${reservation.custId}',
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.right,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'التاريخ: ${reservation.date}',
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.right,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'الوقت: ${reservation.time}',
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ),
+    );
   }
 }
