@@ -4,12 +4,13 @@ import '../BuyList/buylist_screen.dart';
 import '../ContactOwner/contact_owner.dart';
 import '../../constraints.dart';
 import '../MachineLearning/salePredModel.dart';
+import '../Neighborhood/nearby_places_screen.dart';
 import '../ReserveAppointment/reserveappointment_screen.dart';
 
 class ItemDetailBuy extends StatefulWidget {
   final Estate estate;
 
-  const ItemDetailBuy({Key? key, required this.estate}) : super(key: key);
+  const ItemDetailBuy({Key? key, required this.estate, required latitude, required longitude}) : super(key: key);
 
   @override
   _ItemDetailBuyState createState() => _ItemDetailBuyState();
@@ -178,8 +179,9 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // Do something when near me icon is clicked
-                          },
+ Navigator.push(context,
+      MaterialPageRoute(builder: (context) => NearByPlacesScreen(latitude:widget.estate.latitude,longitude:widget.estate.longitude)),
+    );                          },
                           child: Container(
                             width: 40,
                             height: 40,

@@ -3,15 +3,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../ContactOwner/contact_owner.dart';
 import '../MachineLearning/rentPredModel.dart';
 import '../Map/map_screen.dart';
+import '../Neighborhood/nearby_places_screen.dart';
 import '../RentList/rentlist_screen.dart';
 
 import '../../constraints.dart';
 import '../ReserveAppointment/reserveappointment_screen.dart';
 
 class ItemDetail extends StatefulWidget {
-  final Post post;
-
-  const ItemDetail({Key? key, required this.post}) : super(key: key);
+  final Post post; 
+  const ItemDetail({Key? key, required this.post, required latitude, required longitude}) : super(key: key);
 
   @override
   _ItemDetailState createState() => _ItemDetailState();
@@ -182,7 +182,9 @@ class _ItemDetailState extends State<ItemDetail> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // Do something when near me icon is clicked
+                            Navigator.push(context,
+      MaterialPageRoute(builder: (context) => NearByPlacesScreen(latitude:widget.post.latitude,longitude:widget.post.longitude)),
+    );
                           },
                           child: Container(
                             width: 40,

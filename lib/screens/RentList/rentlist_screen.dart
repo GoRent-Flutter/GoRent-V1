@@ -21,6 +21,8 @@ class Post {
   final int size;
   final String address1;
   final String OwnerID; // Add ownerID field
+  final double longitude;
+  final double latitude;
 
   Post({
     required this.images,
@@ -33,6 +35,8 @@ class Post {
     required this.size,
     required this.address1,
     required this.OwnerID, // Initialize ownerID field
+    required this.longitude,
+    required this.latitude,
   });
 }
 
@@ -122,6 +126,8 @@ class _RentListScreenState extends State<RentListScreen> {
           size: post['size'] as int,
           address1: post['address1'] as String,
           OwnerID: post['OwnerID'] as String,
+          longitude:post['longitude'] as double,
+          latitude:post['latitude'] as double,
         );
       }).toList();
     });
@@ -161,6 +167,8 @@ class _RentListScreenState extends State<RentListScreen> {
           numVerandas: estate['numVerandas'] as int,
           address1: estate['address1'] as String,
           OwnerID: estate['OwnerID'] as String,
+          longitude:estate['longitude'] as double,
+          latitude:estate['latitude'] as double,
         );
       }).toList();
 
@@ -193,6 +201,8 @@ class _RentListScreenState extends State<RentListScreen> {
           size: post['size'] as int,
           address1: post['address1'] as String,
           OwnerID: post['OwnerID'] as String,
+          longitude:post['longitude'] as double,
+          latitude:post['latitude'] as double,
         );
       }).toList();
     });

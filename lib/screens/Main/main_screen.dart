@@ -95,7 +95,10 @@ class MainScreenState extends State<MainScreen> {
             size: estate['size'] as int,
             numVerandas: estate['numVerandas'] as int,
             address1: estate['address1'] as String,
-            OwnerID: estate['OwnerID'] as String);
+            OwnerID: estate['OwnerID'] as String,
+            longitude:estate['longitude'] as double,
+            latitude:estate['latitude'] as double,
+            );
       }).toList();
 
       _posts = allItems.where((entry) => entry['type'] == 'اجار').map((entry) {
@@ -117,7 +120,9 @@ class MainScreenState extends State<MainScreen> {
             numBathrooms: post['numBathrooms'] as int,
             size: post['size'] as int,
             address1: post['address1'] as String,
-            OwnerID: post['OwnerID'] as String);
+            OwnerID: post['OwnerID'] as String, 
+            longitude:post['longitude'] as double,
+            latitude:post['latitude'] as double,);
       }).toList();
     });
   }

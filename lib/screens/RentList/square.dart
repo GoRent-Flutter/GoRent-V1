@@ -22,7 +22,7 @@ class MySquare extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ItemDetail(post: post),
+            builder: (context) => ItemDetail(post: post, latitude:post.latitude, longitude:post.longitude),
           ),
         );
       },

@@ -55,7 +55,8 @@ dependencies:
   flutter_map_marker_popup: ^5.0.0
   bcrypt: ^1.1.3
   location: ^4.4.0
-  lottie: ^1.2.0
+  http: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:
@@ -83,7 +84,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/lottie/
     - assets/map_style.json
     - assets/machine_learning_models/ForSale_ML_neural_model.tflite
     - assets/machine_learning_models/ForRent_ML_neural_model.tflite
