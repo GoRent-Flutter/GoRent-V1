@@ -128,8 +128,8 @@ class _RentListScreenState extends State<RentListScreen> {
           size: post['size'] as int,
           address1: post['address1'] as String,
           OwnerID: post['OwnerID'] as String,
-          longitude: post['longitude'] as double,
-          latitude: post['latitude'] as double,
+          longitude: (post['longitude'] as num).toDouble(),
+          latitude: (post['latitude'] as num).toDouble(),
         );
       }).toList();
     });
@@ -169,8 +169,8 @@ class _RentListScreenState extends State<RentListScreen> {
           numVerandas: estate['numVerandas'] as int,
           address1: estate['address1'] as String,
           OwnerID: estate['OwnerID'] as String,
-          longitude: estate['longitude'] as double,
-          latitude: estate['latitude'] as double,
+          longitude: (estate['longitude'] as num).toDouble(),
+          latitude: (estate['latitude'] as num).toDouble(),
         );
       }).toList();
 
@@ -203,8 +203,8 @@ class _RentListScreenState extends State<RentListScreen> {
           size: post['size'] as int,
           address1: post['address1'] as String,
           OwnerID: post['OwnerID'] as String,
-          longitude: post['longitude'] as double,
-          latitude: post['latitude'] as double,
+          longitude: (post['longitude'] as num).toDouble(),
+          latitude: (post['latitude'] as num).toDouble(),
         );
       }).toList();
     });

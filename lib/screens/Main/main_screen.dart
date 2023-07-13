@@ -85,20 +85,20 @@ class MainScreenState extends State<MainScreen> {
           }
         }
         return Estate(
-            images: imageUrls,
-            city: estate['city'] as String,
-            type: estate['type'] as String,
-            description: estate['description'] as String,
-            price: estate['price'] as int,
-            numRooms: estate['numRooms'] as int,
-            numBathrooms: estate['numBathrooms'] as int,
-            size: estate['size'] as int,
-            numVerandas: estate['numVerandas'] as int,
-            address1: estate['address1'] as String,
-            OwnerID: estate['OwnerID'] as String,
-            longitude:estate['longitude'] as double,
-            latitude:estate['latitude'] as double,
-            );
+          images: imageUrls,
+          city: estate['city'] as String,
+          type: estate['type'] as String,
+          description: estate['description'] as String,
+          price: estate['price'] as int,
+          numRooms: estate['numRooms'] as int,
+          numBathrooms: estate['numBathrooms'] as int,
+          size: estate['size'] as int,
+          numVerandas: estate['numVerandas'] as int,
+          address1: estate['address1'] as String,
+          OwnerID: estate['OwnerID'] as String,
+          longitude: (estate['longitude'] as num).toDouble(),
+          latitude: (estate['latitude'] as num).toDouble(),
+        );
       }).toList();
 
       _posts = allItems.where((entry) => entry['type'] == 'اجار').map((entry) {
@@ -120,9 +120,9 @@ class MainScreenState extends State<MainScreen> {
             numBathrooms: post['numBathrooms'] as int,
             size: post['size'] as int,
             address1: post['address1'] as String,
-            OwnerID: post['OwnerID'] as String, 
-            longitude:post['longitude'] as double,
-            latitude:post['latitude'] as double,);
+            OwnerID: post['OwnerID'] as String,
+            longitude: (post['longitude'] as num).toDouble(),
+            latitude: (post['latitude'] as num).toDouble());
       }).toList();
     });
   }
