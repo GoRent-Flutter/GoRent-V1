@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,8 +11,9 @@ import '../../user_bottom_nav_bar.dart';
 import '../BuyList/buylist_screen.dart';
 import '../BuyList/card.dart';
 import '../ContactOwner/Chatting_System/chats_screen.dart';
-import '../Filters/filters.dart';
+import 'dart:async';
 import '../RentList/rentlist_screen.dart';
+import '../RentList/square.dart';
 import 'Search/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -24,84 +27,114 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  bool isPopular = true;
-  bool isNewlyAdded = false;
-  bool isRecommended = false;
-  // bool isGuest = true; // Add this variable to track if the user is a guest
+  bool showRecommendation = false;
+  bool variousApartments = true;
+  late DatabaseReference saleDatabaseRef;
+  late DatabaseReference rentDatabaseRef;
+  List<Estate> _estates = [];
+  List<Post> _posts = [];
+  late String searchQuery = '';
+  List<Map<String, dynamic>> allItems = [];
 
-  // @override
-  // void initState() {
-  //   checkUserType(); // Check if the user is a guest when the screen initializes
-  // }
+  @override
+  void initState() {
+    super.initState();
+    DatabaseReference saleDatabaseRef =
+        FirebaseDatabase.instance.reference().child('sale');
+    DatabaseReference rentDatabaseRef =
+        FirebaseDatabase.instance.reference().child('rent');
+    saleDatabaseRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final estates = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          allItems = estates.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList();
+          getApartments();
+        });
+      }
+    });
+    rentDatabaseRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        final posts = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        setState(() {
+          allItems.addAll(posts.entries
+              .where((entry) => entry.value['isApproves'] == true)
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList());
+          getApartments();
+        });
+      }
+    });
+  }
 
-  // void checkUserType() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? sessionId = prefs.getString('sessionId');
-  //   if (sessionId != null && sessionId.contains("-GRCU")) {
-  //     setState(() {
-  //       isGuest = false;
-  //     });
-  //   }
-  // }
+  void getApartments() {
+    setState(() {
+      _estates = allItems
+          .where((entry) => entry['type'] == 'بيع' && (entry['price'] < 200000))
+          .map((entry) {
+        final estate = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (estate['images'] != null) {
+          final images = estate['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Estate(
+            images: imageUrls,
+            city: estate['city'] as String,
+            type: estate['type'] as String,
+            description: estate['description'] as String,
+            price: estate['price'] as int,
+            numRooms: estate['numRooms'] as int,
+            numBathrooms: estate['numBathrooms'] as int,
+            size: estate['size'] as int,
+            numVerandas: estate['numVerandas'] as int,
+            address1: estate['address1'] as String,
+            OwnerID: estate['OwnerID'] as String,
+            longitude:estate['longitude'] as double,
+            latitude:estate['latitude'] as double,
+            );
+      }).toList();
 
-  final List<Estate> _estates = [
-    Estate(
-        images: ['assets/images/apartments.jpg'],
-        city: 'العقار 1',
-        type: 'شقة للشراء',
-        description: 'test',
-        price: 400,
-        numRooms: 2,
-        numBathrooms: 2,
-        size: 1400,
-        numVerandas: 0,
-        OwnerID: 'test',
-        address1: ''),
-    Estate(
-        images: ['assets/images/apartments.jpg'],
-        city: 'العقار 2',
-        type: 'بيت للشراء',
-        description: 'test',
-        price: 300,
-        numRooms: 3,
-        numBathrooms: 1,
-        size: 1040,
-        numVerandas: 0,
-        OwnerID: 'tst1',
-        address1: ''),
-    Estate(
-        images: ['assets/images/apartments.jpg'],
-        city: 'العقار 3',
-        type: 'بيت للشراء',
-        description: 'test',
-        price: 500,
-        numRooms: 3,
-        numBathrooms: 1,
-        size: 1040,
-        numVerandas: 0,
-        OwnerID: 'tst3',
-        address1: ''),
-    Estate(
-        images: ['assets/images/apartments.jpg'],
-        city: 'العقار 4',
-        type: 'شقة للشراء',
-        description: 'test',
-        price: 600,
-        numRooms: 3,
-        numBathrooms: 2,
-        size: 1800,
-        numVerandas: 0,
-        OwnerID: 'tst3',
-        address1: ''),
-  ];
+      _posts = allItems.where((entry) => entry['type'] == 'اجار').map((entry) {
+        final post = Map<String, dynamic>.from(entry);
+        List<String> imageUrls = [];
+        if (post['images'] != null) {
+          final images = post['images'] as Map<dynamic, dynamic>;
+          if (images.isNotEmpty) {
+            imageUrls = images.values.map((value) => value.toString()).toList();
+          }
+        }
+        return Post(
+            images: imageUrls,
+            city: post['city'] as String,
+            type: post['type'] as String,
+            description: post['description'] as String,
+            price: post['price'] as int,
+            numRooms: post['numRooms'] as int,
+            numBathrooms: post['numBathrooms'] as int,
+            size: post['size'] as int,
+            address1: post['address1'] as String,
+            OwnerID: post['OwnerID'] as String, 
+            longitude:post['longitude'] as double,
+            latitude:post['latitude'] as double,);
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     var currentIndex = widget.currentIndex;
     return Container(
-      color: Colors.transparent,
-      child: SizedBox(
-        child: Stack(children: <Widget>[
+        color: Colors.transparent,
+        child: SizedBox(
+            child: Stack(children: <Widget>[
           Positioned(
               child: Scaffold(
             bottomNavigationBar: currentIndex == 1
@@ -291,345 +324,6 @@ class MainScreenState extends State<MainScreen> {
             ),
           ),
           Positioned(
-              top: size.height - 390,
-              left: 35,
-              right: 35,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isPopular = true;
-                        isNewlyAdded = false;
-                        isRecommended = false;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Text(
-                          "رائج",
-                          style: TextStyle(
-                              fontFamily: 'Scheherazade_New',
-                              decoration: TextDecoration.none,
-                              fontSize: 17,
-                              color: isPopular ? primaryLine : primaryRed),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 3),
-                          height: 1,
-                          width: 71,
-                          color: isPopular ? primaryLine : Colors.transparent,
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isPopular = false;
-                        isNewlyAdded = false;
-                        isRecommended = true;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Text(
-                          "موصى به",
-                          style: TextStyle(
-                              fontFamily: 'Scheherazade_New',
-                              decoration: TextDecoration.none,
-                              fontSize: 17,
-                              color: isRecommended ? primaryLine : primaryRed),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 3),
-                          height: 1,
-                          width: 71,
-                          color:
-                              isRecommended ? primaryLine : Colors.transparent,
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isPopular = false;
-                        isNewlyAdded = true;
-                        isRecommended = false;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Text(
-                          "مضاف حديثا",
-                          style: TextStyle(
-                              fontFamily: 'Scheherazade_New',
-                              decoration: TextDecoration.none,
-                              fontSize: 17,
-                              color: isNewlyAdded ? primaryLine : primaryRed),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 3),
-                          height: 1,
-                          width: 71,
-                          color:
-                              isNewlyAdded ? primaryLine : Colors.transparent,
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              )),
-          isPopular
-              ? Positioned(
-                  top: size.height - 330,
-                  left: 30,
-                  right: 30,
-                  child: SizedBox(
-                    height: size.height - 560,
-                    width: size.width - 40,
-                    child: ListView.separated(
-                      //space between cards
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(width: 30.0);
-                      },
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _estates.length,
-                      itemBuilder: (context, index) {
-                        final estate = _estates[index];
-
-                        return MyCard(
-                          estate: estate,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 7, left: 7, right: 7),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      width: size.width - 80,
-                                      height: size.height - 660,
-                                      decoration: BoxDecoration(
-                                        color: primaryWhite,
-                                        borderRadius:
-                                            BorderRadius.circular(24.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            spreadRadius: 2,
-                                            blurRadius: 5,
-                                          ),
-                                        ],
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/apartments.jpg'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    const Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: Icon(Icons.favorite_border,
-                                          color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // set alignment
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 8,
-                                        left: 13.0,
-                                        right: size.width - 200),
-                                    child: Text(
-                                      estate.price.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: primaryRed,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8, right: 13.0),
-                                    child: Text(
-                                      estate.city,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: primaryRed,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // set alignment
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 6.0),
-                                        child: Image(
-                                          image: AssetImage(
-                                              'assets/icons/Red_bedroom.png'),
-                                          width: 20,
-                                          height: 18,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                          width:
-                                              5), // add some spacing between the icon and text
-
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 6.0),
-                                        child: Text(
-                                          estate.numRooms.toString(),
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: primaryRed,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 6.0),
-                                        child: Image(
-                                          image: AssetImage(
-                                              'assets/icons/Red_bathroom.png'),
-                                          width: 20,
-                                          height: 18,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                          width:
-                                              5), // add some spacing between the icon and text
-
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 13.0),
-                                        child: Text(
-                                          estate.numBathrooms.toString(),
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: primaryRed,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 0.0),
-                                        child: Image(
-                                          image: AssetImage(
-                                              'assets/icons/Red_size.png'),
-                                          width: 20,
-                                          height: 18,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                          width:
-                                              5), // add some spacing between the icon and text
-
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 75.0),
-                                        child: Text(
-                                          estate.size.toString(),
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: primaryRed,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 13.0),
-                                    child: Text(
-                                      estate.type,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: primaryRed,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                )
-              : Positioned(
-                  top: size.height - 330,
-                  left: 30,
-                  right: 30,
-                  child: currentIndex == 2
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const WelcomeScreenCustomer()),
-                            );
-                          },
-                          child: Column(
-                            children: [
-                              const Text(
-                                'Please click here to sign up to view this feature',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: primaryRed,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Container(
-                                height: size.width / 5,
-                                width: size.width / 2,
-                                color:
-                                    primaryRed, // Change the color to your desired color
-                              ),
-                            ],
-                          ),
-                        )
-                      : const Text(
-                          'Not available yet',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: primaryRed,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                ),
-          Positioned(
             top: size.width - size.width + 120,
             left: 10,
             child: Container(
@@ -670,9 +364,622 @@ class MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
-          )
-        ]),
-      ),
-    );
+          ),
+          Positioned(
+            top: size.height - 400,
+            left: 30,
+            right: 30,
+            bottom: 70,
+            child: Container(
+              height: 400,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            DefaultTextStyle(
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black,
+                                decoration: TextDecoration.none,
+                                fontFamily: 'Scheherazade_New',
+                              ),
+                              child: Text(
+                                'مدن مختلفة',
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Image.asset(
+                              'assets/icons/map.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 100,
+                      width: size.width,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        reverse: true,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/ram.jpg'),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              child: const Center(
+                                  child: Text(
+                                'رام الله',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Scheherazade_New',
+                                  decoration: TextDecoration.none,
+                                ),
+                              )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/beth.jpg'),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              child: const Center(
+                                  child: Text(
+                                'بيت لحم',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Scheherazade_New',
+                                  decoration: TextDecoration.none,
+                                ),
+                              )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/tul.jpg'),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              child: const Center(
+                                  child: Text(
+                                'طولكرم',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Scheherazade_New',
+                                  decoration: TextDecoration.none,
+                                ),
+                              )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/nab.jpg'),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              child: const Center(
+                                  child: Text(
+                                'نابلس',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Scheherazade_New',
+                                  decoration: TextDecoration.none,
+                                ),
+                              )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: <Widget>[
+                        SizedBox(height: 20),
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                DefaultTextStyle(
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none,
+                                    fontFamily: 'Scheherazade_New',
+                                  ),
+                                  child: Text(
+                                    'عقارات متنوعة',
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Image.asset(
+                                  'assets/icons/hall.png',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(children: [
+                      SizedBox(
+                        height: size.width - 170,
+                        width: size.width - 40,
+                        child: ListView.separated(
+                          reverse: true,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(width: 30.0);
+                          },
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            if (index < 5) {
+                              if (_estates.isNotEmpty &&
+                                  index < _estates.length) {
+                                final estate = _estates[index];
+                                return MyCard(
+                                  estate: estate,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 7, left: 7, right: 7),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: size.width - 140,
+                                              height: size.width - 265,
+                                              decoration: BoxDecoration(
+                                                color: primaryWhite,
+                                                borderRadius:
+                                                    BorderRadius.circular(24.0),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 5,
+                                                  ),
+                                                ],
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      estate.images.first),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            const Positioned(
+                                              top: 10,
+                                              right: 10,
+                                              child: Icon(Icons.favorite_border,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 8,
+                                                left: 5.0,
+                                                right: size.width - 265),
+                                            child: Text(
+                                              "\$" + estate.price.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 8, right: 5),
+                                            child: Text(
+                                              estate.city,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 13.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bedroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 6.0),
+                                                child: Text(
+                                                  estate.numRooms.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 6.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bathroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 13.0),
+                                                child: Text(
+                                                  estate.numBathrooms
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 0.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_size.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Text(
+                                                  estate.size.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 13.0),
+                                            child: Text(
+                                              estate.type,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return Container();
+                              }
+                            } else {
+                              if (_posts.isNotEmpty &&
+                                  index - 5 < _posts.length) {
+                                final post = _posts[index - 5];
+                                return MySquare(
+                                  post: post,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 7, left: 7, right: 7),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: size.width - 140,
+                                              height: size.width - 265,
+                                              decoration: BoxDecoration(
+                                                color: primaryWhite,
+                                                borderRadius:
+                                                    BorderRadius.circular(24.0),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 5,
+                                                  ),
+                                                ],
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      post.images.first),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            const Positioned(
+                                              top: 10,
+                                              right: 10,
+                                              child: Icon(Icons.favorite_border,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 8,
+                                                left: 5.0,
+                                                right: size.width - 265),
+                                            child: Text(
+                                              "\$" + post.price.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 8, right: 5),
+                                            child: Text(
+                                              post.city,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween, // set alignment
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: 13.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bedroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 6.0),
+                                                child: Text(
+                                                  post.numRooms.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 6.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_bathroom.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 13.0),
+                                                child: Text(
+                                                  post.numBathrooms.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 0.0),
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/icons/Red_size.png'),
+                                                  width: 20,
+                                                  height: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  width:
+                                                      5), // add some spacing between the icon and text
+
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10.0),
+                                                child: Text(
+                                                  post.size.toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: primaryRed,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 13.0),
+                                            child: Text(
+                                              post.type,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ]),
+                    Column(
+                      children: <Widget>[
+                        SizedBox(height: 20),
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                DefaultTextStyle(
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none,
+                                    fontFamily: 'Scheherazade_New',
+                                  ),
+                                  child: Text(
+                                    'عقارات مقترحة لك',
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Image.asset(
+                                  'assets/icons/star.png',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ])));
   }
 }

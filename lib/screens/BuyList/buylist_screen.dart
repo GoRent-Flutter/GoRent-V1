@@ -19,6 +19,8 @@ class Estate {
   final int numVerandas;
   final String address1;
   final String OwnerID;
+  final double longitude;
+  final double latitude;
 
   Estate({
     required this.images,
@@ -32,6 +34,8 @@ class Estate {
     required this.numVerandas,
     required this.address1,
     required this.OwnerID,
+    required this.longitude,
+    required this.latitude,
   });
 }
 
@@ -121,7 +125,10 @@ class _BuyListScreenState extends State<BuyListScreen> {
             size: estate['size'] as int,
             numVerandas: estate['numVerandas'] as int,
             address1: estate['address1'] as String,
-            OwnerID: estate['OwnerID'] as String);
+            OwnerID: estate['OwnerID'] as String,
+            longitude:estate['longitude'] as double,
+            latitude:estate['latitude'] as double,
+            );
       }).toList();
     });
   }
@@ -160,6 +167,8 @@ class _BuyListScreenState extends State<BuyListScreen> {
           numVerandas: estate['numVerandas'] as int,
           address1: estate['address1'] as String,
           OwnerID: estate['OwnerID'] as String,
+          longitude:estate['longitude'] as double,
+            latitude:estate['latitude'] as double,
         );
       }).toList();
 
@@ -192,6 +201,8 @@ class _BuyListScreenState extends State<BuyListScreen> {
           size: post['size'] as int,
           address1: post['address1'] as String,
           OwnerID: post['OwnerID'] as String,
+          longitude:post['longitude'] as double,
+          latitude:post['latitude'] as double,
         );
       }).toList();
     });

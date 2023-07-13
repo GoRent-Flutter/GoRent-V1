@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: primaryRed,
           fontFamily: 'Scheherazade_New'),
       home: FutureBuilder(
-        future: Future.delayed(const Duration(seconds: 2)),
+        future: Future.delayed(const Duration(seconds: 3)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return const UsersScreen();
@@ -107,7 +107,7 @@ class LoggedInOwner extends StatelessWidget {
           scaffoldBackgroundColor: primaryRed,
           fontFamily: 'Scheherazade_New'),
       home: FutureBuilder(
-        future: Future.delayed(const Duration(seconds: 2)),
+        future: Future.delayed(const Duration(seconds: 3)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return OwnerScreen();
@@ -134,7 +134,7 @@ class LoggedInCustomer extends StatelessWidget {
           scaffoldBackgroundColor: primaryRed,
           fontFamily: 'Scheherazade_New'),
       home: FutureBuilder(
-        future: Future.delayed(const Duration(seconds: 2)),
+        future: Future.delayed(const Duration(seconds: 3)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return const MainScreen(currentIndex: 1,);

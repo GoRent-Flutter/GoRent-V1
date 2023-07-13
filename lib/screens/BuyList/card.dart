@@ -18,7 +18,7 @@ class MyCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ItemDetailBuy(estate: estate),
+            builder: (context) => ItemDetailBuy(estate: estate,latitude:estate.latitude, longitude:estate.longitude),
           ),
         );
       },
