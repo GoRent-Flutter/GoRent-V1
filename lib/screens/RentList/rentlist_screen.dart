@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/ItemDetail/itemdetailrent_screen.dart';
 import 'package:gorent_application1/screens/RentList/square.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../BuyList/buylist_screen.dart';
 import '../BuyList/card.dart';
@@ -20,7 +22,7 @@ class Post {
   final int numBathrooms;
   final int size;
   final String address1;
-  final String OwnerID; // Add ownerID field
+  final String OwnerID;
 
   Post({
     required this.images,
@@ -32,7 +34,7 @@ class Post {
     required this.numBathrooms,
     required this.size,
     required this.address1,
-    required this.OwnerID, // Initialize ownerID field
+    required this.OwnerID,
   });
 }
 
@@ -316,12 +318,30 @@ class _RentListScreenState extends State<RentListScreen> {
                                               ),
                                             ),
                                           ),
-                                          Positioned(
-                                            top: 10,
-                                            right: 10,
-                                            child: Icon(Icons.favorite_border,
-                                                color: Colors.white),
-                                          ),
+                                          // Positioned(
+                                          //   top: 10,
+                                          //   right: 10,
+                                          //   child: GestureDetector(
+                                          //     onTap: () {
+                                          //       setState(() {
+                                          //         isFavorite =
+                                          //             !isFavorite; // Toggle the icon's state
+                                          //         if (isFavorite) {
+                                          //           _saveWatchlist(
+                                          //               post); // Replace `post` with the actual Post object
+                                          //         }
+                                          //       });
+                                          //     },
+                                          //     child: Icon(
+                                          //       isFavorite
+                                          //           ? Icons.favorite
+                                          //           : Icons.favorite_border,
+                                          //       color: isFavorite
+                                          //           ? Colors.red
+                                          //           : Colors.white,
+                                          //     ),
+                                          //   ),
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -507,12 +527,12 @@ class _RentListScreenState extends State<RentListScreen> {
                                                 ),
                                               ),
                                             ),
-                                            const Positioned(
-                                              top: 10,
-                                              right: 10,
-                                              child: Icon(Icons.favorite_border,
-                                                  color: Colors.white),
-                                            ),
+                                            // const Positioned(
+                                            //   top: 10,
+                                            //   right: 10,
+                                            //   child: Icon(Icons.favorite_border,
+                                            //       color: Colors.white),
+                                            // ),
                                           ],
                                         ),
                                       ),

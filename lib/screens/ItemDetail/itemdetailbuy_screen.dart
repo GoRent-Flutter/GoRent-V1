@@ -1,5 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../BuyList/buylist_screen.dart';
 import '../ContactOwner/contact_owner.dart';
 import '../../constraints.dart';
@@ -31,6 +33,112 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
   //   int estimatedIntValue = estimatedValue.round();
   //   return estimatedIntValue;
   // }
+
+  late String mergedID = "";
+  late bool isFavorite = false;
+  late bool _isDisposed = false;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  void fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionId = prefs.getString('sessionId');
+    List<String> parts = sessionId!.split('.');
+
+    if (sessionId != null) {
+      List<String> parts = sessionId.split('.');
+      mergedID = parts[1].toString() + "." + parts[2].toString();
+      print('llllllllll' + mergedID);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    checkFavoriteStatus(widget.estate);
+  }
+
+  void checkFavoriteStatus(Estate estate) {
+    fetchUserData();
+    print("tttttt" + mergedID);
+    final DatabaseReference watchlistRef =
+        FirebaseDatabase.instance.reference().child('watchlist');
+    watchlistRef.onValue.listen((event) {
+      if (_isDisposed) return;
+      if (event.snapshot.value != null) {
+        final watchlistData = (event.snapshot.value as Map<dynamic, dynamic>)
+            .cast<String, dynamic>();
+        //print(watchlistData);
+        bool isUserFavorite = watchlistData.entries.any((entry) =>
+            entry.value['custUsername'] == mergedID &&
+            entry.value['description'] == estate.description);
+
+        setState(() {
+          if (isUserFavorite) {
+            isFavorite = true; // Set isFavorite to true conditionally
+          } else if (!isUserFavorite) {
+            // Handle the case when the user is not in the watchlist
+            isFavorite = false;
+          }
+        });
+      }
+    });
+  }
+
+  void _saveWatchlist(Estate estate) {
+    String apartmentOwnerId = estate.OwnerID;
+    String apartmentcity = estate.city;
+    DatabaseReference watchlistRef =
+        FirebaseDatabase.instance.reference().child('watchlist');
+
+    watchlistRef.push().set({
+      'apartmentOwnerId': apartmentOwnerId,
+      'apartmentcity': apartmentcity,
+      'custUsername': mergedID,
+      'images': estate.images,
+      'type': estate.type,
+      'description': estate.description,
+      'price': estate.price,
+      'numRooms': estate.numRooms,
+      'numBathrooms': estate.numBathrooms,
+      'size': estate.size,
+      'address1': estate.address1,
+    }).then((_) {
+      _showSuccessDialog();
+    }).catchError((error) {
+      print('error');
+    });
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'تمت الاضافة',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _dotIndicator() {
     return Row(
@@ -102,11 +210,16 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
             right: 20,
             child: GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                setState(() {
+                  isFavorite = !isFavorite; // Toggle the icon's state
+                  if (isFavorite) {
+                    _saveWatchlist(widget.estate);
+                  }
+                });
               },
               child: Icon(
-                Icons.favorite_border_outlined,
-                color: primaryRed,
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? primaryRed : primaryRed,
                 size: 34,
               ),
             ),
