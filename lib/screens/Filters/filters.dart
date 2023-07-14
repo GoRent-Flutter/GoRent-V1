@@ -58,7 +58,7 @@ class _FilterPageState extends State<FiltersScreen> {
     _areaRange = widget.areaRange;
     _selectedRooms = widget.selectedRooms;
     _selectedBathrooms = widget.selectedBathrooms;
-    selectedPlaces=widget.selected;
+    selectedPlaces = widget.selected;
   }
 
   @override
@@ -110,71 +110,43 @@ class _FilterPageState extends State<FiltersScreen> {
                   textDirection: TextDirection.rtl,
                 ),
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Directionality(
                   textDirection: TextDirection.rtl,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('إيجار'),
-                      Checkbox(
-                        value: _isRentSelected,
-                        onChanged: (value) {
-                          setState(() {
-                            _isRentSelected = value!;
-                          });
-                        },
-                        fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return primaryRed;
-                            }
-                            return primaryWhite; // White color when checkbox is unselected
-                          },
-                        ),
-                        checkColor:
-                            primaryWhite, // White color for the check mark
-                      ),
-                    ],
-                  ),
+                  child: Text('إيجار'),
                 ),
+                value: _isRentSelected,
+                onChanged: (value) {
+                  setState(() {
+                    _isRentSelected = value ?? false;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: primaryRed,
+                checkColor: primaryWhite,
+                tileColor: Colors.transparent,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                 dense: true,
                 visualDensity: VisualDensity.compact,
-                tileColor: Colors.transparent,
               ),
-              ListTile(
+              CheckboxListTile(
                 title: Directionality(
                   textDirection: TextDirection.rtl,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('شراء'),
-                      Checkbox(
-                        value: _isBuySelected,
-                        onChanged: (value) {
-                          setState(() {
-                            _isBuySelected = value!;
-                          });
-                        },
-                        fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return primaryRed; // Red color when checkbox is selected
-                            }
-                            return primaryWhite; // White color when checkbox is unselected
-                          },
-                        ),
-                        checkColor:
-                            primaryWhite, // White color for the check mark
-                      ),
-                    ],
-                  ),
+                  child: Text('شراء'),
                 ),
+                value: _isBuySelected,
+                onChanged: (value) {
+                  setState(() {
+                    _isBuySelected = value ?? false;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: primaryRed,
+                checkColor: primaryWhite,
+                tileColor: Colors.transparent,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                 dense: true,
                 visualDensity: VisualDensity.compact,
-                tileColor: Colors.transparent,
               ),
               const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -579,16 +551,18 @@ class _FilterPageState extends State<FiltersScreen> {
 
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const SizedBox(height: 16.0),
-                const Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Text(
-                    'الاماكن المجاورة',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: primaryRed,
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'الاماكن المجاورة',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: primaryRed,
+                      ),
                     ),
-                    textDirection: TextDirection.rtl,
                   ),
                 ),
                 Column(
@@ -627,7 +601,7 @@ class _FilterPageState extends State<FiltersScreen> {
                           'areaRange': _areaRange,
                           'selectedRooms': _selectedRooms,
                           'selectedBathrooms': _selectedBathrooms,
-                          'selectedPlaces':selectedPlaces,
+                          'selectedPlaces': selectedPlaces,
                         });
                       },
                       child: _isLoading
@@ -682,16 +656,18 @@ class _FilterPageState extends State<FiltersScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Text(
-              'الاماكن المجاورة المختارة:',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: primaryRed,
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                'الاماكن المجاورة المختارة',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: primaryRed,
+                ),
               ),
-              textDirection: TextDirection.rtl,
             ),
           ),
           const SizedBox(height: 8.0),
