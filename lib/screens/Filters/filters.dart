@@ -11,7 +11,8 @@ class FiltersScreen extends StatefulWidget {
   final RangeValues areaRange;
   final int selectedRooms;
   final int selectedBathrooms;
-  final Function(bool, bool, RangeValues, RangeValues, int, int)
+  final List<String> selected;
+  final Function(bool, bool, RangeValues, RangeValues, int, int, List<String>)
       onFiltersApplied;
 
   FiltersScreen({
@@ -22,6 +23,7 @@ class FiltersScreen extends StatefulWidget {
     required this.selectedRooms,
     required this.selectedBathrooms,
     required this.onFiltersApplied,
+    required this.selected,
   });
 
   @override
@@ -56,6 +58,7 @@ class _FilterPageState extends State<FiltersScreen> {
     _areaRange = widget.areaRange;
     _selectedRooms = widget.selectedRooms;
     _selectedBathrooms = widget.selectedBathrooms;
+    selectedPlaces=widget.selected;
   }
 
   @override
@@ -610,6 +613,7 @@ class _FilterPageState extends State<FiltersScreen> {
                           _areaRange,
                           _selectedRooms,
                           _selectedBathrooms,
+                          selectedPlaces,
                         );
 
                         setState(() {
@@ -623,6 +627,7 @@ class _FilterPageState extends State<FiltersScreen> {
                           'areaRange': _areaRange,
                           'selectedRooms': _selectedRooms,
                           'selectedBathrooms': _selectedBathrooms,
+                          'selectedPlaces':selectedPlaces,
                         });
                       },
                       child: _isLoading

@@ -406,7 +406,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0, bottom: 8.0),
                   child: Text(
-                    '${widget.estate.city} , ${widget.estate.address1}',
+                    '${widget.estate.city}، ${widget.estate.address1}',
                     style: TextStyle(
                       fontFamily: 'Scheherazade_New',
                       color: Colors.black,

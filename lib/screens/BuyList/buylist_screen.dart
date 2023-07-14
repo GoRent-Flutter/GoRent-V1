@@ -56,12 +56,14 @@ class _BuyListScreenState extends State<BuyListScreen> {
   List<Post> _posts = [];
 
 //for filters
-  bool _isRentSelected = true;
+  bool _isRentSelected = false;
   bool _isBuySelected = true;
   RangeValues _priceRange = RangeValues(0, 200000);
   RangeValues _areaRange = RangeValues(0, 200);
   int _selectedRooms = 0;
   int _selectedBathrooms = 0;
+  List<String> _selectedPlaces = [];
+
   @override
   void initState() {
     super.initState();
@@ -145,7 +147,10 @@ class _BuyListScreenState extends State<BuyListScreen> {
                   entry['size'] <= _areaRange.end) &&
               (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
               (_selectedBathrooms == 0 ||
-                  entry['numBathrooms'] == _selectedBathrooms))
+                  entry['numBathrooms'] == _selectedBathrooms) &&
+              (_selectedPlaces.isEmpty ||
+                  _selectedPlaces.any((place) =>
+                      entry['neighborhoods']?.contains(place) ?? false)))
           .map((entry) {
         final estate = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -178,9 +183,14 @@ class _BuyListScreenState extends State<BuyListScreen> {
               entry['type'] == 'اجار' &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
+              (entry['size'] >= _areaRange.start &&
+                  entry['size'] <= _areaRange.end) &&
               (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
               (_selectedBathrooms == 0 ||
-                  entry['numBathrooms'] == _selectedBathrooms))
+                  entry['numBathrooms'] == _selectedBathrooms) &&
+              (_selectedPlaces.isEmpty ||
+                  _selectedPlaces.any((place) =>
+                      entry['neighborhoods']?.contains(place) ?? false)))
           .map((entry) {
         final post = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -291,7 +301,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                     height: size.height - 250,
                     width: size.width -
                         40, // subtract the left and right padding from the total width
-                    child: (_isBuySelected && !_isBuySelected)
+                    child: (_isBuySelected && !_isRentSelected)
                         ? ListView.builder(
                             itemCount: _estates.length,
                             itemBuilder: (context, index) {
@@ -354,7 +364,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 13.0),
                                           child: Text(
-                                            '${estate.city} , ${estate.address1}',
+                                            '${estate.city}، ${estate.address1}',
                                             style: const TextStyle(
                                               fontFamily: 'Scheherazade_New',
                                               fontSize: 15,
@@ -547,12 +557,13 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                             padding: const EdgeInsets.only(
                                                 right: 13.0),
                                             child: Text(
-                                              estate.city,
+                                              '${estate.city}، ${estate.address1}',
                                               style: const TextStyle(
-                                                fontSize: 16,
-                                                color: primaryRed,
-                                                decoration: TextDecoration.none,
-                                              ),
+                                              fontFamily: 'Scheherazade_New',
+                                              fontSize: 15,
+                                              color: primaryRed,
+                                              decoration: TextDecoration.none,
+                                            ),
                                             ),
                                           ),
                                         ],
@@ -734,13 +745,14 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 13.0),
-                                            child: Text(
-                                              post.city,
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                color: primaryRed,
-                                                decoration: TextDecoration.none,
-                                              ),
+                                           child: Text(
+                                        '${post.city}، ${post.address1}',
+                                               style: const TextStyle(
+                                              fontFamily: 'Scheherazade_New',
+                                              fontSize: 15,
+                                              color: primaryRed,
+                                              decoration: TextDecoration.none,
+                                            ),
                                             ),
                                           ),
                                         ],
@@ -947,6 +959,9 @@ class _BuyListScreenState extends State<BuyListScreen> {
                       _areaRange = result['areaRange'];
                       _selectedRooms = result['selectedRooms'];
                       _selectedBathrooms = result['selectedBathrooms'];
+                      _selectedPlaces = result['selectedPlaces'] != null
+                          ? List<String>.from(result['selectedPlaces'])
+                          : [];
                     });
 
                     applySearchWithFilters();
@@ -970,8 +985,9 @@ class _BuyListScreenState extends State<BuyListScreen> {
           areaRange: _areaRange,
           selectedRooms: _selectedRooms,
           selectedBathrooms: _selectedBathrooms,
+          selected: _selectedPlaces,
           onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
-              areaRange, selectedRooms, selectedBathrooms) {
+              areaRange, selectedRooms, selectedBathrooms, selected) {
             setState(() {
               _isRentSelected = isRentSelected;
               _isBuySelected = isBuySelected;
@@ -979,6 +995,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
               _areaRange = areaRange;
               _selectedRooms = selectedRooms;
               _selectedBathrooms = selectedBathrooms;
+              _selectedPlaces = selected;
             });
             print(_isRentSelected.toString() +
                 ":" +
@@ -997,7 +1014,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
     );
     if (result == null) {
       return {
-        'isRentSelected': true,
+        'isRentSelected': false,
         'isBuySelected': true,
         'priceRange': RangeValues(0, 200000),
         'areaRange': RangeValues(0, 200),

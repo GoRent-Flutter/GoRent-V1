@@ -8,15 +8,15 @@ import '../../RentList/rentlist_screen.dart';
 import '../../RentList/square.dart';
 import '../main_screen.dart';
 
-class SearchScreen extends StatefulWidget {
+class TulkarmScreen extends StatefulWidget {
   final int currentIndex;
-  SearchScreen({Key? key, required this.currentIndex}) : super(key: key);
+  TulkarmScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
-  SearchScreenState createState() => SearchScreenState();
+  TulkarmScreenState createState() => TulkarmScreenState();
 }
 
-class SearchScreenState extends State<SearchScreen> {
+class TulkarmScreenState extends State<TulkarmScreen> {
   late DatabaseReference saleDatabaseRef;
   late DatabaseReference rentDatabaseRef;
   List<Estate> _estates = [];
@@ -45,9 +45,12 @@ class SearchScreenState extends State<SearchScreen> {
             .cast<String, dynamic>();
         setState(() {
           allItems = estates.entries
-              .where((entry) => entry.value['isApproves'] == true)
+              .where((entry) =>
+                  entry.value['isApproves'] == true &&
+                  entry.value['city'].toString() == "طولكرم")
               .map((entry) => Map<String, dynamic>.from(entry.value))
               .toList();
+
           applySearchByCity();
         });
       }
@@ -58,7 +61,9 @@ class SearchScreenState extends State<SearchScreen> {
             .cast<String, dynamic>();
         setState(() {
           allItems.addAll(posts.entries
-              .where((entry) => entry.value['isApproves'] == true)
+              .where((entry) =>
+                  entry.value['isApproves'] == true &&
+                  entry.value['city'].toString() == "طولكرم")
               .map((entry) => Map<String, dynamic>.from(entry.value))
               .toList());
           applySearchByCity();
@@ -282,7 +287,7 @@ class SearchScreenState extends State<SearchScreen> {
                       vertical: 10,
                     ),
                     child: const Text(
-                      "العقارات المتاحة",
+                      " العقارات المتاحة في طولكرم",
                       style: TextStyle(
                         fontFamily: 'Scheherazade_New',
                         fontSize: 16,
@@ -367,11 +372,11 @@ class SearchScreenState extends State<SearchScreen> {
                                       child: Text(
                                         '${estate.city}، ${estate.address1}',
                                         style: const TextStyle(
-                                              fontFamily: 'Scheherazade_New',
-                                              fontSize: 15,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
+                                          fontFamily: 'Scheherazade_New',
+                                          fontSize: 15,
+                                          color: primaryRed,
+                                          decoration: TextDecoration.none,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -548,11 +553,11 @@ class SearchScreenState extends State<SearchScreen> {
                                       child: Text(
                                         '${post.city}، ${post.address1}',
                                         style: const TextStyle(
-                                              fontFamily: 'Scheherazade_New',
-                                              fontSize: 15,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
+                                          fontFamily: 'Scheherazade_New',
+                                          fontSize: 15,
+                                          color: primaryRed,
+                                          decoration: TextDecoration.none,
+                                        ),
                                       ),
                                     ),
                                   ],
