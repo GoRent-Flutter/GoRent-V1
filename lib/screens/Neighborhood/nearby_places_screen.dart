@@ -77,48 +77,63 @@ class NearByPlacesScreenState extends State<NearByPlacesScreen> {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.place,
-              color: primaryRed,
-              size: 24,
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    results.name!,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: primaryRed,
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (results.icon != null)
+                Image.network(
+                  results.icon!,
+                  width: 24,
+                  height: 24,
+                ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      results.name!,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: primaryRed,
+                      ),
                     ),
-                    textAlign: TextAlign.right,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "الموقع: " +
-                        results.geometry!.location!.lat.toString() +
-                        ", " +
-                        results.geometry!.location!.lng.toString(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: primaryRed,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
+                    if (results.types != null && results.types!.isNotEmpty)
+                      Text(
+                        'الصنف: ${results.types!.map((type) => translations[type] ?? type).join('، ')}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Map<String, String> translations = {
+    'restaurant': 'مطعم',
+    'cafe': 'مقهى',
+    'gym': 'نادي رياضي',
+    'health': 'صحة',
+    'food': 'طعام',
+    'store': 'محل تجاري',
+    'point_of_interest': 'مكان مثير للإهتمام',
+    'establishment': 'مؤسسة',
+    'supermarket': 'سوبرماركت',
+    'mosque': 'مسجد',
+    'place_of_worship': 'مكان عبادة',
+    'route': 'شارع/طريق',
+    'lodging': 'مسكن',
+  };
 }
