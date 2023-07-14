@@ -8,7 +8,8 @@ import '../user_account_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final int currentIndex;
-  const ChangePasswordScreen({Key? key, required this.currentIndex}) : super(key: key);
+  const ChangePasswordScreen({Key? key, required this.currentIndex})
+      : super(key: key);
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
@@ -109,7 +110,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UserAccountScreen(currentIndex: widget.currentIndex),
+                        builder: (context) => UserAccountScreen(
+                            currentIndex: widget.currentIndex),
                       ),
                     );
                   },
@@ -117,12 +119,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 const Text(
                   'تغيير كلمة المرور',
                   style: TextStyle(
+                    fontFamily: 'Scheherazade_New',
                     fontSize: 22,
                     color: primaryRed,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(width: 48), // add some space for better alignment
+                const SizedBox(
+                    width: 48), // add some space for better alignment
               ],
             ),
             Padding(
@@ -132,59 +136,74 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 20),
-                    TextField(
-                      controller: _oldPasswordController,
-                      obscureText: !_showPassword,
-                      decoration: InputDecoration(
-                        labelText: 'كلمة المرور الحالية',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.grey,
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: TextField(
+                        controller: _oldPasswordController,
+                        obscureText: !_showPassword,
+                        decoration: InputDecoration(
+                          labelText: 'كلمة المرور الحالية',
+                          prefixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _showPassword = !_showPassword;
-                            });
-                          },
                         ),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
-                      controller: _newPasswordController,
-                      obscureText: !_showPassword,
-                      decoration: InputDecoration(
-                        labelText: 'كلمة المرور الجديدة',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.grey,
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: TextField(
+                        controller: _newPasswordController,
+                        obscureText: !_showPassword,
+                        decoration: InputDecoration(
+                          labelText: 'كلمة المرور الجديدة',
+                          prefixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _showPassword = !_showPassword;
-                            });
-                          },
                         ),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
-                      controller: _confirmPasswordController,
-                      obscureText: !_showPassword,
-                      decoration: InputDecoration(
-                        labelText: 'تأكيد كلمة المرور',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.grey,
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: TextField(
+                        controller: _confirmPasswordController,
+                        obscureText: !_showPassword,
+                        decoration: InputDecoration(
+                          labelText: 'تأكيد كلمة المرور',
+                          prefixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _showPassword = !_showPassword;
-                            });
-                          },
                         ),
                       ),
                     ),

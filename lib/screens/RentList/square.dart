@@ -19,12 +19,28 @@ class MySquare extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ItemDetail(post: post, latitude:post.latitude, longitude:post.longitude),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => ItemDetail(post: post, latitude:post.latitude, longitude:post.longitude),
+        //   ),
+        // );
+           Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (BuildContext context,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: ItemDetail(
+                               post: post, latitude:post.latitude, longitude:post.longitude
+                              ),
+                            );
+                          },
+                          transitionDuration: const Duration(milliseconds: 500),
+                        ),
+                      );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 1),

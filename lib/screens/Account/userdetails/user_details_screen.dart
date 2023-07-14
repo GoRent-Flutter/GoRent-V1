@@ -25,22 +25,19 @@ class _EditProfilePageStateState extends State<EditProfilePageState> {
     super.initState();
     fetchUserData();
   }
-String mergedID="";
+
+  String mergedID = "";
   Future<void> fetchUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final sessionId = prefs.getString('sessionId');
     List<String> parts = sessionId!.split('.');
-    mergedID=parts[1].toString()+"."+parts[2].toString();
+    mergedID = parts[1].toString() + "." + parts[2].toString();
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final userDoc;
     if (parts[2].toString().contains("GRCU")) {
-      userDoc = await firestore
-          .collection('customers')
-          .doc(mergedID)
-          .get();
+      userDoc = await firestore.collection('customers').doc(mergedID).get();
     } else {
-      userDoc =
-          await firestore.collection('owners').doc(mergedID).get();
+      userDoc = await firestore.collection('owners').doc(mergedID).get();
     }
 
     setState(() {
@@ -80,7 +77,7 @@ String mergedID="";
               Container(
                 alignment: AlignmentDirectional.centerEnd,
                 child: const Text(
-                  "آنت",
+                  "أنت",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w500,
@@ -92,7 +89,7 @@ String mergedID="";
                 height: 15,
               ),
               buildTextField("اسمك", username),
-              buildTextField("البريد الآليكتروني", email),
+              buildTextField("البريد الإلكتروني", email),
               buildTextField("رقم التواصل", phoneNumber),
               Column(
                 children: [
@@ -114,12 +111,13 @@ String mergedID="";
                           Row(
                             children: const [
                               Icon(Icons.arrow_back_ios,
-                                  size: 22, color: Colors.black),
-                              SizedBox(width: 10),
+                                  size: 20, color: Colors.black),
+                              SizedBox(width: 5),
                               Text(
                                 "تغيير كلمة المرور",
                                 style: TextStyle(
-                                  fontSize: 22,
+                                  fontFamily: 'Scheherazade_New',
+                                  fontSize: 20,
                                   color: Colors.black,
                                 ),
                               ),
@@ -171,12 +169,12 @@ String mergedID="";
             labelStyle: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 19,
             ),
             hintText: placeholder,
             hintStyle: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              // fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
             alignLabelWithHint: true,

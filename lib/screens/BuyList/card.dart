@@ -15,12 +15,22 @@ class MyCard extends StatelessWidget {
      Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ItemDetailBuy(estate: estate,latitude:estate.latitude, longitude:estate.longitude),
-          ),
-        );
+          Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (BuildContext context,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: ItemDetailBuy(
+                               estate: estate,latitude:estate.latitude, longitude:estate.longitude
+                              ),
+                            );
+                          },
+                          transitionDuration: const Duration(milliseconds: 500),
+                        ),
+                      );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 1),
