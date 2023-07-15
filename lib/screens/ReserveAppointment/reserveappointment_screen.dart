@@ -23,6 +23,8 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   late String username;
+  late String customerId;
+  late String ownerName;
 
   @override
   void initState() {
@@ -43,6 +45,10 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       final userDoc =
           await firestore.collection('customers').doc(mergedID).get();
       username = userDoc.data()!['fullname'];
+      customerId = userDoc.data()!['custId'];
+      final ownerDoc =
+          await firestore.collection('owners').doc(widget.ownerID).get();
+      ownerName = ownerDoc.data()!['fullname'];
     }
   }
 
@@ -79,9 +85,11 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
     reservationRef.push().set({
       'apartmentOwnerId': apartmentOwnerId,
       'apartmentcity': apartmentcity,
-      'custId': username,
+      'customerName': username,
+      'ownerName': ownerName,
       'date': DateFormat('dd/MM/yyyy').format(_selectedDate),
       'time': _selectedTime.format(context),
+      'custId': customerId,
     }).then((_) {
       Navigator.of(context).pop();
       _showSuccessMessage();
