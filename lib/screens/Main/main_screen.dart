@@ -259,10 +259,22 @@ class MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        BuyListScreen(currentIndex: widget.currentIndex),
-                  ));
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: BuyListScreen(
+                            currentIndex: widget.currentIndex,
+                          ),
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 500),
+                    ),
+                  );
                 },
               ),
             ),
@@ -319,10 +331,22 @@ class MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (BuildContext context) => RentListScreen(
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: RentListScreen(
                             currentIndex: widget.currentIndex,
-                          )));
+                          ),
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 500),
+                    ),
+                  );
                 },
               ),
             ),
@@ -344,10 +368,19 @@ class MainScreenState extends State<MainScreen> {
                     FocusScope.of(context).unfocus();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchScreen(
-                                currentIndex: widget.currentIndex,
-                              )),
+                      PageRouteBuilder(
+                        pageBuilder: (BuildContext context,
+                            Animation<double> animation,
+                            Animation<double> secondaryAnimation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SearchScreen(
+                              currentIndex: widget.currentIndex,
+                            ),
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 600),
+                      ),
                     );
                   },
                   child: TextFormField(
@@ -418,9 +451,20 @@ class MainScreenState extends State<MainScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RamallahScreen(
-                                          currentIndex: widget.currentIndex)),
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: RamallahScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
                                 );
                               },
                               child: Container(
@@ -452,9 +496,20 @@ class MainScreenState extends State<MainScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BethlehemScreen(
-                                          currentIndex: widget.currentIndex)),
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: BethlehemScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
                                 );
                               },
                               child: Container(
@@ -486,9 +541,20 @@ class MainScreenState extends State<MainScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TulkarmScreen(
-                                          currentIndex: widget.currentIndex)),
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: TulkarmScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
                                 );
                               },
                               child: Container(
@@ -520,9 +586,20 @@ class MainScreenState extends State<MainScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NablusScreen(
-                                          currentIndex: widget.currentIndex)),
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: NablusScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
                                 );
                               },
                               child: Container(

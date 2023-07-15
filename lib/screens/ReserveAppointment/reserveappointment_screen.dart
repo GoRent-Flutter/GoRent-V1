@@ -103,9 +103,9 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('تم ارسال طلب الحجز'),
+          title: const Text('تم إرسال طلب الحجز'),
           content: const Text(
-              'الحجز الخاص بك قد ارسل الى صاحب العقار, لتفاصيل اكثر بامكانك التواصل معه عبر ايقونة التواصل فوق'),
+              'الحجز الخاص بك قد أرسل إلى صاحب العقار، لتفاصيل أكثر بإمكانك التواصل معه عبر ايقونة التواصل في الأعلى'),
           actions: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(

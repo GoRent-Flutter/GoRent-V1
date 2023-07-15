@@ -228,7 +228,7 @@ class MapScreenState extends State<MapScreen> {
                                 padding: EdgeInsets.only(right: 13.0),
                                 child: Text(
                                   selectedPlaceCity +
-                                      ", " +
+                                      "، " +
                                       selectedPlaceAddress1,
                                   style: TextStyle(
                                     fontFamily: 'Scheherazade_New',

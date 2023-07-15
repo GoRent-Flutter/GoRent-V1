@@ -175,6 +175,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     child: Text(
                       'لا يوجد عقارات مفضلة لديك',
                       style: TextStyle(
+                         fontFamily: 'Scheherazade_New',
                         fontSize: 18,
                         color: primaryRed,
                         fontWeight: FontWeight.bold,

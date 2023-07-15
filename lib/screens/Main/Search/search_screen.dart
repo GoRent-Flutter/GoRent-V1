@@ -240,12 +240,22 @@ class SearchScreenState extends State<SearchScreen> {
             left: -60,
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          MainScreen(currentIndex: widget.currentIndex)),
-                );
+                 Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (BuildContext context,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: MainScreen(
+                                currentIndex: widget.currentIndex,
+                              ),
+                            );
+                          },
+                          transitionDuration: const Duration(milliseconds: 500),
+                        ),
+                      );
               },
               child: Transform.scale(
                 scale: 0.2,
