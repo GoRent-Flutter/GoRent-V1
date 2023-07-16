@@ -60,7 +60,10 @@ class BottomNavBarState extends State<BottomNavBar> {
                 if (currentIndex == 0) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const MainScreen(currentIndex: 1,)),
+                    MaterialPageRoute(
+                        builder: (context) => const MainScreen(
+                              currentIndex: 1,
+                            )),
                   );
                 } else if (currentIndex == 1) {
                   Navigator.push(
@@ -68,14 +71,17 @@ class BottomNavBarState extends State<BottomNavBar> {
                     MaterialPageRoute(
                         builder: (context) => const FavouriteScreen()),
                   );
-                }
-                else if (currentIndex == 2) {
+                } else if (currentIndex == 2) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChangeNotifierProvider(
                         create: (context) => ApplicationBloc(),
-                        child: const MapScreen(currentIndex: 1,),
+                        child: const MapScreen(
+                          currentIndex: 1,
+                          targetLatitude: 31.92157,
+                          targetLongitude: 35.20329,
+                        ),
                       ),
                     ),
                   );
@@ -83,7 +89,9 @@ class BottomNavBarState extends State<BottomNavBar> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const UserAccountScreen(currentIndex: 1,)),
+                        builder: (context) => const UserAccountScreen(
+                              currentIndex: 1,
+                            )),
                   );
                 }
               });

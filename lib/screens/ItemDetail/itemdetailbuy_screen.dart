@@ -1,18 +1,23 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../bloc/application_bloc.dart';
 import '../BuyList/buylist_screen.dart';
 import '../ContactOwner/contact_owner.dart';
 import '../../constraints.dart';
 import '../MachineLearning/salePredModel.dart';
 import '../Neighborhood/nearby_places_screen.dart';
 import '../ReserveAppointment/reserveappointment_screen.dart';
+import '../Map/map_screen.dart';
 
 class ItemDetailBuy extends StatefulWidget {
   final Estate estate;
 
-  const ItemDetailBuy({Key? key, required this.estate, required latitude, required longitude}) : super(key: key);
+  const ItemDetailBuy(
+      {Key? key, required this.estate, required latitude, required longitude})
+      : super(key: key);
 
   @override
   _ItemDetailBuyState createState() => _ItemDetailBuyState();
@@ -255,11 +260,22 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => const SignupScreen()),
-                            // );
+                            if (widget.estate.latitude != null &&
+                                widget.estate.longitude != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (context) => ApplicationBloc(),
+                                    child: MapScreen(
+                                      currentIndex: 1,
+                                      targetLatitude: widget.estate.latitude,
+                                      targetLongitude: widget.estate.longitude,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
                           },
                           child: Container(
                             width: 40,
@@ -274,7 +290,22 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                         SizedBox(height: 5),
                         GestureDetector(
                           onTap: () {
-                            // Do something when "عرض الخريطة" text is clicked
+                            if (widget.estate.latitude != null &&
+                                widget.estate.longitude != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (context) => ApplicationBloc(),
+                                    child: MapScreen(
+                                      currentIndex: 1,
+                                      targetLatitude: widget.estate.latitude,
+                                      targetLongitude: widget.estate.longitude,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
                           },
                           child: Text(
                             "عرض الخريطة",
@@ -292,9 +323,14 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
                       children: [
                         GestureDetector(
                           onTap: () {
- Navigator.push(context,
-      MaterialPageRoute(builder: (context) => NearByPlacesScreen(latitude:widget.estate.latitude,longitude:widget.estate.longitude)),
-    );                          },
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NearByPlacesScreen(
+                                      latitude: widget.estate.latitude,
+                                      longitude: widget.estate.longitude)),
+                            );
+                          },
                           child: Container(
                             width: 40,
                             height: 40,

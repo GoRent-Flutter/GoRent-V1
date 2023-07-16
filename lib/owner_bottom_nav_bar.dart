@@ -11,7 +11,8 @@ import 'screens/Account/user_account_screen.dart';
 class OwnerBottomNavBar extends StatefulWidget {
   final int currentIndex;
 
-  const OwnerBottomNavBar({Key? key, required this.currentIndex}) : super(key: key);
+  const OwnerBottomNavBar({Key? key, required this.currentIndex})
+      : super(key: key);
 
   @override
   BottomNavBarState createState() => BottomNavBarState();
@@ -58,34 +59,39 @@ class BottomNavBarState extends State<OwnerBottomNavBar> {
                 currentIndex = index;
                 print(currentIndex);
                 if (currentIndex == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => OwnerScreen()),
-                );
-                }
-                else if (currentIndex == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MainScreen(currentIndex:0)),
-                );
-              }
-              else if (currentIndex == 2) {
-                 Navigator.push(
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OwnerScreen()),
+                  );
+                } else if (currentIndex == 1) {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                        create: (context) => ApplicationBloc(),
-                        child: const MapScreen(currentIndex: 0,),
-                      ),
-                    ));
-              }     
-              else if(currentIndex== 3){
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => UserAccountScreen(currentIndex: 0,)),
+                        builder: (context) =>
+                            const MainScreen(currentIndex: 0)),
                   );
-              }
+                } else if (currentIndex == 2) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (context) => ApplicationBloc(),
+                          child: const MapScreen(
+                            currentIndex: 0,
+                            targetLatitude: 31.92157,
+                            targetLongitude: 35.20329,
+                          ),
+                        ),
+                      ));
+                } else if (currentIndex == 3) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UserAccountScreen(
+                              currentIndex: 0,
+                            )),
+                  );
+                }
               });
             },
             child: Stack(

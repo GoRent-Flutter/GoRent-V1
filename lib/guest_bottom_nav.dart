@@ -109,6 +109,8 @@ class GuestBottomNavBarState extends State<GuestBottomNavBar> {
                         create: (context) => ApplicationBloc(),
                         child: const MapScreen(
                           currentIndex: 2,
+                          targetLatitude: 31.92157,
+                          targetLongitude: 35.20329,
                         ),
                       ),
                     ),

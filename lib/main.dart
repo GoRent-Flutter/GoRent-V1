@@ -15,7 +15,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
@@ -51,8 +50,7 @@ Future<void> main() async {
         runApp(LoggedInCustomer(custModel: thisCustModel));
       }
       return;
-    }
-    else{
+    } else {
       runApp(const MyApp());
     }
   }
@@ -137,7 +135,9 @@ class LoggedInCustomer extends StatelessWidget {
         future: Future.delayed(const Duration(seconds: 3)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return const MainScreen(currentIndex: 1,);
+            return const MainScreen(
+              currentIndex: 1,
+            );
           } else {
             return const SplashScreen();
           }

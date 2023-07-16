@@ -15,8 +15,15 @@ import '../Models_Folder/Map_Models/place.dart';
 
 class MapScreen extends StatefulWidget {
   final int currentIndex;
+  final double targetLatitude;
+  final double targetLongitude;
 
-  const MapScreen({Key? key, required this.currentIndex}) : super(key: key);
+  const MapScreen(
+      {Key? key,
+      required this.currentIndex,
+      required this.targetLatitude,
+      required this.targetLongitude})
+      : super(key: key);
 
   @override
   MapScreenState createState() => MapScreenState();
@@ -27,6 +34,11 @@ class MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   late PlaceSearch placeSuggestion;
   Completer<GoogleMapController> placesController = Completer();
+  double? targetLatitude;
+  double? targetLongitude;
+
+  double defaultLatitude = 31.92157;
+  double defaultLongitude = 35.20329;
 
   List<Marker> markers = [];
   bool isDisplayed2 = false;
@@ -80,18 +92,34 @@ class MapScreenState extends State<MapScreen> {
                         .loadString('assets/map_style.json');
                     controller.setMapStyle(style);
                     placesController.complete(controller);
-                    setState(() {
-                      mapController = controller;
-                    });
+                    print(widget.targetLatitude);
+                    print(widget.targetLongitude);
+                    if (widget.targetLatitude != 31.92157 &&
+                        widget.targetLongitude != 35.20329) {
+                      zoomToPlace(
+                        controller,
+                        widget.targetLatitude,
+                        widget.targetLongitude,
+                        18.0, // Zoom value for target location
+                      );
+                    } else {
+                      zoomToPlace(
+                        controller,
+                        defaultLatitude,
+                        defaultLongitude,
+                        12.0, // Default zoom value
+                      );
+                    }
                   },
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(31.92157, 35.20329),
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(defaultLatitude, defaultLongitude),
                     zoom: 10,
                   ),
                   markers: Set<Marker>.of(markers),
                 ),
               ),
             ),
+
             Positioned(
               top: 40,
               left: 10,
@@ -462,6 +490,22 @@ class MapScreenState extends State<MapScreen> {
     ));
   }
 
+  void zoomToPlace(
+    GoogleMapController controller,
+    double latitude,
+    double longitude,
+    double zoom,
+  ) {
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(latitude, longitude),
+          zoom: zoom,
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     final applicationBloc =
@@ -481,6 +525,9 @@ class MapScreenState extends State<MapScreen> {
     });
     readRentData();
     readSaleData();
+    // Clear targetLatitude and targetLongitude
+    targetLatitude = null;
+    targetLongitude = null;
     super.initState();
   }
 }
