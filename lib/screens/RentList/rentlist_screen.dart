@@ -143,7 +143,7 @@ class _RentListScreenState extends State<RentListScreen> {
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
-               (entry['city'].toString().contains(_selectedCity) ||
+              (entry['city'].toString().contains(_selectedCity) ||
                   _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
@@ -185,7 +185,7 @@ class _RentListScreenState extends State<RentListScreen> {
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
-               (entry['city'].toString().contains(_selectedCity) ||
+              (entry['city'].toString().contains(_selectedCity) ||
                   _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
@@ -740,12 +740,12 @@ class _RentListScreenState extends State<RentListScreen> {
                                                 ),
                                               ),
                                             ),
-                                            const Positioned(
-                                              top: 10,
-                                              right: 10,
-                                              child: Icon(Icons.favorite_border,
-                                                  color: Colors.white),
-                                            ),
+                                            // const Positioned(
+                                            //   top: 10,
+                                            //   right: 10,
+                                            //   child: Icon(Icons.favorite_border,
+                                            //       color: Colors.white),
+                                            // ),
                                           ],
                                         ),
                                       ),
@@ -1047,7 +1047,7 @@ class _RentListScreenState extends State<RentListScreen> {
     );
     if (result == null) {
       return {
-        'selectedCity':"",
+        'selectedCity': "",
         'isRentSelected': true,
         'isBuySelected': false,
         'priceRange': RangeValues(0, 200000),
