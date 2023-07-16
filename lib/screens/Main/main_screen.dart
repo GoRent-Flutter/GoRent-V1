@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gorent_application1/constraints.dart';
+import 'package:gorent_application1/screens/Main/Cities/ramallah_screen.dart';
 import 'package:gorent_application1/screens/Welcome/welcome_screen_customer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../guest_bottom_nav.dart';
@@ -14,6 +15,9 @@ import '../ContactOwner/Chatting_System/chats_screen.dart';
 import 'dart:async';
 import '../RentList/rentlist_screen.dart';
 import '../RentList/square.dart';
+import 'Cities/bethlehem_screen.dart';
+import 'Cities/nablus_screen.dart';
+import 'Cities/tulkarm_screen.dart';
 import 'Search/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -255,10 +259,22 @@ class MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        BuyListScreen(currentIndex: widget.currentIndex),
-                  ));
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: BuyListScreen(
+                            currentIndex: widget.currentIndex,
+                          ),
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 500),
+                    ),
+                  );
                 },
               ),
             ),
@@ -315,10 +331,22 @@ class MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (BuildContext context) => RentListScreen(
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: RentListScreen(
                             currentIndex: widget.currentIndex,
-                          )));
+                          ),
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 500),
+                    ),
+                  );
                 },
               ),
             ),
@@ -340,10 +368,19 @@ class MainScreenState extends State<MainScreen> {
                     FocusScope.of(context).unfocus();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchScreen(
-                                currentIndex: widget.currentIndex,
-                              )),
+                      PageRouteBuilder(
+                        pageBuilder: (BuildContext context,
+                            Animation<double> animation,
+                            Animation<double> secondaryAnimation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SearchScreen(
+                              currentIndex: widget.currentIndex,
+                            ),
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 600),
+                      ),
                     );
                   },
                   child: TextFormField(
@@ -410,94 +447,182 @@ class MainScreenState extends State<MainScreen> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(right: 10.0),
-                            child: Container(
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/ram.jpg'),
-                                  fit: BoxFit.cover,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: RamallahScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/ram.jpg'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24.0),
                                 ),
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                              child: const Center(
+                                child: const Center(
                                   child: Text(
-                                'رام الله',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontFamily: 'Scheherazade_New',
-                                  decoration: TextDecoration.none,
+                                    'رام الله',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontFamily: 'Scheherazade_New',
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
                                 ),
-                              )),
+                              ),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 10.0),
-                            child: Container(
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/beth.jpg'),
-                                  fit: BoxFit.cover,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: BethlehemScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/beth.jpg'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24.0),
                                 ),
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                              child: const Center(
+                                child: const Center(
                                   child: Text(
-                                'بيت لحم',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontFamily: 'Scheherazade_New',
-                                  decoration: TextDecoration.none,
+                                    'بيت لحم',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontFamily: 'Scheherazade_New',
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
                                 ),
-                              )),
+                              ),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 10.0),
-                            child: Container(
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tul.jpg'),
-                                  fit: BoxFit.cover,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: TulkarmScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/tul.jpg'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24.0),
                                 ),
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                              child: const Center(
+                                child: const Center(
                                   child: Text(
-                                'طولكرم',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontFamily: 'Scheherazade_New',
-                                  decoration: TextDecoration.none,
+                                    'طولكرم',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontFamily: 'Scheherazade_New',
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
                                 ),
-                              )),
+                              ),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 10.0),
-                            child: Container(
-                              width: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/nab.jpg'),
-                                  fit: BoxFit.cover,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: NablusScreen(
+                                          currentIndex: widget.currentIndex,
+                                        ),
+                                      );
+                                    },
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/nab.jpg'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24.0),
                                 ),
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                              child: const Center(
+                                child: const Center(
                                   child: Text(
-                                'نابلس',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontFamily: 'Scheherazade_New',
-                                  decoration: TextDecoration.none,
+                                    'نابلس',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontFamily: 'Scheherazade_New',
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
                                 ),
-                              )),
+                              ),
                             ),
                           ),
                         ],

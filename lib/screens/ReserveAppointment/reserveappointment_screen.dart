@@ -23,6 +23,8 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   late String username;
+  late String customerId;
+  late String ownerName;
 
   @override
   void initState() {
@@ -43,6 +45,10 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       final userDoc =
           await firestore.collection('customers').doc(mergedID).get();
       username = userDoc.data()!['fullname'];
+      customerId = userDoc.data()!['custId'];
+      final ownerDoc =
+          await firestore.collection('owners').doc(widget.ownerID).get();
+      ownerName = ownerDoc.data()!['fullname'];
     }
   }
 
@@ -79,9 +85,11 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
     reservationRef.push().set({
       'apartmentOwnerId': apartmentOwnerId,
       'apartmentcity': apartmentcity,
-      'custId': username,
+      'customerName': username,
+      'ownerName': ownerName,
       'date': DateFormat('dd/MM/yyyy').format(_selectedDate),
       'time': _selectedTime.format(context),
+      'custId': customerId,
     }).then((_) {
       Navigator.of(context).pop();
       _showSuccessMessage();
@@ -95,9 +103,9 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('تم ارسال طلب الحجز'),
+          title: const Text('تم إرسال طلب الحجز'),
           content: const Text(
-              'الحجز الخاص بك قد ارسل الى صاحب العقار, لتفاصيل اكثر بامكانك التواصل معه عبر ايقونة التواصل فوق'),
+              'الحجز الخاص بك قد أرسل إلى صاحب العقار، لتفاصيل أكثر بإمكانك التواصل معه عبر ايقونة التواصل في الأعلى'),
           actions: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(

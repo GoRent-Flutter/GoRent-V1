@@ -4,8 +4,7 @@ import 'package:gorent_application1/constraints.dart';
 import '../BuyList/buylist_screen.dart';
 import '../RentList/rentlist_screen.dart';
 
-class FiltersScreen extends StatefulWidget {
-  final String selectedCity;
+class FiltersScreen2 extends StatefulWidget {
   final bool isRentSelected;
   final bool isBuySelected;
   final RangeValues priceRange;
@@ -13,11 +12,10 @@ class FiltersScreen extends StatefulWidget {
   final int selectedRooms;
   final int selectedBathrooms;
   final List<String> selected;
-  final Function(String ,bool, bool, RangeValues, RangeValues, int, int, List<String>)
+  final Function(bool, bool, RangeValues, RangeValues, int, int, List<String>)
       onFiltersApplied;
 
-  FiltersScreen({
-    required this.selectedCity,
+  FiltersScreen2({
     required this.isRentSelected,
     required this.isBuySelected,
     required this.priceRange,
@@ -29,11 +27,10 @@ class FiltersScreen extends StatefulWidget {
   });
 
   @override
-  _FilterPageState createState() => _FilterPageState();
+  _FilterPageState2 createState() => _FilterPageState2();
 }
 
-class _FilterPageState extends State<FiltersScreen> {
-  String _selectedCity="";
+class _FilterPageState2 extends State<FiltersScreen2> {
   bool _isRentSelected = true;
   bool _isBuySelected = true;
   RangeValues _priceRange = const RangeValues(0, 200000);
@@ -55,7 +52,6 @@ class _FilterPageState extends State<FiltersScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCity=widget.selectedCity;
     _isRentSelected = widget.isRentSelected;
     _isBuySelected = widget.isBuySelected;
     _priceRange = widget.priceRange;
@@ -100,165 +96,6 @@ class _FilterPageState extends State<FiltersScreen> {
                     color: primaryRed,
                   ),
                   textDirection: TextDirection.rtl,
-                ),
-              ),
-                             const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'المدينة',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: primaryRed,
-                  ),
-                  textDirection: TextDirection.rtl,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _selectedCity = "رام الله";
-                          });
-                        },
-                        child: Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "رام الله" ? Colors.white : primaryRed,
-                            borderRadius: BorderRadius.circular(18.0),
-                            border: Border.all(
-                              color: _selectedCity == "رام الله"
-                                  ? primaryRed
-                                  : Colors.transparent,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'رام الله',
-                              style: TextStyle(
-                                color: _selectedCity == "رام الله"
-                                    ? primaryRed
-                                    : Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                             _selectedCity = "بيت لحم";
-                          });
-                        },
-                        child: Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "بيت لحم" ? Colors.white : primaryRed,
-                            borderRadius: BorderRadius.circular(18.0),
-                            border: Border.all(
-                              color: _selectedCity == "بيت لحم"
-                                  ? primaryRed
-                                  : Colors.transparent,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'بيت لحم',
-                              style: TextStyle(
-                                color: _selectedCity == "بيت لحم"
-                                    ? primaryRed
-                                    : Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _selectedCity = "طولكرم";
-                          });
-                        },
-                        child: Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "طولكرم" ? Colors.white : primaryRed,
-                            borderRadius: BorderRadius.circular(18.0),
-                            border: Border.all(
-                              color: _selectedCity == "طولكرم"
-                                  ? primaryRed
-                                  : Colors.transparent,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'طولكرم',
-                              style: TextStyle(
-                                color: _selectedCity == "طولكرم"
-                                    ? primaryRed
-                                    : Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                             _selectedCity = "نابلس";
-                          });
-                        },
-                        child: Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "نابلس" ? Colors.white : primaryRed,
-                            borderRadius: BorderRadius.circular(18.0),
-                            border: Border.all(
-                              color: _selectedCity == "نابلس"
-                                  ? primaryRed
-                                  : Colors.transparent,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'نابلس',
-                              style: TextStyle(
-                                color:  _selectedCity == "نابلس"
-                                    ? primaryRed
-                                    : Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
               const Padding(
@@ -311,7 +148,6 @@ class _FilterPageState extends State<FiltersScreen> {
                 dense: true,
                 visualDensity: VisualDensity.compact,
               ),
-
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
@@ -745,7 +581,6 @@ class _FilterPageState extends State<FiltersScreen> {
 
                         await Future.delayed(Duration(seconds: 3));
                         widget.onFiltersApplied(
-                          _selectedCity.toString(),
                           _isRentSelected,
                           _isBuySelected,
                           _priceRange,
@@ -760,7 +595,6 @@ class _FilterPageState extends State<FiltersScreen> {
                         });
 
                         Navigator.pop(context, {
-                          'selectedCity':_selectedCity.toString(),
                           'isRentSelected': _isRentSelected,
                           'isBuySelected': _isBuySelected,
                           'priceRange': _priceRange,

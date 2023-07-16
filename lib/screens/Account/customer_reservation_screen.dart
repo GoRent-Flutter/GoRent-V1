@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import '../../constraints.dart';
-import '../Main/main_screen.dart';
-import 'owner_view_screen.dart';
+import 'user_account_screen.dart';
 
 class Reserves {
   final String apartmentcity;
-  final String custId;
+  final String ownerName;
   final String date;
   final String time;
 
   Reserves({
     required this.apartmentcity,
-    required this.custId,
+    required this.ownerName,
     required this.date,
     required this.time,
   });
 }
 
-class OwnerReservationsScreen extends StatefulWidget {
-  final String ownerId;
+class CustomerReservationsScreen extends StatefulWidget {
+  final String customerId;
+  final int currentIndex;
 
-  OwnerReservationsScreen({required this.ownerId});
+  CustomerReservationsScreen(
+      {required this.customerId, required this.currentIndex});
 
   @override
-  _OwnerReservationsScreenState createState() =>
-      _OwnerReservationsScreenState();
+  _CustomerReservationsScreenState createState() =>
+      _CustomerReservationsScreenState();
 }
 
-class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
+class _CustomerReservationsScreenState
+    extends State<CustomerReservationsScreen> {
   late DatabaseReference _databaseRef;
   List<Reserves> _reserves = [];
   @override
@@ -42,13 +43,12 @@ class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
             .cast<String, dynamic>();
         setState(() {
           _reserves = reservations.entries
-              .where(
-                  (entry) => entry.value['apartmentOwnerId'] == widget.ownerId)
+              .where((entry) => entry.value['custId'] == widget.customerId)
               .map((entry) {
             final reservation = Map<String, dynamic>.from(entry.value);
             return Reserves(
               apartmentcity: reservation['apartmentcity'] as String,
-              custId: reservation['fullname'] as String,
+              ownerName: reservation['ownerName'] as String,
               date: reservation['date'] as String,
               time: reservation['time'] as String,
             );
@@ -71,7 +71,10 @@ class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
             Navigator.pop(context);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => OwnerScreen()),
+              MaterialPageRoute(
+                  builder: (context) => UserAccountScreen(
+                        currentIndex: widget.currentIndex,
+                      )),
             );
           },
         ),
@@ -107,7 +110,7 @@ class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'اسم العميل: ${reservation.custId}',
+                              'اسم العميل: ${reservation.ownerName}',
                               style: TextStyle(fontSize: 14),
                               textAlign: TextAlign.right,
                             ),

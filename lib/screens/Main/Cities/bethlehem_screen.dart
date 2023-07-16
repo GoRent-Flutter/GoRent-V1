@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/BuyList/card.dart';
 import '../../BuyList/buylist_screen.dart';
-import '../../Filters/filters.dart';
+import '../../Filters/filters_without_cities.dart';
 import '../../RentList/rentlist_screen.dart';
 import '../../RentList/square.dart';
 import '../main_screen.dart';
 
-class SearchScreen extends StatefulWidget {
+class BethlehemScreen extends StatefulWidget {
   final int currentIndex;
-  SearchScreen({Key? key, required this.currentIndex}) : super(key: key);
+  BethlehemScreen({Key? key, required this.currentIndex}) : super(key: key);
 
   @override
-  SearchScreenState createState() => SearchScreenState();
+  BethlehemScreenState createState() => BethlehemScreenState();
 }
 
-class SearchScreenState extends State<SearchScreen> {
+class BethlehemScreenState extends State<BethlehemScreen> {
   late DatabaseReference saleDatabaseRef;
   late DatabaseReference rentDatabaseRef;
   List<Estate> _estates = [];
@@ -25,7 +25,6 @@ class SearchScreenState extends State<SearchScreen> {
   List<Map<String, dynamic>> allItems = [];
 
 //for filters
-String _selectedCity="";
   bool _isRentSelected = true;
   bool _isBuySelected = true;
   RangeValues _priceRange = RangeValues(0, 200000);
@@ -46,9 +45,12 @@ String _selectedCity="";
             .cast<String, dynamic>();
         setState(() {
           allItems = estates.entries
-              .where((entry) => entry.value['isApproves'] == true)
+              .where((entry) =>
+                  entry.value['isApproves'] == true &&
+                  entry.value['city'].toString() == "بيت لحم")
               .map((entry) => Map<String, dynamic>.from(entry.value))
               .toList();
+
           applySearchByCity();
         });
       }
@@ -59,7 +61,9 @@ String _selectedCity="";
             .cast<String, dynamic>();
         setState(() {
           allItems.addAll(posts.entries
-              .where((entry) => entry.value['isApproves'] == true)
+              .where((entry) =>
+                  entry.value['isApproves'] == true &&
+                  entry.value['city'].toString() == "بيت لحم")
               .map((entry) => Map<String, dynamic>.from(entry.value))
               .toList());
           applySearchByCity();
@@ -141,7 +145,6 @@ String _selectedCity="";
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
-              (entry['city'].toString().contains(_selectedCity) || _selectedCity=="")&&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -182,7 +185,6 @@ String _selectedCity="";
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
-                (entry['city'].toString().contains(_selectedCity) || _selectedCity=="")&&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -243,22 +245,12 @@ String _selectedCity="";
             left: -60,
             child: GestureDetector(
               onTap: () {
-                 Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (BuildContext context,
-                              Animation<double> animation,
-                              Animation<double> secondaryAnimation) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: MainScreen(
-                                currentIndex: widget.currentIndex,
-                              ),
-                            );
-                          },
-                          transitionDuration: const Duration(milliseconds: 500),
-                        ),
-                      );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MainScreen(currentIndex: widget.currentIndex)),
+                );
               },
               child: Transform.scale(
                 scale: 0.2,
@@ -295,7 +287,7 @@ String _selectedCity="";
                       vertical: 10,
                     ),
                     child: const Text(
-                      "العقارات المتاحة",
+                      " العقارات المتاحة في بيت لحم",
                       style: TextStyle(
                         fontFamily: 'Scheherazade_New',
                         fontSize: 16,
@@ -380,11 +372,11 @@ String _selectedCity="";
                                       child: Text(
                                         '${estate.city}، ${estate.address1}',
                                         style: const TextStyle(
-                                              fontFamily: 'Scheherazade_New',
-                                              fontSize: 15,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
+                                          fontFamily: 'Scheherazade_New',
+                                          fontSize: 15,
+                                          color: primaryRed,
+                                          decoration: TextDecoration.none,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -561,11 +553,11 @@ String _selectedCity="";
                                       child: Text(
                                         '${post.city}، ${post.address1}',
                                         style: const TextStyle(
-                                              fontFamily: 'Scheherazade_New',
-                                              fontSize: 15,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
+                                          fontFamily: 'Scheherazade_New',
+                                          fontSize: 15,
+                                          color: primaryRed,
+                                          decoration: TextDecoration.none,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -699,7 +691,6 @@ String _selectedCity="";
               child: Material(
                 color: Colors.transparent,
                 child: TextFormField(
-                  autofocus: true,
                   onChanged: (value) {
                     setState(() {
                       searchQuery = value;
@@ -761,7 +752,6 @@ String _selectedCity="";
 
                   if (result != null) {
                     setState(() {
-                      _selectedCity=result['selectedCity'].toString();
                       _isRentSelected = result['isRentSelected'];
                       _isBuySelected = result['isBuySelected'];
                       _priceRange = result['priceRange'];
@@ -787,8 +777,7 @@ String _selectedCity="";
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FiltersScreen(
-          selectedCity: _selectedCity,
+        builder: (context) => FiltersScreen2(
           isRentSelected: _isRentSelected,
           isBuySelected: _isBuySelected,
           priceRange: _priceRange,
@@ -796,10 +785,9 @@ String _selectedCity="";
           selectedRooms: _selectedRooms,
           selectedBathrooms: _selectedBathrooms,
           selected: _selectedPlaces,
-          onFiltersApplied: (selectedCity,isRentSelected, isBuySelected, priceRange,
+          onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
               areaRange, selectedRooms, selectedBathrooms, selected) {
             setState(() {
-              _selectedCity= selectedCity;
               _isRentSelected = isRentSelected;
               _isBuySelected = isBuySelected;
               _priceRange = priceRange;
@@ -824,7 +812,6 @@ String _selectedCity="";
     );
     if (result == null) {
       return {
-        'selectedCity': "",
         'isRentSelected': true,
         'isBuySelected': true,
         'priceRange': RangeValues(0, 200000),

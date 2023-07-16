@@ -59,12 +59,14 @@ class _RentListScreenState extends State<RentListScreen> {
   List<Map<String, dynamic>> estatesAll = [];
 
   //for filters
+  String _selectedCity = "";
   bool _isRentSelected = true;
-  bool _isBuySelected = true;
+  bool _isBuySelected = false;
   RangeValues _priceRange = RangeValues(0, 200000);
   RangeValues _areaRange = RangeValues(0, 200);
   int _selectedRooms = 0;
   int _selectedBathrooms = 0;
+  List<String> _selectedPlaces = [];
   @override
   void initState() {
     super.initState();
@@ -141,13 +143,18 @@ class _RentListScreenState extends State<RentListScreen> {
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
+               (entry['city'].toString().contains(_selectedCity) ||
+                  _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
                   entry['size'] <= _areaRange.end) &&
               (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
               (_selectedBathrooms == 0 ||
-                  entry['numBathrooms'] == _selectedBathrooms))
+                  entry['numBathrooms'] == _selectedBathrooms) &&
+              (_selectedPlaces.isEmpty ||
+                  _selectedPlaces.any((place) =>
+                      entry['neighborhoods']?.contains(place) ?? false)))
           .map((entry) {
         final estate = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -178,11 +185,18 @@ class _RentListScreenState extends State<RentListScreen> {
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
+               (entry['city'].toString().contains(_selectedCity) ||
+                  _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
+              (entry['size'] >= _areaRange.start &&
+                  entry['size'] <= _areaRange.end) &&
               (_selectedRooms == 0 || entry['numRooms'] == _selectedRooms) &&
               (_selectedBathrooms == 0 ||
-                  entry['numBathrooms'] == _selectedBathrooms))
+                  entry['numBathrooms'] == _selectedBathrooms) &&
+              (_selectedPlaces.isEmpty ||
+                  _selectedPlaces.any((place) =>
+                      entry['neighborhoods']?.contains(place) ?? false)))
           .map((entry) {
         final post = Map<String, dynamic>.from(entry);
         List<String> imageUrls = [];
@@ -373,7 +387,7 @@ class _RentListScreenState extends State<RentListScreen> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 13.0),
                                           child: Text(
-                                            '${post.city} , ${post.address1}',
+                                            '${post.city}، ${post.address1}',
                                             style: const TextStyle(
                                               fontFamily: 'Scheherazade_New',
                                               fontSize: 15,
@@ -566,9 +580,10 @@ class _RentListScreenState extends State<RentListScreen> {
                                             padding: const EdgeInsets.only(
                                                 right: 13.0),
                                             child: Text(
-                                              estate.city,
+                                              '${estate.city}، ${estate.address1}',
                                               style: const TextStyle(
-                                                fontSize: 16,
+                                                fontFamily: 'Scheherazade_New',
+                                                fontSize: 15,
                                                 color: primaryRed,
                                                 decoration: TextDecoration.none,
                                               ),
@@ -754,9 +769,10 @@ class _RentListScreenState extends State<RentListScreen> {
                                             padding: const EdgeInsets.only(
                                                 right: 13.0),
                                             child: Text(
-                                              post.city,
+                                              '${post.city}، ${post.address1}',
                                               style: const TextStyle(
-                                                fontSize: 16,
+                                                fontFamily: 'Scheherazade_New',
+                                                fontSize: 15,
                                                 color: primaryRed,
                                                 decoration: TextDecoration.none,
                                               ),
@@ -966,6 +982,9 @@ class _RentListScreenState extends State<RentListScreen> {
                       _areaRange = result['areaRange'];
                       _selectedRooms = result['selectedRooms'];
                       _selectedBathrooms = result['selectedBathrooms'];
+                      _selectedPlaces = result['selectedPlaces'] != null
+                          ? List<String>.from(result['selectedPlaces'])
+                          : [];
                     });
 
                     applySearchWithFilters();
@@ -983,21 +1002,31 @@ class _RentListScreenState extends State<RentListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => FiltersScreen(
+          selectedCity: _selectedCity,
           isRentSelected: _isRentSelected,
           isBuySelected: _isBuySelected,
           priceRange: _priceRange,
           areaRange: _areaRange,
           selectedRooms: _selectedRooms,
           selectedBathrooms: _selectedBathrooms,
-          onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
-              areaRange, selectedRooms, selectedBathrooms) {
+          selected: _selectedPlaces,
+          onFiltersApplied: (selectedCity,
+              isRentSelected,
+              isBuySelected,
+              priceRange,
+              areaRange,
+              selectedRooms,
+              selectedBathrooms,
+              selected) {
             setState(() {
+              _selectedCity = selectedCity;
               _isRentSelected = isRentSelected;
               _isBuySelected = isBuySelected;
               _priceRange = priceRange;
               _areaRange = areaRange;
               _selectedRooms = selectedRooms;
               _selectedBathrooms = selectedBathrooms;
+              _selectedPlaces = selected;
             });
             print(_isRentSelected.toString() +
                 ":" +
@@ -1009,19 +1038,23 @@ class _RentListScreenState extends State<RentListScreen> {
                 ":" +
                 _selectedRooms.toString() +
                 ":" +
-                _selectedBathrooms.toString());
+                _selectedBathrooms.toString() +
+                ":" +
+                _selectedPlaces.toString());
           },
         ),
       ),
     );
     if (result == null) {
       return {
+        'selectedCity':"",
         'isRentSelected': true,
-        'isBuySelected': true,
+        'isBuySelected': false,
         'priceRange': RangeValues(0, 200000),
         'areaRange': RangeValues(0, 200),
         'selectedRooms': 0,
         'selectedBathrooms': 0,
+        'selectedPlaces': [],
       };
     }
     return result;

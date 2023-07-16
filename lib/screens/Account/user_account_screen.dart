@@ -9,6 +9,7 @@ import '../../guest_bottom_nav.dart';
 import '../../owner_bottom_nav_bar.dart';
 import '../../user_bottom_nav_bar.dart';
 import '../Users/users_screen.dart';
+import 'customer_reservation_screen.dart';
 
 class UserAccountScreen extends StatefulWidget {
   final int currentIndex;
@@ -22,7 +23,8 @@ class UserAccountScreen extends StatefulWidget {
 
 class _UserAccountScreenState extends State<UserAccountScreen> {
   String username = " ";
-
+  String customerId = "";
+  String owenerId = "";
   @override
   void initState() {
     super.initState();
@@ -42,8 +44,10 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
       final userDoc;
       if (parts[2].toString().contains("GRCU")) {
         userDoc = await firestore.collection('customers').doc(mergedID).get();
+        customerId = userDoc.data()!['custId'];
       } else {
         userDoc = await firestore.collection('owners').doc(mergedID).get();
+        owenerId = userDoc.data()!['ownerId'];
       }
       setState(() {
         username = userDoc.data()!['fullname'];
@@ -185,7 +189,12 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                             context,
                             "assets/images/reportProblem.png",
                             "الابلاغ عن مشكلة",
-                          )
+                          ),
+                          _buildButtonWithDivider(
+                            context,
+                            "assets/images/bookings.png",
+                            "الحجوزات",
+                          ),
                         ],
                       ),
                     ),
@@ -204,18 +213,33 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
     String imagePath,
     String text,
   ) {
+    if (text == "الحجوزات" && owenerId.isNotEmpty) {
+      // If the user is an owner, return an empty container to hide the button
+      return Container();
+    }
+
     return Column(
       children: [
         GestureDetector(
           onTap: () {
             if (text == "الاشعارات") {
               AppSettings.openNotificationSettings();
-            } else {
+            } else if (text == "الابلاغ عن مشكلة") {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
                       ReportProblemScreen(currentIndex: widget.currentIndex),
+                ),
+              );
+            } else if (text == "الحجوزات") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CustomerReservationsScreen(
+                    customerId: customerId,
+                    currentIndex: widget.currentIndex,
+                  ),
                 ),
               );
             }

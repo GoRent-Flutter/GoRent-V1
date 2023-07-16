@@ -263,7 +263,8 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
             child: Text(
               city,
               style: TextStyle(
-                  fontSize: 15,
+                 fontFamily: 'Scheherazade_New',
+                  fontSize: 18,
                   color: primaryHint.withOpacity(0.6),
                   decoration: TextDecoration.none),
             ),
@@ -369,8 +370,9 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                         Text(
                           "العقارات",
                           style: TextStyle(
+                            fontFamily: 'Scheherazade_New',
                               decoration: TextDecoration.none,
-                              fontSize: 21,
+                              fontSize: 20,
                               color: propertiesInfo ? primaryLine : primaryRed),
                         ),
                         Container(
@@ -395,8 +397,9 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                         Text(
                           "عن المالك",
                           style: TextStyle(
+                            fontFamily: 'Scheherazade_New',
                               decoration: TextDecoration.none,
-                              fontSize: 21,
+                              fontSize: 20,
                               color: aboutOwner ? primaryLine : primaryRed),
                         ),
                         Container(
@@ -418,6 +421,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                     child: const Text(
                       "البريد الإلكتروني",
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 18,
                         color: primaryRed,
                         decoration: TextDecoration.none,
@@ -432,6 +436,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                     child: Text(
                       email,
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 18,
                         color: primaryRed,
                         decoration: TextDecoration.none,
@@ -444,6 +449,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                     child: const Text(
                       "رقم الهاتف",
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 18,
                         color: primaryRed,
                         decoration: TextDecoration.none,
@@ -456,6 +462,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                     child: Text(
                       phoneNumber,
                       style: TextStyle(
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 18,
                         color: primaryRed,
                         decoration: TextDecoration.none,
@@ -478,7 +485,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
                           title: Text(
-                            'Apartment City: ${rentapart.city}',
+                            'المدينة: ${rentapart.city}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Column(
@@ -486,12 +493,12 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                             children: [
                               SizedBox(height: 8),
                               Text(
-                                'type: ${rentapart.type}',
+                                'الصنف: ${rentapart.type}',
                                 style: TextStyle(fontSize: 16),
                               ),
                               SizedBox(height: 4),
                               Text(
-                                'price: ${rentapart.price}' as String,
+                                '\$السعر: ${rentapart.price}' as String,
                                 style: TextStyle(fontSize: 14),
                               ),
                               SizedBox(height: 8),
