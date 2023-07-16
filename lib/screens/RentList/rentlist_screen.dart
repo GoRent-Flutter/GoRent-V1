@@ -59,6 +59,7 @@ class _RentListScreenState extends State<RentListScreen> {
   List<Map<String, dynamic>> estatesAll = [];
 
   //for filters
+  String _selectedCity = "";
   bool _isRentSelected = true;
   bool _isBuySelected = false;
   RangeValues _priceRange = RangeValues(0, 200000);
@@ -142,6 +143,8 @@ class _RentListScreenState extends State<RentListScreen> {
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
+               (entry['city'].toString().contains(_selectedCity) ||
+                  _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -182,6 +185,8 @@ class _RentListScreenState extends State<RentListScreen> {
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
+               (entry['city'].toString().contains(_selectedCity) ||
+                  _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -997,6 +1002,7 @@ class _RentListScreenState extends State<RentListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => FiltersScreen(
+          selectedCity: _selectedCity,
           isRentSelected: _isRentSelected,
           isBuySelected: _isBuySelected,
           priceRange: _priceRange,
@@ -1004,9 +1010,16 @@ class _RentListScreenState extends State<RentListScreen> {
           selectedRooms: _selectedRooms,
           selectedBathrooms: _selectedBathrooms,
           selected: _selectedPlaces,
-          onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
-              areaRange, selectedRooms, selectedBathrooms, selected) {
+          onFiltersApplied: (selectedCity,
+              isRentSelected,
+              isBuySelected,
+              priceRange,
+              areaRange,
+              selectedRooms,
+              selectedBathrooms,
+              selected) {
             setState(() {
+              _selectedCity = selectedCity;
               _isRentSelected = isRentSelected;
               _isBuySelected = isBuySelected;
               _priceRange = priceRange;
@@ -1034,6 +1047,7 @@ class _RentListScreenState extends State<RentListScreen> {
     );
     if (result == null) {
       return {
+        'selectedCity':"",
         'isRentSelected': true,
         'isBuySelected': false,
         'priceRange': RangeValues(0, 200000),

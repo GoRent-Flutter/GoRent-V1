@@ -56,6 +56,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
   List<Post> _posts = [];
 
 //for filters
+  String _selectedCity = "";
   bool _isRentSelected = false;
   bool _isBuySelected = true;
   RangeValues _priceRange = RangeValues(0, 200000);
@@ -141,6 +142,8 @@ class _BuyListScreenState extends State<BuyListScreen> {
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
+              (entry['city'].toString().contains(_selectedCity) ||
+                  _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -181,6 +184,8 @@ class _BuyListScreenState extends State<BuyListScreen> {
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
+              (entry['city'].toString().contains(_selectedCity) ||
+                  _selectedCity == "") &&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -559,11 +564,11 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                             child: Text(
                                               '${estate.city}، ${estate.address1}',
                                               style: const TextStyle(
-                                              fontFamily: 'Scheherazade_New',
-                                              fontSize: 15,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
+                                                fontFamily: 'Scheherazade_New',
+                                                fontSize: 15,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -745,14 +750,14 @@ class _BuyListScreenState extends State<BuyListScreen> {
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 13.0),
-                                           child: Text(
-                                        '${post.city}، ${post.address1}',
-                                               style: const TextStyle(
-                                              fontFamily: 'Scheherazade_New',
-                                              fontSize: 15,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
+                                            child: Text(
+                                              '${post.city}، ${post.address1}',
+                                              style: const TextStyle(
+                                                fontFamily: 'Scheherazade_New',
+                                                fontSize: 15,
+                                                color: primaryRed,
+                                                decoration: TextDecoration.none,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -979,6 +984,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => FiltersScreen(
+          selectedCity: _selectedCity,
           isRentSelected: _isRentSelected,
           isBuySelected: _isBuySelected,
           priceRange: _priceRange,
@@ -986,9 +992,16 @@ class _BuyListScreenState extends State<BuyListScreen> {
           selectedRooms: _selectedRooms,
           selectedBathrooms: _selectedBathrooms,
           selected: _selectedPlaces,
-          onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
-              areaRange, selectedRooms, selectedBathrooms, selected) {
+          onFiltersApplied: (selectedCity,
+              isRentSelected,
+              isBuySelected,
+              priceRange,
+              areaRange,
+              selectedRooms,
+              selectedBathrooms,
+              selected) {
             setState(() {
+              _selectedCity = selectedCity;
               _isRentSelected = isRentSelected;
               _isBuySelected = isBuySelected;
               _priceRange = priceRange;
@@ -1014,6 +1027,7 @@ class _BuyListScreenState extends State<BuyListScreen> {
     );
     if (result == null) {
       return {
+        'selectedCity': "",
         'isRentSelected': false,
         'isBuySelected': true,
         'priceRange': RangeValues(0, 200000),

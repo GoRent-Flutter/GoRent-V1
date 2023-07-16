@@ -22,18 +22,18 @@ class ItemDetail extends StatefulWidget {
 
 class _ItemDetailState extends State<ItemDetail> {
   int _current = 0;
-  // Future<int> estimated() async {
-  //   RentPredModel model = RentPredModel(
-  //     size: widget.post.size.toDouble(),
-  //     numRooms: widget.post.numRooms.toDouble(),
-  //     numBathrooms: widget.post.numBathrooms.toDouble(),
-  //   );
+  Future<int> estimated() async {
+    RentPredModel model = RentPredModel(
+      size: widget.post.size.toDouble(),
+      numRooms: widget.post.numRooms.toDouble(),
+      numBathrooms: widget.post.numBathrooms.toDouble(),
+    );
 
-  //   String predValue = await model.predData();
-  //   double estimatedValue = double.parse(predValue);
-  //   int estimatedIntValue = estimatedValue.round();
-  //   return estimatedIntValue;
-  // }
+    String predValue = await model.predData();
+    double estimatedValue = double.parse(predValue);
+    int estimatedIntValue = estimatedValue.round();
+    return estimatedIntValue;
+  }
 
   //for watchlist
   late String mergedID = "";
@@ -54,7 +54,6 @@ class _ItemDetailState extends State<ItemDetail> {
     if (sessionId != null) {
       List<String> parts = sessionId.split('.');
       mergedID = parts[1].toString() + "." + parts[2].toString();
-      print('llllllllll' + mergedID);
     }
   }
 
@@ -67,7 +66,6 @@ class _ItemDetailState extends State<ItemDetail> {
 
   void checkFavoriteStatus(Post post) {
     fetchUserData();
-    print("tttttt" + mergedID);
     final DatabaseReference watchlistRef =
         FirebaseDatabase.instance.reference().child('watchlist');
     watchlistRef.onValue.listen((event) {
@@ -448,7 +446,7 @@ class _ItemDetailState extends State<ItemDetail> {
             child: Padding(
               padding: const EdgeInsets.only(right: 12.0, bottom: 0.0),
               child: FutureBuilder<int>(
-                // future: estimated(),
+                future: estimated(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Return a loading indicator or placeholder text
@@ -566,6 +564,7 @@ class _ItemDetailState extends State<ItemDetail> {
               ),
             ),
           ),
+          SizedBox(height:10),
           Positioned(
             top: 600, // adjust the top position as per your requirement
             right: 0,

@@ -113,26 +113,26 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               child: Image.asset('assets/icons/GoRent_Logo_Inside.png'),
             ),
           ),
-          Positioned(
-            top: -40,
-            left: -50,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MainScreen(
-                      currentIndex: 1,
-                    ),
-                  ),
-                );
-              },
-              child: Transform.scale(
-                scale: 0.2,
-                child: Image.asset('assets/icons/White_back.png'),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   top: -40,
+          //   left: -50,
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => const MainScreen(
+          //             currentIndex: 1,
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //     child: Transform.scale(
+          //       scale: 0.2,
+          //       child: Image.asset('assets/icons/White_back.png'),
+          //     ),
+          //   ),
+          // ),
           Positioned(
             top: 130,
             left: 25,

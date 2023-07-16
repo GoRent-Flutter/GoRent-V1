@@ -25,6 +25,7 @@ class SearchScreenState extends State<SearchScreen> {
   List<Map<String, dynamic>> allItems = [];
 
 //for filters
+String _selectedCity="";
   bool _isRentSelected = true;
   bool _isBuySelected = true;
   RangeValues _priceRange = RangeValues(0, 200000);
@@ -140,6 +141,7 @@ class SearchScreenState extends State<SearchScreen> {
           .where((entry) =>
               (_isBuySelected || !_isRentSelected) &&
               entry['type'] == 'بيع' &&
+              (entry['city'].toString().contains(_selectedCity) || _selectedCity=="")&&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -180,6 +182,7 @@ class SearchScreenState extends State<SearchScreen> {
           .where((entry) =>
               (!_isBuySelected || _isRentSelected) &&
               entry['type'] == 'اجار' &&
+                (entry['city'].toString().contains(_selectedCity) || _selectedCity=="")&&
               (entry['price'] >= _priceRange.start &&
                   entry['price'] <= _priceRange.end) &&
               (entry['size'] >= _areaRange.start &&
@@ -696,6 +699,7 @@ class SearchScreenState extends State<SearchScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: TextFormField(
+                  autofocus: true,
                   onChanged: (value) {
                     setState(() {
                       searchQuery = value;
@@ -757,6 +761,7 @@ class SearchScreenState extends State<SearchScreen> {
 
                   if (result != null) {
                     setState(() {
+                      _selectedCity=result['selectedCity'].toString();
                       _isRentSelected = result['isRentSelected'];
                       _isBuySelected = result['isBuySelected'];
                       _priceRange = result['priceRange'];
@@ -783,6 +788,7 @@ class SearchScreenState extends State<SearchScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => FiltersScreen(
+          selectedCity: _selectedCity,
           isRentSelected: _isRentSelected,
           isBuySelected: _isBuySelected,
           priceRange: _priceRange,
@@ -790,9 +796,10 @@ class SearchScreenState extends State<SearchScreen> {
           selectedRooms: _selectedRooms,
           selectedBathrooms: _selectedBathrooms,
           selected: _selectedPlaces,
-          onFiltersApplied: (isRentSelected, isBuySelected, priceRange,
+          onFiltersApplied: (selectedCity,isRentSelected, isBuySelected, priceRange,
               areaRange, selectedRooms, selectedBathrooms, selected) {
             setState(() {
+              _selectedCity= selectedCity;
               _isRentSelected = isRentSelected;
               _isBuySelected = isBuySelected;
               _priceRange = priceRange;
@@ -817,6 +824,7 @@ class SearchScreenState extends State<SearchScreen> {
     );
     if (result == null) {
       return {
+        'selectedCity': "",
         'isRentSelected': true,
         'isBuySelected': true,
         'priceRange': RangeValues(0, 200000),

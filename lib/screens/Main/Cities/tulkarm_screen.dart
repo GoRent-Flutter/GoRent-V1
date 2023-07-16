@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:gorent_application1/screens/BuyList/card.dart';
 import '../../BuyList/buylist_screen.dart';
-import '../../Filters/filters.dart';
+import '../../Filters/filters_without_cities.dart';
 import '../../RentList/rentlist_screen.dart';
 import '../../RentList/square.dart';
 import '../main_screen.dart';
@@ -777,7 +777,7 @@ class TulkarmScreenState extends State<TulkarmScreen> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FiltersScreen(
+        builder: (context) => FiltersScreen2(
           isRentSelected: _isRentSelected,
           isBuySelected: _isBuySelected,
           priceRange: _priceRange,
