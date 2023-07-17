@@ -19,11 +19,13 @@ import 'Chatting_System/chat_room_screen.dart';
 import 'Chatting_System/user_models_helper.dart';
 
 class apartment {
+  final List<String> images;
   final String city;
   final String type;
   final int price;
 
   apartment({
+    required this.images,
     required this.city,
     required this.type,
     required this.price,
@@ -31,27 +33,31 @@ class apartment {
 }
 
 class Myapartment extends apartment {
+  final List<String> images;
   final String city;
   final String type;
   final int price;
 
   Myapartment({
+    required this.images,
     required this.city,
     required this.type,
     required this.price,
-  }) : super(city: city, type: type, price: price);
+  }) : super(city: city, type: type, price: price, images: images);
 }
 
 class Myapartment2 extends apartment {
+  final List<String> images;
   final String city;
   final String type;
   final int price;
 
   Myapartment2({
+    required this.images,
     required this.city,
     required this.type,
     required this.price,
-  }) : super(city: city, type: type, price: price);
+  }) : super(city: city, type: type, price: price, images: images);
 }
 
 class ContactOwnerScreen extends StatefulWidget {
@@ -66,7 +72,7 @@ class ContactOwnerScreen extends StatefulWidget {
 class ContactOwnerState extends State<ContactOwnerScreen> {
   bool propertiesInfo = true;
   bool aboutOwner = false;
-  helper models_helper=helper();
+  helper models_helper = helper();
   // late CustModel customer;
   // late OwnerModel owner;
   // late String id;
@@ -93,7 +99,17 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
               .where((entry) => entry.value['OwnerID'] == widget.ownerID)
               .map((entry) {
             final rentedapartment = Map<String, dynamic>.from(entry.value);
+
+            List<String> imageUrls = [];
+            if (rentedapartment['images'] != null) {
+              final images = rentedapartment['images'] as Map<dynamic, dynamic>;
+              if (images.isNotEmpty) {
+                imageUrls =
+                    images.values.map((value) => value.toString()).toList();
+              }
+            }
             return Myapartment(
+              images: imageUrls,
               city: rentedapartment['city'] as String,
               type: rentedapartment['type'] as String,
               price: rentedapartment['price'] as int,
@@ -111,7 +127,16 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
               .where((entry) => entry.value['OwnerID'] == widget.ownerID)
               .map((entry) {
             final saleapartment = Map<String, dynamic>.from(entry.value);
+            List<String> imageUrls = [];
+            if (saleapartment['images'] != null) {
+              final images = saleapartment['images'] as Map<dynamic, dynamic>;
+              if (images.isNotEmpty) {
+                imageUrls =
+                    images.values.map((value) => value.toString()).toList();
+              }
+            }
             return Myapartment2(
+              images: imageUrls,
               city: saleapartment['city'] as String,
               type: saleapartment['type'] as String,
               price: saleapartment['price'] as int,
@@ -145,41 +170,39 @@ class ContactOwnerState extends State<ContactOwnerScreen> {
     }
   }
 
-
   Future<ChatRoomModel?> getChatRoomModel() async {
     ChatRoomModel? chatRoom;
-String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.ownerId}";
+    String chatRoomId =
+        "${models_helper.customer.custId}^${models_helper.owner.ownerId}";
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("chatrooms")
-       .doc(chatRoomId)
+        .doc(chatRoomId)
         .get();
 
     if (snapshot.exists) {
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection("chatrooms")
-        .where("chatRoomId", isEqualTo: chatRoomId.toString())
-        .get();
+          .instance
+          .collection("chatrooms")
+          .where("chatRoomId", isEqualTo: chatRoomId.toString())
+          .get();
 
-    if (snapshot.docs.isNotEmpty) {
-      QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          snapshot.docs[0];
+      if (snapshot.docs.isNotEmpty) {
+        QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+            snapshot.docs[0];
 
-      Map<String, dynamic> chatdata = documentSnapshot.data();
+        Map<String, dynamic> chatdata = documentSnapshot.data();
 
-      chatRoom = ChatRoomModel.fromMap(chatdata);
-    }
+        chatRoom = ChatRoomModel.fromMap(chatdata);
+      }
       print("ALREADY EXISTS");
     } else {
-       
-
       // Create a new one
       ChatRoomModel newChatroom = ChatRoomModel(
         chatRoomId: chatRoomId,
         lastMessage: "",
         participants: {
           models_helper.customer.custId.toString(): true,
-         models_helper.owner.ownerId.toString(): true,
+          models_helper.owner.ownerId.toString(): true,
         },
       );
 
@@ -263,7 +286,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
             child: Text(
               city,
               style: TextStyle(
-                 fontFamily: 'Scheherazade_New',
+                  fontFamily: 'Scheherazade_New',
                   fontSize: 18,
                   color: primaryHint.withOpacity(0.6),
                   decoration: TextDecoration.none),
@@ -312,8 +335,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                           );
                         },
                       );
-                      ChatRoomModel? chatRoom =
-                          await getChatRoomModel();
+                      ChatRoomModel? chatRoom = await getChatRoomModel();
                       Navigator.pop(context); // Dismiss the progress indicator
 
                       if (models_helper.customer != null &&
@@ -324,10 +346,11 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                           context,
                           MaterialPageRoute(builder: (context) {
                             return ChatRoomScreen(
-                                customer: models_helper.customer,
-                                owner: models_helper.owner,
-                                chatroom: chatRoom,
-                                number: 1,);
+                              customer: models_helper.customer,
+                              owner: models_helper.owner,
+                              chatroom: chatRoom,
+                              number: 1,
+                            );
                           }),
                         );
                       }
@@ -370,7 +393,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                         Text(
                           "العقارات",
                           style: TextStyle(
-                            fontFamily: 'Scheherazade_New',
+                              fontFamily: 'Scheherazade_New',
                               decoration: TextDecoration.none,
                               fontSize: 20,
                               color: propertiesInfo ? primaryLine : primaryRed),
@@ -397,7 +420,7 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                         Text(
                           "عن المالك",
                           style: TextStyle(
-                            fontFamily: 'Scheherazade_New',
+                              fontFamily: 'Scheherazade_New',
                               decoration: TextDecoration.none,
                               fontSize: 20,
                               color: aboutOwner ? primaryLine : primaryRed),
@@ -479,30 +502,82 @@ String chatRoomId = "${models_helper.customer.custId}^${models_helper.owner.owne
                     itemCount: _combineApartments().length,
                     itemBuilder: (BuildContext context, int index) {
                       final rentapart = _combineApartments()[index];
-                      return Card(
-                        elevation: 2,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: ListTile(
-                          title: Text(
-                            'المدينة: ${rentapart.city}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 8),
-                              Text(
-                                'الصنف: ${rentapart.type}',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '\$السعر: ${rentapart.price}' as String,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              SizedBox(height: 8),
-                            ],
+                      return Material(
+                        child: InkWell(
+                          onTap: () {
+                            // Handle post click
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 2, vertical: 4),
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        width: 150,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                rentapart.images.first),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 100),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            rentapart.city,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                          Text(
+                                            rentapart.type,
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${rentapart.price} \$',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: primaryRed,
+                                              decoration: TextDecoration.none,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
