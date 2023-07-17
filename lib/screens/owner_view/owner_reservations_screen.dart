@@ -7,13 +7,13 @@ import 'owner_view_screen.dart';
 
 class Reserves {
   final String apartmentcity;
-  final String custId;
+  final String customerName;
   final String date;
   final String time;
 
   Reserves({
     required this.apartmentcity,
-    required this.custId,
+    required this.customerName,
     required this.date,
     required this.time,
   });
@@ -48,7 +48,7 @@ class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
             final reservation = Map<String, dynamic>.from(entry.value);
             return Reserves(
               apartmentcity: reservation['apartmentcity'] as String,
-              custId: reservation['fullname'] as String,
+              customerName: reservation['customerName'] as String,
               date: reservation['date'] as String,
               time: reservation['time'] as String,
             );
@@ -107,7 +107,7 @@ class _OwnerReservationsScreenState extends State<OwnerReservationsScreen> {
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'اسم العميل: ${reservation.custId}',
+                              'اسم العميل: ${reservation.customerName}',
                               style: TextStyle(fontSize: 14),
                               textAlign: TextAlign.right,
                             ),
