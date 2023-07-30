@@ -112,6 +112,8 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
       'numBathrooms': estate.numBathrooms,
       'size': estate.size,
       'address1': estate.address1,
+      'longitude': estate.longitude,
+      'latitude': estate.latitude
     }).then((_) {
       _showSuccessDialog();
     }).catchError((error) {
@@ -618,7 +620,7 @@ class _ItemDetailBuyState extends State<ItemDetailBuy> {
               ),
             ),
           ),
-          SizedBox(height:10),
+          SizedBox(height: 10),
           Positioned(
             top: 600, // adjust the top position as per your requirement
             right: 0,
