@@ -94,7 +94,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     numBathrooms: item['numBathrooms'] as int,
                     size: item['size'] as int,
                     address1: item['address1'] as String,
-                    description: item['address1'] as String,
+                    description: item['description'] as String,
                     numVerandas:
                         item['price'] as int, // Include numVerandas for Estate
                     OwnerID: item['apartmentOwnerId']
@@ -120,7 +120,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     numBathrooms: item['numBathrooms'] as int,
                     size: item['size'] as int,
                     address1: item['address1'] as String,
-                    description: item['address1'] as String,
+                    description: item['description'] as String,
                     // numVerandas: item['price'] as int, // Include numVerandas for Estate
                     OwnerID: item['apartmentOwnerId']
                         as String, // Include OwnerID for Estate
