@@ -180,11 +180,11 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                           horizontal: 1, vertical: 30),
                       child: Column(
                         children: [
-                          _buildButtonWithDivider(
-                            context,
-                            "assets/images/notification.png",
-                            "الاشعارات",
-                          ),
+                          // _buildButtonWithDivider(
+                          //   context,
+                          //   "assets/images/notification.png",
+                          //   "الاشعارات",
+                          // ),
                           _buildButtonWithDivider(
                             context,
                             "assets/images/reportProblem.png",

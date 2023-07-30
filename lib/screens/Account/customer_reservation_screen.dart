@@ -110,7 +110,7 @@ class _CustomerReservationsScreenState
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'اسم العميل: ${reservation.ownerName}',
+                              'اسم المالك: ${reservation.ownerName}',
                               style: TextStyle(fontSize: 14),
                               textAlign: TextAlign.right,
                             ),

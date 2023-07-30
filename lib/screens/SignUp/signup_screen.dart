@@ -53,7 +53,7 @@ class SignupScreen extends StatelessWidget {
             CustModel newCustomer = CustModel(
                 custId: userId,
                 phone_number: null,
-                email: email,
+                email: email.toLowerCase(),
                 password: hashedPassword,
                 city: null,
                 fullname: null);
