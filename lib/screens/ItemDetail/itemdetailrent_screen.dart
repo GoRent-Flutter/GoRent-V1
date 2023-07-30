@@ -112,6 +112,8 @@ class _ItemDetailState extends State<ItemDetail> {
       'numBathrooms': post.numBathrooms,
       'size': post.size,
       'address1': post.address1,
+      'longitude': post.longitude,
+      'latitude': post.latitude
     }).then((_) {
       _showSuccessDialog();
     }).catchError((error) {
@@ -594,7 +596,7 @@ class _ItemDetailState extends State<ItemDetail> {
               ),
             ),
           ),
-          SizedBox(height:10),
+          SizedBox(height: 10),
           Positioned(
             top: 600, // adjust the top position as per your requirement
             right: 0,
