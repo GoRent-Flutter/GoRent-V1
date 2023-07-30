@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../BuyList/buylist_screen.dart';
 import '../RentList/rentlist_screen.dart';
 
@@ -579,6 +581,38 @@ class _FilterPageState2 extends State<FiltersScreen2> {
                           _isLoading = true;
                         });
 
+                        Map<String, dynamic> body = {
+                          "numRooms": _selectedRooms,
+                          "numBathrooms": _selectedBathrooms,
+                          "size": [_areaRange.start, _areaRange.end],
+                          "price": [_priceRange.start, _priceRange.end],
+                          "type": [
+                            if (_isBuySelected) "بيع",
+                            if (_isRentSelected) "اجار",
+                          ],
+                        };
+
+                          var response = await http.post(
+                          Uri.parse('http://192.168.1.23:5000/recommend'),
+                          headers: {"Content-Type": "application/json"},
+                          body: jsonEncode(body),
+                        );
+                        
+                        if (response.statusCode == 200 &&
+                            !response.body.contains(
+                                "No properties found matching the specified filters.")) {
+                                  List<dynamic> responseBody = jsonDecode(response.body);
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String rawJson = jsonEncode(responseBody);
+                          prefs.setString('response', rawJson);
+                        } else {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                        prefs.remove("response");
+                          print(
+                              'Failed to send the request. Status code: ${response.statusCode}');
+                        }
                         await Future.delayed(Duration(seconds: 3));
                         widget.onFiltersApplied(
                           _isRentSelected,
@@ -610,7 +644,7 @@ class _FilterPageState2 extends State<FiltersScreen2> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryRed,
                       ),
-                    ),
+                    )
                   ],
                 ),
               ])

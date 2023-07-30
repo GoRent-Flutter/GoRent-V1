@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../BuyList/buylist_screen.dart';
 import '../RentList/rentlist_screen.dart';
 
@@ -13,7 +15,8 @@ class FiltersScreen extends StatefulWidget {
   final int selectedRooms;
   final int selectedBathrooms;
   final List<String> selected;
-  final Function(String ,bool, bool, RangeValues, RangeValues, int, int, List<String>)
+  final Function(
+          String, bool, bool, RangeValues, RangeValues, int, int, List<String>)
       onFiltersApplied;
 
   FiltersScreen({
@@ -33,7 +36,7 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FiltersScreen> {
-  String _selectedCity="";
+  String _selectedCity = "";
   bool _isRentSelected = true;
   bool _isBuySelected = true;
   RangeValues _priceRange = const RangeValues(0, 200000);
@@ -55,7 +58,7 @@ class _FilterPageState extends State<FiltersScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCity=widget.selectedCity;
+    _selectedCity = widget.selectedCity;
     _isRentSelected = widget.isRentSelected;
     _isBuySelected = widget.isBuySelected;
     _priceRange = widget.priceRange;
@@ -102,7 +105,7 @@ class _FilterPageState extends State<FiltersScreen> {
                   textDirection: TextDirection.rtl,
                 ),
               ),
-                             const Padding(
+              const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   'المدينة',
@@ -129,8 +132,9 @@ class _FilterPageState extends State<FiltersScreen> {
                         child: Container(
                           height: 36,
                           decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "رام الله" ? Colors.white : primaryRed,
+                            color: _selectedCity == "رام الله"
+                                ? Colors.white
+                                : primaryRed,
                             borderRadius: BorderRadius.circular(18.0),
                             border: Border.all(
                               color: _selectedCity == "رام الله"
@@ -158,14 +162,15 @@ class _FilterPageState extends State<FiltersScreen> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                             _selectedCity = "بيت لحم";
+                            _selectedCity = "بيت لحم";
                           });
                         },
                         child: Container(
                           height: 36,
                           decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "بيت لحم" ? Colors.white : primaryRed,
+                            color: _selectedCity == "بيت لحم"
+                                ? Colors.white
+                                : primaryRed,
                             borderRadius: BorderRadius.circular(18.0),
                             border: Border.all(
                               color: _selectedCity == "بيت لحم"
@@ -199,8 +204,9 @@ class _FilterPageState extends State<FiltersScreen> {
                         child: Container(
                           height: 36,
                           decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "طولكرم" ? Colors.white : primaryRed,
+                            color: _selectedCity == "طولكرم"
+                                ? Colors.white
+                                : primaryRed,
                             borderRadius: BorderRadius.circular(18.0),
                             border: Border.all(
                               color: _selectedCity == "طولكرم"
@@ -228,14 +234,15 @@ class _FilterPageState extends State<FiltersScreen> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                             _selectedCity = "نابلس";
+                            _selectedCity = "نابلس";
                           });
                         },
                         child: Container(
                           height: 36,
                           decoration: BoxDecoration(
-                            color:
-                                _selectedCity == "نابلس" ? Colors.white : primaryRed,
+                            color: _selectedCity == "نابلس"
+                                ? Colors.white
+                                : primaryRed,
                             borderRadius: BorderRadius.circular(18.0),
                             border: Border.all(
                               color: _selectedCity == "نابلس"
@@ -248,7 +255,7 @@ class _FilterPageState extends State<FiltersScreen> {
                             child: Text(
                               'نابلس',
                               style: TextStyle(
-                                color:  _selectedCity == "نابلس"
+                                color: _selectedCity == "نابلس"
                                     ? primaryRed
                                     : Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -743,6 +750,39 @@ class _FilterPageState extends State<FiltersScreen> {
                           _isLoading = true;
                         });
 
+                        Map<String, dynamic> body = {
+                          "numRooms": _selectedRooms,
+                          "numBathrooms": _selectedBathrooms,
+                          "size": [_areaRange.start, _areaRange.end],
+                          "price": [_priceRange.start, _priceRange.end],
+                          "type": [
+                            if (_isBuySelected) "بيع",
+                            if (_isRentSelected) "اجار",
+                          ],
+                        };
+
+                        var response = await http.post(
+                          Uri.parse('http://192.168.1.23:5000/recommend'),
+                          headers: {"Content-Type": "application/json"},
+                          body: jsonEncode(body),
+                        );
+                        
+                        if (response.statusCode == 200 &&
+                            !response.body.contains(
+                                "No properties found matching the specified filters.")) {
+                                  List<dynamic> responseBody = jsonDecode(response.body);
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String rawJson = jsonEncode(responseBody);
+                          prefs.setString('response', rawJson);
+                        } else {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                        prefs.remove("response");
+                          print(
+                              'Failed to send the request. Status code: ${response.statusCode}');
+                        }
+
                         await Future.delayed(Duration(seconds: 3));
                         widget.onFiltersApplied(
                           _selectedCity.toString(),
@@ -760,7 +800,7 @@ class _FilterPageState extends State<FiltersScreen> {
                         });
 
                         Navigator.pop(context, {
-                          'selectedCity':_selectedCity.toString(),
+                          'selectedCity': _selectedCity.toString(),
                           'isRentSelected': _isRentSelected,
                           'isBuySelected': _isBuySelected,
                           'priceRange': _priceRange,
@@ -776,7 +816,7 @@ class _FilterPageState extends State<FiltersScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryRed,
                       ),
-                    ),
+                    )
                   ],
                 ),
               ])
