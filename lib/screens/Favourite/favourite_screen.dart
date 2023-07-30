@@ -6,6 +6,11 @@ import 'package:gorent_application1/screens/Main/main_screen.dart';
 import 'package:gorent_application1/user_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../BuyList/buylist_screen.dart';
+import '../BuyList/card.dart';
+import '../RentList/rentlist_screen.dart';
+import '../RentList/square.dart';
+
 class Favs {
   final List<String> images;
   final String apartmentcity;
@@ -15,6 +20,8 @@ class Favs {
   final int numBathrooms;
   final int size;
   final String address1;
+  final double longitude;
+  final double latitude;
 
   Favs({
     required this.images,
@@ -25,6 +32,8 @@ class Favs {
     required this.numBathrooms,
     required this.size,
     required this.address1,
+    required this.longitude,
+    required this.latitude,
   });
 }
 
@@ -39,6 +48,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   late String mergedID = "";
   late DatabaseReference _databaseRef;
   List<Favs> favouriteList = [];
+
+  List<Estate> _estates = [];
+  List<Post> _posts = [];
+  List<Map<String, dynamic>> allItems = [];
 
   void fetchUserData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -59,35 +72,65 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     _databaseRef = FirebaseDatabase.instance.reference().child('watchlist');
     _databaseRef.onValue.listen((event) {
       if (event.snapshot.value != null) {
-        final favs = (event.snapshot.value as Map<dynamic, dynamic>)
-            .cast<String, dynamic>();
+        final watchlist = event.snapshot.value as Map<dynamic, dynamic>;
         setState(() {
-          favouriteList = favs.entries
+          allItems = watchlist.entries
               .where((entry) => entry.value['custUsername'] == mergedID)
-              .map((entry) {
-            final fav = Map<String, dynamic>.from(entry.value);
-            // List<String> imageUrls = [];
-            // if (fav['images'] != null) {
-            //   final images = fav['images'] as Map<dynamic, dynamic>;
-            //   if (images.isNotEmpty) {
-            //     imageUrls =
-            //         images.values.map((value) => value.toString()).toList();
-            //   }
-            // }
-            return Favs(
-              images: (fav['images'] as List<dynamic>)
-                  .map((image) => image.toString())
-                  .toList(),
-              apartmentcity: fav['apartmentcity'] as String,
-              type: fav['type'] as String,
-              price: fav['price'] as int,
-              numRooms: fav['numRooms'] as int,
-              numBathrooms: fav['numBathrooms'] as int,
-              size: fav['size'] as int,
-              address1: fav['address1'] as String,
-            );
-          }).toList();
-          //print(favouriteList);
+              .map((entry) => Map<String, dynamic>.from(entry.value))
+              .toList();
+          //print(allItems);
+
+          // Separate the data into _estates and _posts lists based on the 'type'
+          _estates = allItems
+              .where((item) => item['type'] == 'بيع')
+              .map((item) => Estate(
+                    images: (item['images'] as List<dynamic>)
+                        .map((image) => image.toString())
+                        .toList(),
+                    city: item['apartmentcity'] as String,
+                    type: item['type'] as String,
+                    price: item['price'] as int,
+                    numRooms: item['numRooms'] as int,
+                    numBathrooms: item['numBathrooms'] as int,
+                    size: item['size'] as int,
+                    address1: item['address1'] as String,
+                    description: item['address1'] as String,
+                    numVerandas:
+                        item['price'] as int, // Include numVerandas for Estate
+                    OwnerID: item['apartmentOwnerId']
+                        as String, // Include OwnerID for Estate
+                    longitude: item['longitude']
+                        as double, // Include longitude for Estate
+                    latitude: item['latitude']
+                        as double, // Include latitude for Estate
+                  ))
+              .toList();
+          print(_estates);
+
+          _posts = allItems
+              .where((item) => item['type'] == 'اجار')
+              .map((item) => Post(
+                    images: (item['images'] as List<dynamic>)
+                        .map((image) => image.toString())
+                        .toList(),
+                    city: item['apartmentcity'] as String,
+                    type: item['type'] as String,
+                    price: item['price'] as int,
+                    numRooms: item['numRooms'] as int,
+                    numBathrooms: item['numBathrooms'] as int,
+                    size: item['size'] as int,
+                    address1: item['address1'] as String,
+                    description: item['address1'] as String,
+                    // numVerandas: item['price'] as int, // Include numVerandas for Estate
+                    OwnerID: item['apartmentOwnerId']
+                        as String, // Include OwnerID for Estate
+                    longitude: item['longitude']
+                        as double, // Include longitude for Estate
+                    latitude: item['latitude']
+                        as double, // Include latitude for Estate
+                  ))
+              .toList();
+          print(_posts);
         });
       }
     });
@@ -170,12 +213,12 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             left: 32,
             right: 32,
             bottom: 80,
-            child: favouriteList.isEmpty
+            child: allItems.isEmpty
                 ? Center(
                     child: Text(
                       'لا يوجد عقارات مفضلة لديك',
                       style: TextStyle(
-                         fontFamily: 'Scheherazade_New',
+                        fontFamily: 'Scheherazade_New',
                         fontSize: 18,
                         color: primaryRed,
                         fontWeight: FontWeight.bold,
@@ -184,184 +227,383 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     ),
                   )
                 : ListView.builder(
-                    itemCount: favouriteList.length,
+                    itemCount: _estates.length + _posts.length,
                     itemBuilder: (context, index) {
-                      final fav = favouriteList[index];
-                      return Material(
-                        child: InkWell(
-                          onTap: () {
-                            // Handle post click
-                          },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 1, vertical: 8),
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      if (index < _estates.length) {
+                        // Display MyCard for buylist
+                        final estate = _estates[index];
+                        return MyCard(
+                          estate: estate,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 7, left: 7, right: 7),
+                                child: Stack(
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Container(
-                                        width: 100,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image:
-                                                NetworkImage(fav.images.first),
-                                            fit: BoxFit.cover,
+                                    Container(
+                                      width: size.width - 50,
+                                      height: size.width - 240,
+                                      decoration: BoxDecoration(
+                                        color: primaryWhite,
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
                                           ),
+                                        ],
+                                        image: DecorationImage(
+                                          image:
+                                              NetworkImage(estate.images.first),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 7),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            fav.apartmentcity,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          SizedBox(height: 1),
-                                          Text(
-                                            fav.type,
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          SizedBox(height: 1),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 2.0),
-                                                    child: Image(
-                                                      image: AssetImage(
-                                                        'assets/icons/Red_bedroom.png',
-                                                      ),
-                                                      width: 10,
-                                                      height: 10,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 5),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 6.0),
-                                                    child: Text(
-                                                      ' ${fav.numRooms}',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: primaryRed,
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 2.0),
-                                                    child: Image(
-                                                      image: AssetImage(
-                                                        'assets/icons/Red_bathroom.png',
-                                                      ),
-                                                      width: 10,
-                                                      height: 10,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 2),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 13.0),
-                                                    child: Text(
-                                                      ' ${fav.numBathrooms}',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: primaryRed,
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 0.0),
-                                                    child: Image(
-                                                      image: AssetImage(
-                                                        'assets/icons/Red_size.png',
-                                                      ),
-                                                      width: 10,
-                                                      height: 10,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 1),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 75.0),
-                                                    child: Text(
-                                                      ' ${fav.size}',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: primaryRed,
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 1),
-                                          Text(
-                                            '${fav.price} \$',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: primaryRed,
-                                              decoration: TextDecoration.none,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    // const Positioned(
+                                    //   top: 10,
+                                    //   right: 10,
+                                    //   child: Icon(Icons.favorite_border,
+                                    //       color: Colors.white),
+                                    // ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // set alignment
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 8,
+                                        left: 5.0,
+                                        right: size.width - 265),
+                                    child: Text(
+                                      "\$" + estate.price.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 8, right: 9),
+                                    child: Text(
+                                      estate.city,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // set alignment
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 9.0, left: 9),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bedroom.png'),
+                                          width: 20,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6.0),
+                                        child: Text(
+                                          estate.numRooms.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: primaryRed,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bathroom.png'),
+                                          width: 20,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 13.0),
+                                        child: Text(
+                                          estate.numBathrooms.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: primaryRed,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 0.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_size.png'),
+                                          width: 20,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: Text(
+                                          estate.size.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: primaryRed,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 9.0, right: 9),
+                                    child: Text(
+                                      estate.type,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      );
+                        );
+                      } else {
+                        // Display MySquare for rent data
+                        final postIndex = index - _estates.length;
+                        final post = _posts[postIndex];
+                        return MySquare(
+                          post: post,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 7, left: 7, right: 7),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: size.width - 50,
+                                      height: size.width - 240,
+                                      decoration: BoxDecoration(
+                                        color: primaryWhite,
+                                        borderRadius:
+                                            BorderRadius.circular(24.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                          ),
+                                        ],
+                                        image: DecorationImage(
+                                          image:
+                                              NetworkImage(post.images.first),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    // const Positioned(
+                                    //   top: 10,
+                                    //   right: 10,
+                                    //   child: Icon(Icons.favorite_border,
+                                    //       color: Colors.white),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // set alignment
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 8,
+                                        left: 5.0,
+                                        right: size.width - 265),
+                                    child: Text(
+                                      "\$" + post.price.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 8, right: 8),
+                                    child: Text(
+                                      post.city,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // set alignment
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 13.0, left: 8),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bedroom.png'),
+                                          width: 20,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6.0),
+                                        child: Text(
+                                          post.numRooms.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: primaryRed,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 6.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_bathroom.png'),
+                                          width: 20,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 13.0),
+                                        child: Text(
+                                          post.numBathrooms.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: primaryRed,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 0.0),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'assets/icons/Red_size.png'),
+                                          width: 20,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              5), // add some spacing between the icon and text
+
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: Text(
+                                          post.size.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: primaryRed,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 13.0),
+                                    child: Text(
+                                      post.type,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: primaryRed,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     },
                   ),
           ),
