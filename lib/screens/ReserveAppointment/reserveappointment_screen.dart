@@ -82,7 +82,10 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
     DatabaseReference reservationRef =
         FirebaseDatabase.instance.reference().child('reservations');
 
-    reservationRef.push().set({
+    // Generate a new push key to create a unique reservation ID
+    String? reservationId = reservationRef.push().key;
+
+    reservationRef.child(reservationId!).set({
       'apartmentOwnerId': apartmentOwnerId,
       'apartmentcity': apartmentcity,
       'customerName': username,
@@ -90,6 +93,10 @@ class _ReserveAppointmentState extends State<ReserveAppointment> {
       'date': DateFormat('dd/MM/yyyy').format(_selectedDate),
       'time': _selectedTime.format(context),
       'custId': customerId,
+      'isApproved': false,
+      'reservationId': reservationId,
+       'isPending': true,  // Set the initial pending status to true
+
     }).then((_) {
       Navigator.of(context).pop();
       _showSuccessMessage();

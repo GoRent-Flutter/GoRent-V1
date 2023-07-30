@@ -8,12 +8,16 @@ class Reserves {
   final String ownerName;
   final String date;
   final String time;
+  final bool isPending;
+  final bool isApproved;
 
   Reserves({
     required this.apartmentcity,
     required this.ownerName,
     required this.date,
     required this.time,
+    this.isApproved = false,
+    this.isPending = true,
   });
 }
 
@@ -33,6 +37,7 @@ class _CustomerReservationsScreenState
     extends State<CustomerReservationsScreen> {
   late DatabaseReference _databaseRef;
   List<Reserves> _reserves = [];
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +56,8 @@ class _CustomerReservationsScreenState
               ownerName: reservation['ownerName'] as String,
               date: reservation['date'] as String,
               time: reservation['time'] as String,
+              isApproved: reservation['isApproved'] as bool,
+              isPending: reservation['isPending'] as bool,
             );
           }).toList();
         });
@@ -90,9 +97,9 @@ class _CustomerReservationsScreenState
                 itemBuilder: (BuildContext context, int index) {
                   final reservation = _reserves[index];
                   return Card(
-                    elevation: 4, // Add elevation for a subtle shadow
+                    elevation: 4,
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    color: Colors.grey[100], // Change background color
+                    color: Colors.grey[100],
                     child: Padding(
                       padding: EdgeInsets.all(16),
                       child: Directionality(
@@ -126,6 +133,37 @@ class _CustomerReservationsScreenState
                               style: TextStyle(fontSize: 14),
                               textAlign: TextAlign.right,
                             ),
+                            SizedBox(height: 16),
+                            if (reservation.isPending)
+                              Text(
+                                'طلبك قيد المراجعة',
+                                style: TextStyle(
+                                  color: Colors.orange,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
+                              )
+                            else if (reservation.isApproved)
+                              Text(
+                                'تم الموافقة على الحجز',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
+                              )
+                            else
+                              Text(
+                                'تم رفض الحجز',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                           ],
                         ),
                       ),

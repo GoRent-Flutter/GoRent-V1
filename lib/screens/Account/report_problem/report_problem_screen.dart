@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:gorent_application1/constraints.dart';
 import 'package:image_picker/image_picker.dart';
 import '../user_account_screen.dart';
-import 'success_screen.dart';
+import 'report_problem_sucees_screen.dart';
 
 class ReportProblemScreen extends StatefulWidget {
   final int currentIndex;
-  const ReportProblemScreen({Key? key, required this.currentIndex}) : super(key: key);
+  const ReportProblemScreen({Key? key, required this.currentIndex})
+      : super(key: key);
 
   @override
   ReportProblemState createState() => ReportProblemState();
@@ -103,7 +104,8 @@ class ReportProblemState extends State<ReportProblemScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const SuccessScreen(),
+        builder: (context) =>
+            SuccessScreenReportProblemState(currentIndex: widget.currentIndex),
       ),
     );
   }
@@ -131,7 +133,9 @@ class ReportProblemState extends State<ReportProblemScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => UserAccountScreen(currentIndex: widget.currentIndex ,)),
+                  builder: (context) => UserAccountScreen(
+                        currentIndex: widget.currentIndex,
+                      )),
             );
           },
         ),
@@ -167,7 +171,7 @@ class ReportProblemState extends State<ReportProblemScreen> {
                 textDirection: TextDirection.rtl,
               ),
               SizedBox(height: 20),
-Container(
+              Container(
                 color: Colors.white,
                 child: DropdownButton<String>(
                   value: selectedOption,
@@ -197,7 +201,8 @@ Container(
                     alignment: Alignment.centerRight,
                     child: Text(
                       'اختر مشكلة',
-                      style: TextStyle(fontFamily: 'Scheherazade_New', fontSize: 16),
+                      style: TextStyle(
+                          fontFamily: 'Scheherazade_New', fontSize: 16),
                     ),
                   ),
                   isExpanded: true,
@@ -215,7 +220,6 @@ Container(
               const SizedBox(height: 10),
               Form(
                 key: _formKey,
-
                 child: TextFormField(
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,
